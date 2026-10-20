@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import { Proximamente } from "@/components/proximamente";
+import { VistaCarrito } from "./vista-carrito";
 
 export const metadata: Metadata = { title: "Mi pedido" };
 
-export default function Pagina() {
-  return <Proximamente titulo="Mi pedido" />;
+export default function PaginaCarrito() {
+  return <VistaCarrito />;
 }

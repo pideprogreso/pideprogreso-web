@@ -1,18 +1,20 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Playfair_Display } from "next/font/google";
-import { Encabezado } from "@/components/encabezado";
-import { PieDePagina } from "@/components/pie-de-pagina";
+import { Suspense } from "react";
+import { Bricolage_Grotesque, Figtree } from "next/font/google";
+import { BarraCarrito } from "@/components/carrito/barra-carrito";
+import { ProveedorCarrito } from "@/components/carrito/proveedor";
+import { NavegacionInferior } from "@/components/navegacion-inferior";
 import "./globals.css";
 
-const sans = Inter({
-  variable: "--font-sans-app",
+const texto = Figtree({
+  variable: "--font-texto",
   subsets: ["latin"],
 });
 
-const display = Playfair_Display({
-  variable: "--font-display-app",
+const titulos = Bricolage_Grotesque({
+  variable: "--font-titulos",
   subsets: ["latin"],
-  weight: ["600", "700"],
+  weight: ["600", "700", "800"],
 });
 
 export const metadata: Metadata = {
@@ -25,23 +27,28 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#6b1a33",
+  themeColor: "#6e0f2e",
   width: "device-width",
   initialScale: 1,
+  viewportFit: "cover",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="es-MX"
-      className={`${sans.variable} ${display.variable} h-full antialiased`}
+      className={`${texto.variable} ${titulos.variable} h-full antialiased`}
     >
-      <body className="flex min-h-full flex-col font-sans">
-        <Encabezado />
-        <main className="mx-auto w-full max-w-3xl flex-1 px-4 pb-10">
-          {children}
-        </main>
-        <PieDePagina />
+      <body className="min-h-full font-sans">
+        <ProveedorCarrito>
+          <div className="mx-auto min-h-dvh w-full max-w-xl pb-36 md:max-w-5xl">
+            {children}
+          </div>
+          <Suspense>
+            <BarraCarrito />
+          </Suspense>
+          <NavegacionInferior />
+        </ProveedorCarrito>
       </body>
     </html>
   );

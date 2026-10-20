@@ -1,12 +1,12 @@
 @import "tailwindcss";
 
-/* Identidad PideProgreso: vino y dorado */
+/* Identidad PideProgreso: vino profundo con acentos dorados, fondo blanco limpio. */
 :root {
-  --background: #fbf7f2;
-  --foreground: #2a1418;
-  --superficie: #ffffff;
-  --borde: #ead9c6;
-  --texto-suave: #6b4f53;
+  --background: #ffffff;
+  --foreground: #1f1418;
+  --superficie: #f5f1f2;
+  --borde: #ebe3e5;
+  --texto-suave: #6d5f63;
 }
 
 @theme inline {
@@ -16,41 +16,60 @@
   --color-borde: var(--borde);
   --color-suave: var(--texto-suave);
 
-  --color-vino-50: #fbf1f3;
-  --color-vino-100: #f5dde2;
-  --color-vino-200: #e9b6c1;
-  --color-vino-300: #d78597;
-  --color-vino-400: #bd5670;
-  --color-vino-500: #9c3550;
-  --color-vino-600: #82243f;
-  --color-vino-700: #6b1a33;
-  --color-vino-800: #56152a;
-  --color-vino-900: #3f0f1f;
+  --color-vino-50: #fcf2f5;
+  --color-vino-100: #f7dfe6;
+  --color-vino-200: #eebccb;
+  --color-vino-300: #d9839d;
+  --color-vino-400: #b84a6c;
+  --color-vino-500: #96224a;
+  --color-vino-600: #7f1639;
+  --color-vino-700: #6e0f2e;
+  --color-vino-800: #560b24;
+  --color-vino-900: #3d0719;
 
-  --color-dorado-50: #fdf8ec;
-  --color-dorado-100: #f9edc9;
-  --color-dorado-200: #f2d98f;
-  --color-dorado-300: #e8c25a;
-  --color-dorado-400: #d9a935;
-  --color-dorado-500: #c18f22;
-  --color-dorado-600: #9f711a;
-  --color-dorado-700: #7c5518;
+  --color-dorado-100: #fdf0cf;
+  --color-dorado-200: #fbe09a;
+  --color-dorado-300: #f7cb5c;
+  --color-dorado-400: #f2b632;
+  --color-dorado-500: #d99a16;
+  --color-dorado-700: #8a5d0b;
 
-  --font-sans: var(--font-sans-app);
-  --font-display: var(--font-display-app);
+  --color-abierto: #1e8e5a;
+
+  --font-sans: var(--font-texto);
+  --font-display: var(--font-titulos);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #1a0b0f;
-    --foreground: #f6ece4;
-    --superficie: #26121a;
-    --borde: #452630;
-    --texto-suave: #c9b1b5;
+    --background: #170d10;
+    --foreground: #f7eef0;
+    --superficie: #241519;
+    --borde: #3a2328;
+    --texto-suave: #c4b0b5;
   }
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
+}
+
+/* Carruseles horizontales sin barra visible. */
+.carrusel {
+  scrollbar-width: none;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: 1rem;
+  overscroll-behavior-x: contain;
+}
+.carrusel::-webkit-scrollbar {
+  display: none;
+}
+.carrusel > * {
+  scroll-snap-align: start;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-dorado-400);
+  outline-offset: 2px;
 }
