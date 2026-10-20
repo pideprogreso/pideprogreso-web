@@ -1,0 +1,56 @@
+@import "tailwindcss";
+
+/* Identidad PideProgreso: vino y dorado */
+:root {
+  --background: #fbf7f2;
+  --foreground: #2a1418;
+  --superficie: #ffffff;
+  --borde: #ead9c6;
+  --texto-suave: #6b4f53;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-superficie: var(--superficie);
+  --color-borde: var(--borde);
+  --color-suave: var(--texto-suave);
+
+  --color-vino-50: #fbf1f3;
+  --color-vino-100: #f5dde2;
+  --color-vino-200: #e9b6c1;
+  --color-vino-300: #d78597;
+  --color-vino-400: #bd5670;
+  --color-vino-500: #9c3550;
+  --color-vino-600: #82243f;
+  --color-vino-700: #6b1a33;
+  --color-vino-800: #56152a;
+  --color-vino-900: #3f0f1f;
+
+  --color-dorado-50: #fdf8ec;
+  --color-dorado-100: #f9edc9;
+  --color-dorado-200: #f2d98f;
+  --color-dorado-300: #e8c25a;
+  --color-dorado-400: #d9a935;
+  --color-dorado-500: #c18f22;
+  --color-dorado-600: #9f711a;
+  --color-dorado-700: #7c5518;
+
+  --font-sans: var(--font-sans-app);
+  --font-display: var(--font-display-app);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #1a0b0f;
+    --foreground: #f6ece4;
+    --superficie: #26121a;
+    --borde: #452630;
+    --texto-suave: #c9b1b5;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+}
