@@ -2,6 +2,7 @@
 
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import { origenPublico } from "@/lib/origen";
 import { destinoSeguro } from "@/lib/sesion";
 import { supabaseConfigurado } from "@/lib/supabase/config";
 import { crearClienteServidor } from "@/lib/supabase/server";
@@ -14,8 +15,7 @@ export type ResultadoAcceso =
 const CORREO = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 async function origenActual() {
-  const h = await headers();
-  return `${h.get("x-forwarded-proto") ?? "http"}://${h.get("x-forwarded-host") ?? h.get("host")}`;
+  return origenPublico(await headers());
 }
 
 function traducir(mensaje: string) {

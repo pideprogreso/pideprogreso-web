@@ -1,5 +1,6 @@
 import type { EmailOtpType } from "@supabase/supabase-js";
 import { NextResponse, type NextRequest } from "next/server";
+import { origenPublico } from "@/lib/origen";
 import { destinoSeguro } from "@/lib/sesion";
 import { crearClienteServidor } from "@/lib/supabase/server";
 
@@ -18,5 +19,5 @@ export async function GET(request: NextRequest) {
       ? await supabase.auth.verifyOtp({ token_hash: tokenHash, type: tipo })
       : { error: new Error("Falta el código") };
 
-  return NextResponse.redirect(new URL(error ? "/entrar?error=enlace" : destino, url.origin));
+  return NextResponse.redirect(new URL(error ? "/entrar?error=enlace" : destino, origenPublico(request.headers)));
 }
