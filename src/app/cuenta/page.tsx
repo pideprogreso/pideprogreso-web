@@ -5,7 +5,10 @@ import Link from "next/link";
 import { Suspense } from "react";
 import { esAdmin } from "@/lib/admin";
 import { obtenerMiNegocio } from "@/lib/panel";
+import { BotonGoogle } from "@/components/boton-google";
+import { obtenerDatosCliente } from "@/lib/cliente";
 import { obtenerUsuario } from "@/lib/sesion";
+import { BorrarDireccion } from "./borrar-direccion";
 import { salir } from "../entrar/acciones";
 
 export const metadata: Metadata = { title: "Mi cuenta" };
@@ -29,8 +32,15 @@ async function Contenido() {
   if (!usuario || usuario.anonimo) {
     return (
       <div className="mt-6 space-y-6">
-        <div className="rounded-2xl border border-borde">
-          <Fila href="/pedidos" icono={<Receipt aria-hidden size={22} />} titulo="Mis pedidos" detalle="Los pedidos que hiciste desde este celular" />
+        <div className="space-y-3">
+          <p className="text-suave">Entra para pedir, guardar tus direcciones y seguir tus pedidos.</p>
+          <BotonGoogle siguiente="/cuenta" />
+          <Link
+            href="/entrar?siguiente=/cuenta"
+            className="flex h-14 items-center justify-center rounded-full border border-borde font-semibold hover:bg-superficie"
+          >
+            Usar mi correo
+          </Link>
         </div>
 
         <section className="relative overflow-hidden rounded-3xl bg-vino-900 text-white">
@@ -63,7 +73,7 @@ async function Contenido() {
     );
   }
 
-  const [negocio, admin] = await Promise.all([obtenerMiNegocio(), esAdmin()]);
+  const [negocio, admin, cliente] = await Promise.all([obtenerMiNegocio(), esAdmin(), obtenerDatosCliente()]);
 
   return (
     <div className="mt-6 space-y-6">
@@ -93,6 +103,23 @@ async function Contenido() {
         )}
         <Fila href="/pedidos" icono={<Receipt aria-hidden size={22} />} titulo="Mis pedidos" detalle="Pedidos que hiciste como cliente" />
       </div>
+
+      {cliente && cliente.direcciones.length > 0 && (
+        <section>
+          <h2 className="font-display text-xl font-bold">Mis direcciones</h2>
+          <ul className="mt-3 divide-y divide-borde rounded-2xl border border-borde">
+            {cliente.direcciones.map((d) => (
+              <li key={d.id} className="flex items-center gap-3 px-4 py-3">
+                <span className="min-w-0 flex-1">
+                  <span className="block font-semibold">{d.etiqueta}</span>
+                  <span className="block truncate text-sm text-suave">{d.direccion}</span>
+                </span>
+                <BorrarDireccion id={d.id} etiqueta={d.etiqueta} />
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
 
       <form action={salir}>
         <button

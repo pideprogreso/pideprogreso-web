@@ -1,39 +1,44 @@
 "use client";
 
-import { ArrowLeft, Banknote, Bike, CreditCard, Store } from "lucide-react";
+import { ArrowLeft, Banknote, Bike, CreditCard, Home, MapPin, Store } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState, useTransition } from "react";
+import { useState, useTransition } from "react";
 import { confirmarPedido } from "@/app/pedidos/acciones";
 import { useCarrito } from "@/components/carrito/proveedor";
 import { Campo, estiloCampo } from "@/components/campos";
+import { MapaUbicacion, type Ubicacion } from "@/components/mapa-ubicacion";
+import type { DatosCliente } from "@/lib/cliente";
 import type { MetodoPago, Modalidad } from "@/lib/estados";
 import { dinero } from "@/lib/formato";
 
-const CLAVE_CONTACTO = "pideprogreso:contacto";
+type Contacto = { nombre: string; telefono: string; direccion: string; referencias: string };
 
-type Contacto = { nombre: string; telefono: string; direccion: string };
+const ETIQUETAS = ["Casa", "Trabajo", "Otra"] as const;
 
-export function FormularioConfirmar() {
+export function FormularioConfirmar({ cliente }: { cliente: DatosCliente }) {
   const router = useRouter();
   const { carrito, subtotal, vaciar } = useCarrito();
   const negocio = carrito.negocio;
 
   const [modalidadElegida, setModalidad] = useState<Modalidad>("entrega");
   const [metodoPago, setMetodoPago] = useState<MetodoPago>("efectivo");
-  const [contacto, setContacto] = useState<Contacto>({ nombre: "", telefono: "", direccion: "" });
+  const [contacto, setContacto] = useState<Contacto>({
+    nombre: cliente.nombre,
+    telefono: cliente.telefono,
+    direccion: "",
+    referencias: "",
+  });
+  // Dirección guardada elegida, o null para escribir una nueva.
+  const [guardadaId, setGuardadaId] = useState<string | null>(cliente.direcciones[0]?.id ?? null);
+  const [ubicacion, setUbicacion] = useState<Ubicacion | null>(null);
+  const [guardarComo, setGuardarComo] = useState<string | null>(
+    cliente.direcciones.length === 0 ? "Casa" : null,
+  );
   const [notas, setNotas] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [enviando, iniciar] = useTransition();
-
-  useEffect(() => {
-    // Recuerda los datos del último pedido en este dispositivo.
-    try {
-      const guardado = localStorage.getItem(CLAVE_CONTACTO);
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      if (guardado) setContacto({ nombre: "", telefono: "", direccion: "", ...JSON.parse(guardado) });
-    } catch {}
-  }, []);
+  const guardada = cliente.direcciones.find((d) => d.id === guardadaId) ?? null;
 
   if (!negocio || carrito.lineas.length === 0) {
     return (
@@ -71,7 +76,14 @@ export function FormularioConfirmar() {
         metodoPago,
         nombre: contacto.nombre,
         telefono: contacto.telefono,
-        direccion: contacto.direccion,
+        direccion: guardada ? guardada.direccion : contacto.direccion,
+        referencias: guardada ? (guardada.referencias ?? "") : contacto.referencias,
+        ubicacion: guardada
+          ? guardada.lat !== null && guardada.lng !== null
+            ? { lat: guardada.lat, lng: guardada.lng }
+            : null
+          : ubicacion,
+        guardarComo: guardada ? null : guardarComo,
         notas,
         productos: carrito.lineas.map((l) => ({ productoId: l.productoId, cantidad: l.cantidad })),
       });
@@ -79,9 +91,6 @@ export function FormularioConfirmar() {
         setError(r.error);
         return;
       }
-      try {
-        localStorage.setItem(CLAVE_CONTACTO, JSON.stringify(contacto));
-      } catch {}
       vaciar();
       router.replace(`/pedidos/${r.id}?nuevo=1`);
     });
@@ -143,6 +152,74 @@ export function FormularioConfirmar() {
             </div>
           </fieldset>
 
+          {modalidad === "entrega" && (
+            <fieldset className="space-y-3">
+              <legend className="font-display text-xl font-bold">¿A dónde lo llevamos?</legend>
+              {cliente.direcciones.length > 0 && (
+                <div className="grid gap-2">
+                  {cliente.direcciones.map((d) => (
+                    <FilaDireccion
+                      key={d.id}
+                      activa={guardadaId === d.id}
+                      onElegir={() => setGuardadaId(d.id)}
+                      titulo={d.etiqueta}
+                      detalle={d.direccion}
+                    />
+                  ))}
+                  <FilaDireccion
+                    activa={guardadaId === null}
+                    onElegir={() => setGuardadaId(null)}
+                    titulo="Otra dirección"
+                    detalle="Márcala en el mapa"
+                    nueva
+                  />
+                </div>
+              )}
+              {!guardada && (
+                <div className="space-y-3">
+                  <MapaUbicacion valor={ubicacion} onCambio={setUbicacion} />
+                  <Campo etiqueta="Dirección" id="direccion" ayuda="Calle, número y colonia.">
+                    <input
+                      id="direccion"
+                      required
+                      maxLength={300}
+                      autoComplete="street-address"
+                      {...campo("direccion")}
+                      className={estiloCampo}
+                    />
+                  </Campo>
+                  <Campo etiqueta="Referencias (opcional)" id="referencias">
+                    <input
+                      id="referencias"
+                      maxLength={300}
+                      placeholder="Casa blanca, portón negro, frente a la tienda…"
+                      {...campo("referencias")}
+                      className={estiloCampo}
+                    />
+                  </Campo>
+                  <div>
+                    <p className="mb-1.5 text-sm font-semibold">Guardar esta dirección como</p>
+                    <div className="flex flex-wrap gap-2">
+                      {ETIQUETAS.map((e) => (
+                        <button
+                          key={e}
+                          type="button"
+                          aria-pressed={guardarComo === e}
+                          onClick={() => setGuardarComo(guardarComo === e ? null : e)}
+                          className={`h-10 rounded-full border px-4 text-sm font-semibold ${
+                            guardarComo === e ? "border-foreground bg-foreground text-white" : "border-borde"
+                          }`}
+                        >
+                          {e}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+            </fieldset>
+          )}
+
           <fieldset className="space-y-3">
             <legend className="font-display text-xl font-bold">Tus datos</legend>
             <Campo etiqueta="Nombre" id="nombre">
@@ -161,19 +238,6 @@ export function FormularioConfirmar() {
                 className={estiloCampo}
               />
             </Campo>
-            {modalidad === "entrega" && (
-              <Campo etiqueta="Dirección de entrega" id="direccion" ayuda="Calle, número, colonia y una referencia.">
-                <textarea
-                  id="direccion"
-                  required
-                  rows={2}
-                  maxLength={300}
-                  autoComplete="street-address"
-                  {...campo("direccion")}
-                  className={`${estiloCampo} h-auto py-3`}
-                />
-              </Campo>
-            )}
             <Campo etiqueta="Notas para el negocio (opcional)" id="notas">
               <textarea
                 id="notas"
@@ -302,6 +366,37 @@ function Opcion({
       {icono}
       <span className="font-semibold leading-tight">{titulo}</span>
       <span className="text-sm text-suave">{detalle}</span>
+    </label>
+  );
+}
+
+function FilaDireccion({
+  activa,
+  onElegir,
+  titulo,
+  detalle,
+  nueva = false,
+}: {
+  activa: boolean;
+  onElegir: () => void;
+  titulo: string;
+  detalle: string;
+  nueva?: boolean;
+}) {
+  return (
+    <label
+      className={`flex cursor-pointer items-center gap-3 rounded-2xl border-2 px-4 py-3 has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-vino-700 ${
+        activa ? "border-foreground bg-superficie" : "border-borde"
+      }`}
+    >
+      <input type="radio" name="direccion-guardada" checked={activa} onChange={onElegir} className="sr-only" />
+      <span className="grid size-10 shrink-0 place-items-center rounded-full bg-white">
+        {nueva ? <MapPin aria-hidden size={20} /> : <Home aria-hidden size={20} />}
+      </span>
+      <span className="min-w-0">
+        <span className="block font-semibold">{titulo}</span>
+        <span className="block truncate text-sm text-suave">{detalle}</span>
+      </span>
     </label>
   );
 }

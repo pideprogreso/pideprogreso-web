@@ -117,6 +117,9 @@ async function Contenido({
             <dt className="text-suave">{pedido.modalidad === "entrega" ? "Entregar en" : "Lo recoges en"}</dt>
             <dd className="mt-0.5 font-medium">
               {pedido.modalidad === "entrega" ? pedido.direccionEntrega : pedido.negocio.nombre}
+              {pedido.modalidad === "entrega" && pedido.referencias && (
+                <span className="block font-normal text-suave">{pedido.referencias}</span>
+              )}
             </dd>
           </div>
           <div>

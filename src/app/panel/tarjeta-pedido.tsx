@@ -1,4 +1,4 @@
-import { Banknote, Bike, CreditCard, MessageCircle, Phone, Store } from "lucide-react";
+import { Banknote, Bike, CreditCard, MapPin, MessageCircle, Phone, Store } from "lucide-react";
 import { accionesNegocio, etiquetaCorta } from "@/lib/estados";
 import { dinero } from "@/lib/formato";
 import type { Pedido } from "@/lib/pedidos";
@@ -60,7 +60,23 @@ export function TarjetaPedido({ pedido: p, ahora, compacta = false }: { pedido: 
         </span>
       </div>
 
-      {p.direccionEntrega && <p className="mt-3 text-[15px] leading-snug">{p.direccionEntrega}</p>}
+      {p.direccionEntrega && (
+        <div className="mt-3 text-[15px] leading-snug">
+          <p>{p.direccionEntrega}</p>
+          {p.referencias && <p className="text-suave">{p.referencias}</p>}
+          {p.ubicacion && (
+            <a
+              href={`https://www.google.com/maps?q=${p.ubicacion.lat},${p.ubicacion.lng}`}
+              target="_blank"
+              rel="noreferrer"
+              className="mt-2 inline-flex h-10 items-center gap-1.5 rounded-full bg-superficie px-4 text-sm font-semibold hover:bg-superficie-2"
+            >
+              <MapPin aria-hidden size={16} className="text-vino-700" />
+              Ver en Google Maps
+            </a>
+          )}
+        </div>
+      )}
 
       <ul className="mt-3 space-y-1 border-t border-borde pt-3 text-[15px]">
         {p.lineas.map((l, i) => (

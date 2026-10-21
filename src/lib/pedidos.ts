@@ -12,6 +12,8 @@ export type Pedido = {
   nombreContacto: string;
   telefonoContacto: string;
   direccionEntrega: string | null;
+  referencias: string | null;
+  ubicacion: { lat: number; lng: number } | null;
   notas: string | null;
   subtotal: number;
   costoEnvio: number;
@@ -37,6 +39,9 @@ export type FilaPedido = {
   nombre_contacto: string;
   telefono_contacto: string;
   direccion_entrega: string | null;
+  referencias: string | null;
+  lat: number | null;
+  lng: number | null;
   notas: string | null;
   subtotal: string | number;
   costo_envio: string | number;
@@ -59,7 +64,7 @@ export type FilaPedido = {
 };
 
 export const COLUMNAS_PEDIDO =
-  "id, folio, estado, modalidad, metodo_pago, nombre_contacto, telefono_contacto, direccion_entrega, notas, subtotal, costo_envio, total, creado_en, negocios(slug, nombre, telefono, whatsapp, datos_transferencia, portada_url), pedido_detalle(nombre_producto, precio_unitario, cantidad, importe)";
+  "id, folio, estado, modalidad, metodo_pago, nombre_contacto, telefono_contacto, direccion_entrega, referencias, lat, lng, notas, subtotal, costo_envio, total, creado_en, negocios(slug, nombre, telefono, whatsapp, datos_transferencia, portada_url), pedido_detalle(nombre_producto, precio_unitario, cantidad, importe)";
 
 export function aPedido(f: FilaPedido): Pedido {
   return {
@@ -71,6 +76,8 @@ export function aPedido(f: FilaPedido): Pedido {
     nombreContacto: f.nombre_contacto,
     telefonoContacto: f.telefono_contacto,
     direccionEntrega: f.direccion_entrega,
+    referencias: f.referencias,
+    ubicacion: f.lat !== null && f.lng !== null ? { lat: f.lat, lng: f.lng } : null,
     notas: f.notas,
     subtotal: Number(f.subtotal),
     costoEnvio: Number(f.costo_envio),

@@ -70,8 +70,8 @@ export function FormularioAcceso() {
         </h1>
         <p className="mt-1 text-suave">
           {creando
-            ? "Para registrar tu negocio y recibir pedidos."
-            : "Para administrar tu negocio en PideProgreso."}
+            ? "Para pedir a los negocios de Nuevo Progreso."
+            : "Para pedir, seguir tus pedidos o administrar tu negocio."}
         </p>
       </div>
 
@@ -163,12 +163,7 @@ export function FormularioAcceso() {
         {enviando ? "Un momento…" : creando ? "Crear cuenta" : "Entrar"}
       </button>
 
-      <p className="text-center text-sm text-suave">
-        ¿Solo quieres pedir? No necesitas cuenta.{" "}
-        <Link href="/negocios" className="font-semibold text-foreground underline underline-offset-2">
-          Ver negocios
-        </Link>
-      </p>
+
     </form>
   );
 }
