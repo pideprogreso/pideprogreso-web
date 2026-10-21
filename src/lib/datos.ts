@@ -1,5 +1,5 @@
 import "server-only";
-import { cacheLife } from "next/cache";
+import { cacheLife, cacheTag } from "next/cache";
 import { buscarCategoria } from "./categorias";
 import { NEGOCIOS_DEMO, PRODUCTOS_DEMO } from "./demo";
 import { normalizar } from "./formato";
@@ -9,10 +9,13 @@ import type { Negocio, Producto } from "./tipos";
 
 export const modoDemo = !supabaseConfigurado;
 
-const COLUMNAS_NEGOCIO =
+// Las acciones del panel llaman updateTag(TAG_NEGOCIOS) para que los cambios se vean al momento.
+export const TAG_NEGOCIOS = "negocios";
+
+export const COLUMNAS_NEGOCIO =
   "id, slug, nombre, descripcion, direccion, horario, telefono, whatsapp, datos_transferencia, logo_url, portada_url, abierto, acepta_entrega, acepta_recoger, costo_envio, pedido_minimo, tiempo_entrega_min, tiempo_entrega_max, categorias(slug)";
 
-type FilaNegocio = {
+export type FilaNegocio = {
   id: string;
   slug: string;
   nombre: string;
@@ -34,7 +37,7 @@ type FilaNegocio = {
   categorias: { slug: string } | null;
 };
 
-type FilaProducto = {
+export type FilaProducto = {
   id: string;
   negocio_id: string;
   nombre: string;
@@ -44,7 +47,7 @@ type FilaProducto = {
   seccion: string;
 };
 
-function aNegocio(f: FilaNegocio): Negocio {
+export function aNegocio(f: FilaNegocio): Negocio {
   return {
     id: f.id,
     slug: f.slug,
@@ -68,7 +71,7 @@ function aNegocio(f: FilaNegocio): Negocio {
   };
 }
 
-function aProducto(f: FilaProducto): Producto {
+export function aProducto(f: FilaProducto): Producto {
   return {
     id: f.id,
     negocioId: f.negocio_id,
@@ -90,6 +93,7 @@ function ordenar(negocios: Negocio[]) {
 export async function obtenerNegocios(): Promise<Negocio[]> {
   "use cache";
   cacheLife("minutes");
+  cacheTag(TAG_NEGOCIOS);
 
   if (modoDemo) return ordenar(NEGOCIOS_DEMO);
 
@@ -105,6 +109,7 @@ export async function obtenerNegocios(): Promise<Negocio[]> {
 export async function obtenerNegocio(slug: string) {
   "use cache";
   cacheLife("minutes");
+  cacheTag(TAG_NEGOCIOS);
 
   if (modoDemo) {
     const negocio = NEGOCIOS_DEMO.find((n) => n.slug === slug);
@@ -146,6 +151,7 @@ export type ResultadoBusqueda = {
 export async function buscar(texto: string, categoria?: string): Promise<ResultadoBusqueda[]> {
   "use cache";
   cacheLife("minutes");
+  cacheTag(TAG_NEGOCIOS);
 
   const q = normalizar(texto);
   const negocios = (await obtenerNegocios()).filter(

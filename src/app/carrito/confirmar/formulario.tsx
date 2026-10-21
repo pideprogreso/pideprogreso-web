@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState, useTransition } from "react";
 import { confirmarPedido } from "@/app/pedidos/acciones";
 import { useCarrito } from "@/components/carrito/proveedor";
+import { Campo, estiloCampo } from "@/components/campos";
 import type { MetodoPago, Modalidad } from "@/lib/estados";
 import { dinero } from "@/lib/formato";
 
@@ -264,31 +265,6 @@ export function FormularioConfirmar() {
         </aside>
       </div>
     </form>
-  );
-}
-
-const estiloCampo =
-  "h-12 w-full rounded-xl border border-borde bg-white px-4 text-[15px] placeholder:text-suave/70 focus:border-foreground focus:outline-none focus:ring-1 focus:ring-foreground";
-
-function Campo({
-  etiqueta,
-  id,
-  ayuda,
-  children,
-}: {
-  etiqueta: string;
-  id: string;
-  ayuda?: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div>
-      <label htmlFor={id} className="mb-1.5 block text-sm font-semibold">
-        {etiqueta}
-      </label>
-      {children}
-      {ayuda && <p className="mt-1 text-xs text-suave">{ayuda}</p>}
-    </div>
   );
 }
 

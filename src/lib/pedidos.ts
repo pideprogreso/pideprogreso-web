@@ -28,7 +28,7 @@ export type Pedido = {
   lineas: { nombre: string; precio: number; cantidad: number; importe: number }[];
 };
 
-type Fila = {
+export type FilaPedido = {
   id: string;
   folio: number;
   estado: EstadoPedido;
@@ -58,10 +58,10 @@ type Fila = {
   }[];
 };
 
-const COLUMNAS =
+export const COLUMNAS_PEDIDO =
   "id, folio, estado, modalidad, metodo_pago, nombre_contacto, telefono_contacto, direccion_entrega, notas, subtotal, costo_envio, total, creado_en, negocios(slug, nombre, telefono, whatsapp, datos_transferencia, portada_url), pedido_detalle(nombre_producto, precio_unitario, cantidad, importe)";
 
-function aPedido(f: Fila): Pedido {
+export function aPedido(f: FilaPedido): Pedido {
   return {
     id: f.id,
     folio: f.folio,
@@ -99,9 +99,9 @@ export async function obtenerPedido(id: string): Promise<Pedido | null> {
   const supabase = await crearClienteServidor();
   const { data, error } = await supabase
     .from("pedidos")
-    .select(COLUMNAS)
+    .select(COLUMNAS_PEDIDO)
     .eq("id", id)
-    .maybeSingle<Fila>();
+    .maybeSingle<FilaPedido>();
   if (error) throw error;
   return data ? aPedido(data) : null;
 }
@@ -114,11 +114,11 @@ export async function obtenerMisPedidos(): Promise<Pedido[]> {
   if (!usuario) return [];
   const { data, error } = await supabase
     .from("pedidos")
-    .select(COLUMNAS)
+    .select(COLUMNAS_PEDIDO)
     .eq("cliente_id", usuario)
     .order("creado_en", { ascending: false })
     .limit(30)
-    .returns<Fila[]>();
+    .returns<FilaPedido[]>();
   if (error) throw error;
   return data.map(aPedido);
 }

@@ -58,3 +58,34 @@ export function etiquetaCorta(estado: EstadoPedido) {
     rechazado: "No aceptado",
   }[estado];
 }
+
+export type Accion = { estado: EstadoPedido; texto: string; principal: boolean };
+
+// Lo que el negocio puede hacer con un pedido. Debe coincidir con cambiar_estado_pedido.
+export function accionesNegocio(estado: EstadoPedido, modalidad: Modalidad): Accion[] {
+  switch (estado) {
+    case "recibido":
+      return [
+        { estado: "aceptado", texto: "Aceptar", principal: true },
+        { estado: "rechazado", texto: "Rechazar", principal: false },
+      ];
+    case "aceptado":
+      return [
+        { estado: "en_preparacion", texto: "Empezar a preparar", principal: true },
+        { estado: "cancelado", texto: "Cancelar", principal: false },
+      ];
+    case "en_preparacion":
+      return [{ estado: "listo", texto: "Marcar como listo", principal: true }];
+    case "listo":
+      return modalidad === "entrega"
+        ? [
+            { estado: "en_camino", texto: "En camino", principal: true },
+            { estado: "entregado", texto: "Entregado", principal: false },
+          ]
+        : [{ estado: "entregado", texto: "Ya lo recogió", principal: true }];
+    case "en_camino":
+      return [{ estado: "entregado", texto: "Entregado", principal: true }];
+    default:
+      return [];
+  }
+}

@@ -24,7 +24,7 @@ export function Encabezado() {
             href="/cuenta"
             className="inline-flex h-11 items-center rounded-full px-4 text-[15px] font-semibold hover:bg-superficie"
           >
-            Entrar
+            Cuenta
           </Link>
         </nav>
       </div>
