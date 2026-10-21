@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import { cache } from "react";
 import { aNegocio, aProducto, COLUMNAS_NEGOCIO, type FilaNegocio, type FilaProducto } from "./datos";
 import { ESTADOS_FINALES } from "./estados";
-import { aPedido, COLUMNAS_PEDIDO, type FilaPedido, type Pedido } from "./pedidos";
+import { aPedido, COLUMNAS_PEDIDO, obtenerDatosTransferencia, type FilaPedido, type Pedido } from "./pedidos";
 import { obtenerUsuario } from "./sesion";
 import { crearClienteServidor } from "./supabase/server";
 import type { Negocio, Producto } from "./tipos";
@@ -25,7 +25,10 @@ export const obtenerMiNegocio = cache(async (): Promise<MiNegocio | null> => {
     .limit(1)
     .maybeSingle<FilaNegocio & { estado: EstadoNegocio }>();
   if (error) throw error;
-  return data ? { ...aNegocio(data), estado: data.estado } : null;
+  if (!data) return null;
+  // Si falla, mejor error que un formulario vacío que borre los datos al guardar.
+  const datosTransferencia = await obtenerDatosTransferencia(supabase, data.id);
+  return { ...aNegocio(data), datosTransferencia, estado: data.estado };
 });
 
 // Para las páginas del panel: sin cuenta va a entrar; sin negocio, a registrarlo.

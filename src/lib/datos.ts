@@ -13,7 +13,7 @@ export const modoDemo = !supabaseConfigurado;
 export const TAG_NEGOCIOS = "negocios";
 
 export const COLUMNAS_NEGOCIO =
-  "id, slug, nombre, descripcion, direccion, horario, telefono, whatsapp, datos_transferencia, logo_url, portada_url, abierto, acepta_entrega, acepta_recoger, costo_envio, pedido_minimo, tiempo_entrega_min, tiempo_entrega_max, categorias(slug)";
+  "id, slug, nombre, descripcion, direccion, horario, telefono, whatsapp, logo_url, portada_url, abierto, acepta_entrega, acepta_recoger, costo_envio, pedido_minimo, tiempo_entrega_min, tiempo_entrega_max, categorias(slug)";
 
 export type FilaNegocio = {
   id: string;
@@ -24,7 +24,8 @@ export type FilaNegocio = {
   horario: string | null;
   telefono: string | null;
   whatsapp: string | null;
-  datos_transferencia: string | null;
+  // No está en COLUMNAS_NEGOCIO: el público no puede leerla (ver obtenerDatosTransferencia).
+  datos_transferencia?: string | null;
   logo_url: string | null;
   portada_url: string | null;
   abierto: boolean;
@@ -58,7 +59,7 @@ export function aNegocio(f: FilaNegocio): Negocio {
     horario: f.horario,
     telefono: f.telefono,
     whatsapp: f.whatsapp,
-    datosTransferencia: f.datos_transferencia,
+    datosTransferencia: f.datos_transferencia ?? null,
     logoUrl: f.logo_url,
     portadaUrl: f.portada_url,
     abierto: f.abierto,

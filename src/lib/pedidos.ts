@@ -3,6 +3,16 @@ import type { EstadoPedido, MetodoPago, Modalidad } from "./estados";
 import { supabaseConfigurado } from "./supabase/config";
 import { crearClienteServidor } from "./supabase/server";
 
+// La DB solo los da al dueño, a un admin o a quien ya le pidió a ese negocio.
+export async function obtenerDatosTransferencia(
+  supabase: Awaited<ReturnType<typeof crearClienteServidor>>,
+  negocioId: string,
+): Promise<string | null> {
+  const { data, error } = await supabase.rpc("datos_transferencia", { p_negocio_id: negocioId });
+  if (error) throw error;
+  return typeof data === "string" ? data : null;
+}
+
 export type Pedido = {
   id: string;
   folio: number;
@@ -48,11 +58,11 @@ export type FilaPedido = {
   total: string | number;
   creado_en: string;
   negocios: {
+    id: string;
     slug: string;
     nombre: string;
     telefono: string | null;
     whatsapp: string | null;
-    datos_transferencia: string | null;
     portada_url: string | null;
   } | null;
   pedido_detalle: {
@@ -64,7 +74,7 @@ export type FilaPedido = {
 };
 
 export const COLUMNAS_PEDIDO =
-  "id, folio, estado, modalidad, metodo_pago, nombre_contacto, telefono_contacto, direccion_entrega, referencias, lat, lng, notas, subtotal, costo_envio, total, creado_en, negocios(slug, nombre, telefono, whatsapp, datos_transferencia, portada_url), pedido_detalle(nombre_producto, precio_unitario, cantidad, importe)";
+  "id, folio, estado, modalidad, metodo_pago, nombre_contacto, telefono_contacto, direccion_entrega, referencias, lat, lng, notas, subtotal, costo_envio, total, creado_en, negocios(id, slug, nombre, telefono, whatsapp, portada_url), pedido_detalle(nombre_producto, precio_unitario, cantidad, importe)";
 
 export function aPedido(f: FilaPedido): Pedido {
   return {
@@ -88,7 +98,7 @@ export function aPedido(f: FilaPedido): Pedido {
       nombre: f.negocios?.nombre ?? "Negocio",
       telefono: f.negocios?.telefono ?? null,
       whatsapp: f.negocios?.whatsapp ?? null,
-      datosTransferencia: f.negocios?.datos_transferencia ?? null,
+      datosTransferencia: null,
       portadaUrl: f.negocios?.portada_url ?? null,
     },
     lineas: f.pedido_detalle.map((d) => ({
@@ -110,7 +120,12 @@ export async function obtenerPedido(id: string): Promise<Pedido | null> {
     .eq("id", id)
     .maybeSingle<FilaPedido>();
   if (error) throw error;
-  return data ? aPedido(data) : null;
+  if (!data) return null;
+  const pedido = aPedido(data);
+  if (pedido.metodoPago === "transferencia" && data.negocios) {
+    pedido.negocio.datosTransferencia = await obtenerDatosTransferencia(supabase, data.negocios.id);
+  }
+  return pedido;
 }
 
 export async function obtenerMisPedidos(): Promise<Pedido[]> {
