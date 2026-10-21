@@ -1,12 +1,11 @@
 "use client";
 
-import { ShoppingBag } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { dinero } from "@/lib/formato";
 import { useCarrito } from "./proveedor";
 
-// Botón flotante que aparece en cuanto hay algo en el pedido.
+// Botón flotante del pedido en celular. En escritorio vive en el encabezado.
 export function BarraCarrito() {
   const { carrito, piezas, subtotal } = useCarrito();
   const ruta = usePathname();
@@ -14,20 +13,20 @@ export function BarraCarrito() {
   if (piezas === 0 || ruta === "/carrito") return null;
 
   return (
-    <div className="fixed inset-x-0 bottom-[calc(4rem+env(safe-area-inset-bottom))] z-30 px-4 pb-3">
+    <div className="fixed inset-x-0 bottom-[calc(4rem+env(safe-area-inset-bottom))] z-30 px-3 pb-3 md:hidden">
       <Link
         href="/carrito"
-        className="mx-auto flex h-14 max-w-xl items-center gap-3 rounded-2xl bg-vino-700 px-4 text-white shadow-[0_10px_30px_-8px_rgba(110,15,46,0.6)] hover:bg-vino-600"
+        className="flex h-14 items-center gap-3 rounded-full bg-foreground pl-2 pr-5 text-white shadow-flotante"
       >
-        <span className="relative">
-          <ShoppingBag aria-hidden size={22} />
-          <span className="absolute -right-2 -top-2 grid size-5 place-items-center rounded-full bg-dorado-400 text-[11px] font-bold text-vino-900">
-            {piezas}
-          </span>
+        <span
+          key={piezas}
+          className="salto grid size-10 place-items-center rounded-full bg-dorado-400 font-display text-base font-bold text-foreground"
+        >
+          {piezas}
         </span>
-        <span className="min-w-0 flex-1 truncate">
-          <span className="font-semibold">Ver pedido</span>
-          <span className="text-vino-100"> en {carrito.negocio?.nombre}</span>
+        <span className="min-w-0 flex-1 leading-tight">
+          <span className="block text-[15px] font-semibold">Ver mi pedido</span>
+          <span className="block truncate text-xs text-white/70">{carrito.negocio?.nombre}</span>
         </span>
         <span className="font-display text-lg font-bold">{dinero(subtotal)}</span>
       </Link>

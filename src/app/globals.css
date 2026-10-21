@@ -1,65 +1,54 @@
 @import "tailwindcss";
 
-/* Identidad PideProgreso: vino profundo con acentos dorados, fondo blanco limpio. */
+/*
+  PideProgreso
+  La fotografía de comida manda; la interfaz es blanca y neutra.
+  El vino se reserva para la marca y las acciones; el dorado para lo que ahorra (envío gratis, promociones).
+*/
 :root {
-  --background: #ffffff;
-  --foreground: #1f1418;
-  --superficie: #f5f1f2;
-  --borde: #ebe3e5;
-  --texto-suave: #6d5f63;
+  color-scheme: light;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-superficie: var(--superficie);
-  --color-borde: var(--borde);
-  --color-suave: var(--texto-suave);
+  --color-background: #ffffff;
+  --color-foreground: #141212;
+  --color-superficie: #f5f4f2;
+  --color-superficie-2: #ecebe8;
+  --color-borde: #e6e3df;
+  --color-suave: #66605c;
 
-  --color-vino-50: #fcf2f5;
-  --color-vino-100: #f7dfe6;
-  --color-vino-200: #eebccb;
-  --color-vino-300: #d9839d;
-  --color-vino-400: #b84a6c;
-  --color-vino-500: #96224a;
-  --color-vino-600: #7f1639;
+  --color-vino-50: #fbf1f4;
+  --color-vino-100: #f5dce4;
+  --color-vino-600: #85173c;
   --color-vino-700: #6e0f2e;
-  --color-vino-800: #560b24;
-  --color-vino-900: #3d0719;
+  --color-vino-800: #580b24;
+  --color-vino-900: #3a0617;
 
-  --color-dorado-100: #fdf0cf;
-  --color-dorado-200: #fbe09a;
-  --color-dorado-300: #f7cb5c;
+  --color-dorado-100: #fff2cc;
+  --color-dorado-300: #f8cd57;
   --color-dorado-400: #f2b632;
-  --color-dorado-500: #d99a16;
-  --color-dorado-700: #8a5d0b;
+  --color-dorado-800: #6b4800;
 
-  --color-abierto: #1e8e5a;
+  --color-abierto: #0f7a4a;
 
   --font-sans: var(--font-texto);
   --font-display: var(--font-titulos);
-}
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #170d10;
-    --foreground: #f7eef0;
-    --superficie: #241519;
-    --borde: #3a2328;
-    --texto-suave: #c4b0b5;
-  }
+  --shadow-flotante: 0 12px 32px -10px rgb(20 18 18 / 0.35);
+  --ease-salida: cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background: var(--color-background);
+  color: var(--color-foreground);
+  -webkit-tap-highlight-color: transparent;
 }
 
 /* Carruseles horizontales sin barra visible. */
 .carrusel {
   scrollbar-width: none;
   scroll-snap-type: x mandatory;
-  scroll-padding-inline: 1rem;
+  scroll-padding-inline: var(--margen, 1rem);
   overscroll-behavior-x: contain;
 }
 .carrusel::-webkit-scrollbar {
@@ -70,6 +59,24 @@ body {
 }
 
 :focus-visible {
-  outline: 2px solid var(--color-dorado-400);
+  outline: 2px solid var(--color-vino-700);
   outline-offset: 2px;
+}
+
+/* Al agregar al pedido, el contador da un pequeño salto. */
+@keyframes salto {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.25); }
+  100% { transform: scale(1); }
+}
+.salto {
+  animation: salto 320ms var(--ease-salida);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

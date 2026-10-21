@@ -28,7 +28,7 @@ function Barra({ ruta }: { ruta: string | null }) {
   return (
     <nav
       aria-label="Principal"
-      className="fixed inset-x-0 bottom-0 z-30 border-t border-borde bg-background/95 pb-[env(safe-area-inset-bottom)] backdrop-blur"
+      className="fixed inset-x-0 bottom-0 z-30 border-t border-borde bg-white/95 pb-[env(safe-area-inset-bottom)] backdrop-blur md:hidden"
     >
       <ul className="mx-auto grid h-16 max-w-xl grid-cols-4">
         {ENLACES.map(({ href, texto, Icono }) => {
@@ -38,8 +38,8 @@ function Barra({ ruta }: { ruta: string | null }) {
               <Link
                 href={href}
                 aria-current={activo ? "page" : undefined}
-                className={`flex h-full flex-col items-center justify-center gap-1 text-xs font-medium ${
-                  activo ? "text-vino-700 dark:text-dorado-300" : "text-suave"
+                className={`flex h-full flex-col items-center justify-center gap-1 text-[11px] font-semibold ${
+                  activo ? "text-foreground" : "text-suave"
                 }`}
               >
                 <Icono aria-hidden size={22} strokeWidth={activo ? 2.4 : 1.8} />

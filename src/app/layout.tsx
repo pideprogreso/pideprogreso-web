@@ -1,9 +1,11 @@
 import type { Metadata, Viewport } from "next";
+import { Figtree, Gabarito } from "next/font/google";
 import { Suspense } from "react";
-import { Bricolage_Grotesque, Figtree } from "next/font/google";
 import { BarraCarrito } from "@/components/carrito/barra-carrito";
 import { ProveedorCarrito } from "@/components/carrito/proveedor";
+import { Encabezado } from "@/components/encabezado";
 import { NavegacionInferior } from "@/components/navegacion-inferior";
+import { PieDePagina } from "@/components/pie-de-pagina";
 import "./globals.css";
 
 const texto = Figtree({
@@ -11,7 +13,7 @@ const texto = Figtree({
   subsets: ["latin"],
 });
 
-const titulos = Bricolage_Grotesque({
+const titulos = Gabarito({
   variable: "--font-titulos",
   subsets: ["latin"],
   weight: ["600", "700", "800"],
@@ -19,15 +21,15 @@ const titulos = Bricolage_Grotesque({
 
 export const metadata: Metadata = {
   title: {
-    default: "PideProgreso",
+    default: "PideProgreso · Pide a los negocios de Nuevo Progreso",
     template: "%s · PideProgreso",
   },
   description:
-    "Pide a los negocios de Nuevo Progreso desde tu celular. Hecho para la gente de Nuevo Progreso, Tamps.",
+    "Comida, pan, súper y flores de los negocios de Nuevo Progreso, Tamps., directo a tu puerta o para recoger.",
 };
 
 export const viewport: Viewport = {
-  themeColor: "#6e0f2e",
+  themeColor: "#ffffff",
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
@@ -35,15 +37,12 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html
-      lang="es-MX"
-      className={`${texto.variable} ${titulos.variable} h-full antialiased`}
-    >
-      <body className="min-h-full font-sans">
+    <html lang="es-MX" className={`${texto.variable} ${titulos.variable} antialiased`}>
+      <body className="min-h-dvh font-sans text-[15px] leading-normal">
         <ProveedorCarrito>
-          <div className="mx-auto min-h-dvh w-full max-w-xl pb-36 md:max-w-5xl">
-            {children}
-          </div>
+          <Encabezado />
+          <main className="pb-40 md:pb-16">{children}</main>
+          <PieDePagina />
           <Suspense>
             <BarraCarrito />
           </Suspense>

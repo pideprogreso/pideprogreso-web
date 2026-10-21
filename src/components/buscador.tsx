@@ -1,36 +1,69 @@
-import { Search } from "lucide-react";
-import Form from "next/form";
+"use client";
 
-export function Buscador({
-  valor = "",
-  categoria,
-  autoFocus = false,
-}: {
-  valor?: string;
-  categoria?: string;
-  autoFocus?: boolean;
-}) {
+import { Search, X } from "lucide-react";
+import Form from "next/form";
+import { useSearchParams } from "next/navigation";
+import { Suspense, useRef } from "react";
+
+// Buscador del encabezado. En /negocios conserva lo que se buscó.
+export function Buscador() {
   return (
-    <Form action="/negocios" role="search" className="relative">
+    <Suspense fallback={<Campo valor="" />}>
+      <CampoConUrl />
+    </Suspense>
+  );
+}
+
+function CampoConUrl() {
+  const params = useSearchParams();
+  return (
+    <Campo
+      key={params.toString()}
+      valor={params.get("q") ?? ""}
+      categoria={params.get("categoria") ?? undefined}
+    />
+  );
+}
+
+function Campo({ valor, categoria }: { valor: string; categoria?: string }) {
+  const ref = useRef<HTMLInputElement>(null);
+  return (
+    <Form action="/negocios" role="search" className="group relative w-full">
       <label htmlFor="q" className="sr-only">
         Buscar negocios o productos
       </label>
       <Search
         aria-hidden
-        size={20}
-        className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-vino-700"
+        size={19}
+        strokeWidth={2.2}
+        className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-foreground"
       />
       <input
+        ref={ref}
         id="q"
         name="q"
         type="search"
         defaultValue={valor}
-        autoFocus={autoFocus}
         autoComplete="off"
         enterKeyHint="search"
-        placeholder="¿Qué se te antoja hoy?"
-        className="h-13 w-full rounded-full bg-white pl-12 pr-4 text-base text-[#1f1418] shadow-sm ring-1 ring-black/5 placeholder:text-[#8a7a7f] focus:outline-none focus:ring-2 focus:ring-dorado-400"
+        placeholder="Tacos, pizza, pan dulce…"
+        className="h-12 w-full rounded-full bg-superficie pl-11 pr-11 text-[15px] font-medium placeholder:font-normal placeholder:text-suave focus:bg-white focus:outline-none focus:ring-2 focus:ring-foreground [&::-webkit-search-cancel-button]:hidden"
       />
+      {valor && (
+        <button
+          type="button"
+          aria-label="Borrar búsqueda"
+          onClick={() => {
+            if (ref.current) {
+              ref.current.value = "";
+              ref.current.focus();
+            }
+          }}
+          className="absolute right-2 top-1/2 grid size-8 -translate-y-1/2 place-items-center rounded-full text-suave hover:bg-superficie-2"
+        >
+          <X aria-hidden size={16} />
+        </button>
+      )}
       {categoria && <input type="hidden" name="categoria" value={categoria} />}
     </Form>
   );

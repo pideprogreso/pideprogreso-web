@@ -1,13 +1,15 @@
-import { ArrowLeft, Bike, Clock, MapPin, ShoppingBag, Store } from "lucide-react";
+import { ArrowLeft, Clock, MapPin } from "lucide-react";
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { BotonAgregar } from "@/components/carrito/boton-agregar";
-import { Portada } from "@/components/portada";
+import { ResumenLateral } from "@/components/carrito/resumen-lateral";
+import { FotoNegocio, iniciales } from "@/components/foto";
 import { obtenerNegocio } from "@/lib/datos";
 import { dinero } from "@/lib/formato";
-import type { Producto } from "@/lib/tipos";
+import type { Negocio, Producto } from "@/lib/tipos";
 
 export async function generateMetadata({
   params,
@@ -34,7 +36,11 @@ function agruparPorSeccion(productos: Producto[]) {
 }
 
 function anclaDe(seccion: string) {
-  return `seccion-${seccion.toLowerCase().normalize("NFD").replace(/[^a-z0-9]+/g, "-")}`;
+  return `seccion-${seccion
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")}`;
 }
 
 async function Contenido({ params }: { params: Promise<{ slug: string }> }) {
@@ -53,105 +59,91 @@ async function Contenido({ params }: { params: Promise<{ slug: string }> }) {
   };
 
   return (
-    <article>
-      <div className="relative h-56 md:mt-4 md:h-72 md:overflow-hidden md:rounded-3xl">
-        <Portada
+    <article className="mx-auto max-w-7xl md:px-8">
+      <div className="relative h-56 overflow-hidden bg-superficie [container-type:inline-size] md:mt-6 md:h-[320px] md:rounded-3xl">
+        <FotoNegocio
           src={negocio.portadaUrl}
-          alt={negocio.nombre}
-          categoria={negocio.categoria}
-          sizes="(min-width: 768px) 1024px, 100vw"
-          tamanoIcono="text-8xl"
+          nombre={negocio.nombre}
+          sizes="(min-width: 1280px) 1216px, 100vw"
           prioridad
         />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
         <Link
-          href="/"
-          aria-label="Volver al inicio"
-          className="absolute left-4 top-[calc(env(safe-area-inset-top)+0.75rem)] grid size-10 place-items-center rounded-full bg-white text-[#1f1418] shadow-md"
+          href="/negocios"
+          aria-label="Volver a los negocios"
+          className="absolute left-4 top-4 grid size-10 place-items-center rounded-full bg-white shadow-md hover:bg-superficie"
         >
           <ArrowLeft aria-hidden size={20} />
         </Link>
       </div>
 
-      <div className="relative -mt-6 rounded-t-[1.75rem] bg-background px-4 pt-5 md:mt-0 md:px-0">
-        <div className="flex items-start gap-3">
-          <div className="min-w-0 flex-1">
-            <h1 className="font-display text-[1.75rem] font-bold leading-tight tracking-tight">
+      <div className="px-4 md:px-0">
+        <Logo negocio={negocio} />
+
+        <div className="mt-3 flex flex-wrap items-start justify-between gap-x-8 gap-y-4">
+          <div className="min-w-0 max-w-2xl">
+            <h1 className="font-display text-[30px] font-extrabold leading-[1.05] tracking-[-0.02em] md:text-[44px]">
               {negocio.nombre}
             </h1>
             {negocio.descripcion && (
-              <p className="mt-1 text-[15px] text-suave">{negocio.descripcion}</p>
+              <p className="mt-2 text-[15px] text-suave md:text-base">{negocio.descripcion}</p>
             )}
+            <ul className="mt-3 flex flex-wrap gap-x-5 gap-y-1.5 text-sm text-suave">
+              <li className={`font-semibold ${negocio.abierto ? "text-abierto" : "text-vino-700"}`}>
+                {negocio.abierto ? "Abierto ahora" : "Cerrado ahora"}
+              </li>
+              {negocio.horario && (
+                <li className="inline-flex items-center gap-1.5">
+                  <Clock aria-hidden size={14} />
+                  {negocio.horario}
+                </li>
+              )}
+              {negocio.direccion && (
+                <li className="inline-flex items-center gap-1.5">
+                  <MapPin aria-hidden size={14} />
+                  {negocio.direccion}
+                </li>
+              )}
+            </ul>
           </div>
-          <span
-            className={`mt-1.5 shrink-0 rounded-full px-2.5 py-1 text-xs font-bold ${
-              negocio.abierto ? "bg-abierto/10 text-abierto" : "bg-superficie text-suave"
-            }`}
-          >
-            {negocio.abierto ? "Abierto" : "Cerrado"}
-          </span>
+
+          <dl className="flex w-full divide-x divide-borde rounded-2xl border border-borde md:w-auto">
+            <Dato titulo="Entrega" valor={`${negocio.tiempoMin}–${negocio.tiempoMax} min`} />
+            <Dato
+              titulo="Envío"
+              valor={
+                !negocio.aceptaEntrega
+                  ? "Solo recoger"
+                  : negocio.costoEnvio === 0
+                    ? "Gratis"
+                    : dinero(negocio.costoEnvio)
+              }
+            />
+            <Dato
+              titulo="Mínimo"
+              valor={negocio.pedidoMinimo > 0 ? dinero(negocio.pedidoMinimo) : "Sin mínimo"}
+            />
+          </dl>
         </div>
-
-        <dl className="mt-4 grid grid-cols-3 divide-x divide-borde rounded-2xl border border-borde text-center">
-          <div className="px-2 py-3">
-            <dt className="flex items-center justify-center gap-1 text-xs text-suave">
-              <Clock aria-hidden size={13} /> Tiempo
-            </dt>
-            <dd className="mt-0.5 font-semibold">
-              {negocio.tiempoMin}–{negocio.tiempoMax} min
-            </dd>
-          </div>
-          <div className="px-2 py-3">
-            <dt className="flex items-center justify-center gap-1 text-xs text-suave">
-              <Bike aria-hidden size={14} /> Envío
-            </dt>
-            <dd className="mt-0.5 font-semibold">
-              {negocio.aceptaEntrega
-                ? negocio.costoEnvio === 0
-                  ? "Gratis"
-                  : dinero(negocio.costoEnvio)
-                : "No"}
-            </dd>
-          </div>
-          <div className="px-2 py-3">
-            <dt className="flex items-center justify-center gap-1 text-xs text-suave">
-              <ShoppingBag aria-hidden size={13} /> Mínimo
-            </dt>
-            <dd className="mt-0.5 font-semibold">
-              {negocio.pedidoMinimo > 0 ? dinero(negocio.pedidoMinimo) : "Sin mínimo"}
-            </dd>
-          </div>
-        </dl>
-
-        <ul className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-sm text-suave">
-          {negocio.aceptaRecoger && (
-            <li className="inline-flex items-center gap-1.5">
-              <Store aria-hidden size={15} /> Puedes recoger en el local
-            </li>
-          )}
-          {negocio.direccion && (
-            <li className="inline-flex items-center gap-1.5">
-              <MapPin aria-hidden size={15} /> {negocio.direccion}
-            </li>
-          )}
-          {negocio.horario && (
-            <li className="inline-flex items-center gap-1.5">
-              <Clock aria-hidden size={15} /> {negocio.horario}
-            </li>
-          )}
-        </ul>
       </div>
+
+      {!negocio.abierto && (
+        <p className="mx-4 mt-6 rounded-2xl bg-superficie px-4 py-3 text-sm md:mx-0">
+          Este negocio está cerrado ahora. Puedes ver su menú y pedir cuando abra.
+        </p>
+      )}
 
       {secciones.length > 1 && (
         <nav
           aria-label="Secciones del menú"
-          className="sticky top-0 z-20 mt-5 border-b border-borde bg-background/95 backdrop-blur"
+          className="sticky top-0 z-20 mt-6 border-b border-borde bg-white/95 backdrop-blur md:top-[72px]"
         >
-          <ul className="carrusel flex gap-2 overflow-x-auto px-4 py-3 md:px-0">
+          <ul className="carrusel flex gap-1 overflow-x-auto px-4 md:px-0">
             {secciones.map(([seccion]) => (
               <li key={seccion}>
                 <a
                   href={`#${anclaDe(seccion)}`}
-                  className="block whitespace-nowrap rounded-full bg-superficie px-4 py-2 text-sm font-semibold hover:bg-vino-50 hover:text-vino-700"
+                  className="block whitespace-nowrap border-b-2 border-transparent px-3 py-3.5 text-[15px] font-semibold text-suave hover:border-foreground hover:text-foreground"
                 >
                   {seccion}
                 </a>
@@ -161,69 +153,110 @@ async function Contenido({ params }: { params: Promise<{ slug: string }> }) {
         </nav>
       )}
 
-      {!negocio.abierto && (
-        <p className="mx-4 mt-5 rounded-xl bg-superficie px-4 py-3 text-sm md:mx-0">
-          Este negocio está cerrado ahora. Puedes ver su menú y pedir cuando abra.
-        </p>
-      )}
+      <div className="md:grid md:grid-cols-[1fr_320px] md:gap-10">
+        <div className="px-4 md:px-0">
+          {secciones.length === 0 && (
+            <p className="mt-12 text-center text-suave">Este negocio todavía no sube su menú.</p>
+          )}
+          {secciones.map(([seccion, lista]) => (
+            <section key={seccion} id={anclaDe(seccion)} className="scroll-mt-16 pt-8 md:scroll-mt-36">
+              <h2 className="font-display text-[22px] font-bold tracking-tight">{seccion}</h2>
+              <ul className="mt-3 grid gap-x-6 md:grid-cols-2 md:gap-y-4">
+                {lista.map((p) => (
+                  <ProductoFila
+                    key={p.id}
+                    producto={p}
+                    negocio={paraCarrito}
+                    cerrado={!negocio.abierto}
+                  />
+                ))}
+              </ul>
+            </section>
+          ))}
+          <p className="mt-10 text-sm text-suave">
+            Pagas en efectivo o por transferencia.{" "}
+            {negocio.aceptaRecoger && "También puedes pasar a recoger tu pedido."}
+          </p>
+        </div>
 
-      <div className="px-4 md:px-0">
-        {secciones.length === 0 && (
-          <p className="mt-10 text-center text-suave">Este negocio todavía no sube su menú.</p>
-        )}
-        {secciones.map(([seccion, lista]) => (
-          <section key={seccion} id={anclaDe(seccion)} className="scroll-mt-20 pt-6">
-            <h2 className="font-display text-xl font-bold tracking-tight">{seccion}</h2>
-            <ul className="mt-2 divide-y divide-borde md:grid md:grid-cols-2 md:gap-x-8 md:divide-y-0">
-              {lista.map((p) => (
-                <li key={p.id} className="flex gap-4 py-4 md:border-b md:border-borde">
-                  <div className="min-w-0 flex-1">
-                    <h3 className="font-semibold">{p.nombre}</h3>
-                    {p.descripcion && (
-                      <p className="mt-1 line-clamp-2 text-sm text-suave">{p.descripcion}</p>
-                    )}
-                    <p className="mt-2 font-semibold">{dinero(p.precio)}</p>
-                  </div>
-                  <div className="relative size-28 shrink-0">
-                    <div className="relative size-full overflow-hidden rounded-2xl">
-                      <Portada
-                        src={p.imagenUrl}
-                        alt={p.nombre}
-                        categoria={negocio.categoria}
-                        sizes="112px"
-                        tamanoIcono="text-4xl"
-                      />
-                    </div>
-                    <div className="absolute -bottom-2 -right-2">
-                      <BotonAgregar
-                        negocio={paraCarrito}
-                        producto={{ productoId: p.id, nombre: p.nombre, precio: p.precio }}
-                        deshabilitado={!negocio.abierto}
-                      />
-                    </div>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </section>
-        ))}
+        <aside className="hidden md:block">
+          <div className="sticky top-[140px] mt-8">
+            <ResumenLateral negocioId={negocio.id} />
+          </div>
+        </aside>
       </div>
-
-      <p className="mt-8 px-4 text-center text-xs text-suave md:px-0">
-        Pagas en efectivo o por transferencia.
-      </p>
     </article>
+  );
+}
+
+function Logo({ negocio }: { negocio: Negocio }) {
+  return (
+    <div className="relative -mt-9 size-[72px] overflow-hidden rounded-2xl bg-vino-700 ring-4 ring-white md:-mt-12 md:size-24">
+      {negocio.logoUrl ? (
+        <Image src={negocio.logoUrl} alt="" fill sizes="96px" className="object-cover" />
+      ) : (
+        <span className="grid size-full place-items-center font-display text-2xl font-extrabold text-white md:text-3xl">
+          {iniciales(negocio.nombre)}
+        </span>
+      )}
+    </div>
+  );
+}
+
+function Dato({ titulo, valor }: { titulo: string; valor: string }) {
+  return (
+    <div className="flex-1 px-4 py-3 text-center md:min-w-32">
+      <dt className="text-xs text-suave">{titulo}</dt>
+      <dd className="mt-0.5 font-bold tabular-nums">{valor}</dd>
+    </div>
+  );
+}
+
+function ProductoFila({
+  producto: p,
+  negocio,
+  cerrado,
+}: {
+  producto: Producto;
+  negocio: React.ComponentProps<typeof BotonAgregar>["negocio"];
+  cerrado: boolean;
+}) {
+  const boton = (
+    <BotonAgregar
+      negocio={negocio}
+      producto={{ productoId: p.id, nombre: p.nombre, precio: p.precio }}
+      deshabilitado={cerrado}
+    />
+  );
+  return (
+    <li className="flex gap-4 border-b border-borde py-4 md:rounded-2xl md:border md:p-4">
+      <div className="flex min-w-0 flex-1 flex-col">
+        <h3 className="font-semibold leading-snug">{p.nombre}</h3>
+        {p.descripcion && <p className="mt-1 line-clamp-2 text-sm text-suave">{p.descripcion}</p>}
+        <p className="mt-auto pt-2 font-semibold tabular-nums">{dinero(p.precio)}</p>
+      </div>
+      {p.imagenUrl ? (
+        <div className="relative size-28 shrink-0">
+          <div className="relative size-full overflow-hidden rounded-xl bg-superficie">
+            <Image src={p.imagenUrl} alt="" fill sizes="112px" className="object-cover" />
+          </div>
+          <div className="absolute bottom-1.5 right-1.5">{boton}</div>
+        </div>
+      ) : (
+        <div className="self-end">{boton}</div>
+      )}
+    </li>
   );
 }
 
 function Cargando() {
   return (
-    <div aria-busy="true" aria-label="Cargando negocio">
-      <div className="h-56 animate-pulse bg-superficie" />
-      <div className="space-y-3 px-4 pt-6">
-        <div className="h-7 w-2/3 animate-pulse rounded-lg bg-superficie" />
-        <div className="h-4 w-full animate-pulse rounded bg-superficie" />
-        <div className="h-16 animate-pulse rounded-2xl bg-superficie" />
+    <div className="mx-auto max-w-7xl md:px-8" aria-busy="true" aria-label="Cargando negocio">
+      <div className="h-56 animate-pulse bg-superficie md:mt-6 md:h-[320px] md:rounded-3xl" />
+      <div className="space-y-3 px-4 pt-6 md:px-0">
+        <div className="h-9 w-2/3 max-w-md animate-pulse rounded-lg bg-superficie" />
+        <div className="h-4 w-full max-w-xl animate-pulse rounded bg-superficie" />
+        <div className="h-16 max-w-md animate-pulse rounded-2xl bg-superficie" />
       </div>
     </div>
   );
