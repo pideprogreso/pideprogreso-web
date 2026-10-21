@@ -1,6 +1,7 @@
 import { Inbox } from "lucide-react";
 import type { Metadata } from "next";
 import { Suspense } from "react";
+import { dinero } from "@/lib/formato";
 import { obtenerPedidosNegocio, requerirNegocio, separarPedidos } from "@/lib/panel";
 import { Actualizador } from "../pedidos/[id]/actualizador";
 import { AvisoPedidos } from "./aviso-pedidos";
@@ -23,7 +24,9 @@ async function Pedidos() {
   return (
     <div className="space-y-8 pt-6 md:pt-8">
       <Actualizador cadaMs={10000} />
-      <AvisoPedidos nuevos={nuevos.map((p) => p.id)} />
+      <AvisoPedidos
+        nuevos={nuevos.map((p) => ({ id: p.id, folio: p.folio, nombre: p.nombreContacto, total: dinero(p.total) }))}
+      />
 
       {nuevos.length + enCurso.length === 0 && (
         <div className="rounded-3xl bg-superficie px-6 py-12 text-center">

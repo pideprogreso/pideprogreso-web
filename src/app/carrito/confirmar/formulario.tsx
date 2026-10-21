@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { confirmarPedido } from "@/app/pedidos/acciones";
 import { useCarrito } from "@/components/carrito/proveedor";
+import { AceptacionLegal } from "@/components/aceptacion-legal";
 import { Campo, estiloCampo } from "@/components/campos";
 import { MapaUbicacion, type Ubicacion } from "@/components/mapa-ubicacion";
 import type { DatosCliente } from "@/lib/cliente";
@@ -325,6 +326,7 @@ export function FormularioConfirmar({ cliente }: { cliente: DatosCliente }) {
             <p className="mt-3 text-center text-xs text-suave">
               El negocio confirma tu pedido y te avisa cuando esté listo.
             </p>
+            <AceptacionLegal accion="enviar tu pedido" className="mt-2 text-center" />
           </div>
         </aside>
       </div>

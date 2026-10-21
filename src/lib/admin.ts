@@ -107,3 +107,47 @@ export function inicioDeHoy(ahora = new Date()) {
   const transcurrido = (v("hour") * 60 + v("minute")) * 60000 + ahora.getSeconds() * 1000 + ahora.getMilliseconds();
   return new Date(ahora.getTime() - transcurrido).toISOString();
 }
+
+export type Reporte = {
+  id: string;
+  pagina: string;
+  texto: string;
+  contacto: string | null;
+  navegador: string | null;
+  resuelto: boolean;
+  creadoEn: string;
+  usuario: string | null;
+};
+
+export async function obtenerReportes(): Promise<Reporte[]> {
+  const supabase = await crearClienteServidor();
+  const { data, error } = await supabase
+    .from("reportes")
+    .select("id, pagina, texto, contacto, navegador, resuelto, creado_en, perfiles(nombre)")
+    .order("resuelto")
+    .order("creado_en", { ascending: false })
+    .limit(100)
+    .returns<
+      {
+        id: string;
+        pagina: string;
+        texto: string;
+        contacto: string | null;
+        navegador: string | null;
+        resuelto: boolean;
+        creado_en: string;
+        perfiles: { nombre: string } | null;
+      }[]
+    >();
+  if (error) throw error;
+  return data.map((f) => ({
+    id: f.id,
+    pagina: f.pagina,
+    texto: f.texto,
+    contacto: f.contacto,
+    navegador: f.navegador,
+    resuelto: f.resuelto,
+    creadoEn: f.creado_en,
+    usuario: f.perfiles?.nombre || null,
+  }));
+}

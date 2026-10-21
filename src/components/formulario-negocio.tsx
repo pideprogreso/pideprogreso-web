@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { guardarNegocio, registrarNegocio, type DatosNegocio } from "@/app/panel/acciones";
 import { CATEGORIAS } from "@/lib/categorias";
+import { AceptacionLegal } from "./aceptacion-legal";
 import { Aviso, Campo, estiloCampo, Interruptor } from "./campos";
 import { SubirFoto } from "./subir-foto";
 
@@ -168,6 +169,7 @@ export function FormularioNegocio({
           {guardado && <Check aria-hidden size={20} />}
           {enviando ? "Guardando…" : registro ? "Enviar solicitud" : guardado ? "Guardado" : "Guardar cambios"}
         </button>
+        {registro && <AceptacionLegal accion="enviar tu solicitud" />}
       </div>
     </form>
   );

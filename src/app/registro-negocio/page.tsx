@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
+import { AceptacionLegal } from "@/components/aceptacion-legal";
 import { BotonGoogle } from "@/components/boton-google";
 import { FormularioNegocio, NEGOCIO_VACIO } from "@/components/formulario-negocio";
 import { obtenerMiNegocio } from "@/lib/panel";
@@ -46,6 +47,7 @@ async function Contenido() {
           >
             Usar mi correo
           </Link>
+          <AceptacionLegal accion="continuar" className="text-center" />
         </div>
       </div>
     );

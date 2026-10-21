@@ -41,7 +41,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body className="min-h-dvh font-sans text-[15px] leading-normal">
         <ProveedorCarrito>
           <Encabezado />
-          <main className="pb-40 md:pb-16">{children}</main>
+          <main className="pb-12 md:pb-16">{children}</main>
           <PieDePagina />
           <Suspense>
             <BarraCarrito />

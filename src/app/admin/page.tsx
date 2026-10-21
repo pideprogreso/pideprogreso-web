@@ -3,7 +3,14 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
 import { FotoNegocio } from "@/components/foto";
-import { inicioDeHoy, obtenerNegociosAdmin, obtenerPedidosAdmin, requerirAdmin, type NegocioAdmin } from "@/lib/admin";
+import {
+  inicioDeHoy,
+  obtenerNegociosAdmin,
+  obtenerPedidosAdmin,
+  obtenerReportes,
+  requerirAdmin,
+  type NegocioAdmin,
+} from "@/lib/admin";
 import { buscarCategoria } from "@/lib/categorias";
 import { ESTADOS_FINALES } from "@/lib/estados";
 import { dinero } from "@/lib/formato";
@@ -23,7 +30,12 @@ export default function PaginaAdmin() {
 
 async function Contenido() {
   await requerirAdmin();
-  const [negocios, pedidos] = await Promise.all([obtenerNegociosAdmin(), obtenerPedidosAdmin()]);
+  const [negocios, pedidos, reportes] = await Promise.all([
+    obtenerNegociosAdmin(),
+    obtenerPedidosAdmin(),
+    obtenerReportes(),
+  ]);
+  const reportesPendientes = reportes.filter((r) => !r.resuelto).length;
   const hoy = inicioDeHoy();
   const deHoy = pedidos.filter((p) => p.creadoEn >= hoy);
   const entregados = deHoy.filter((p) => p.estado === "entregado");
@@ -34,6 +46,14 @@ async function Contenido() {
 
   return (
     <div className="space-y-10 pt-6">
+      {reportesPendientes > 0 && (
+        <Link
+          href="/admin/reportes"
+          className="block rounded-2xl bg-dorado-100 px-4 py-3 text-sm font-semibold text-dorado-800"
+        >
+          Hay {reportesPendientes} {reportesPendientes === 1 ? "reporte de problema pendiente" : "reportes de problemas pendientes"}. Verlos →
+        </Link>
+      )}
       <section aria-label="Hoy" className="grid grid-cols-2 gap-3 md:grid-cols-4">
         <Dato titulo="Pedidos hoy" valor={String(deHoy.length)} />
         <Dato titulo="En curso" valor={String(deHoy.filter((p) => !ESTADOS_FINALES.includes(p.estado)).length)} />

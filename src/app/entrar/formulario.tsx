@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState, useTransition } from "react";
 import { Aviso, Campo, estiloCampo } from "@/components/campos";
+import { AceptacionLegal } from "@/components/aceptacion-legal";
 import { BotonGoogle } from "@/components/boton-google";
 import { crearCuenta, entrar } from "./acciones";
 
@@ -162,6 +163,7 @@ export function FormularioAcceso() {
       >
         {enviando ? "Un momento…" : creando ? "Crear cuenta" : "Entrar"}
       </button>
+      <AceptacionLegal accion="continuar" className="text-center" />
 
 
     </form>

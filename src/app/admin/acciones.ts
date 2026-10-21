@@ -24,3 +24,12 @@ export async function cambiarEstadoNegocio(id: string, estado: EstadoNegocio): P
   updateTag(TAG_NEGOCIOS);
   return { ok: true };
 }
+
+export async function marcarReporte(id: string, resuelto: boolean): Promise<Resultado> {
+  if (!UUID.test(id)) return { ok: false, error: "Reporte no válido." };
+  if (!(await esAdmin())) return { ok: false, error: "Solo un administrador puede hacer esto." };
+  const supabase = await crearClienteServidor();
+  const { error } = await supabase.from("reportes").update({ resuelto: Boolean(resuelto) }).eq("id", id);
+  if (error) return { ok: false, error: "No se pudo guardar. Intenta de nuevo." };
+  return { ok: true };
+}

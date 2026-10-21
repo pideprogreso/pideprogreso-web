@@ -2,6 +2,7 @@ import { ShoppingBag } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
+import { AceptacionLegal } from "@/components/aceptacion-legal";
 import { BotonGoogle } from "@/components/boton-google";
 import { obtenerDatosCliente } from "@/lib/cliente";
 import { FormularioConfirmar } from "./formulario";
@@ -40,6 +41,7 @@ async function Contenido() {
         >
           Usar mi correo
         </Link>
+        <AceptacionLegal accion="continuar" className="text-center" />
       </div>
     </div>
   );
