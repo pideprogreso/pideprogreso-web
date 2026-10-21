@@ -7,7 +7,9 @@ export const metadata: Metadata = { title: "Mi negocio" };
 
 export default function PaginaNegocio() {
   return (
-    <div className="mx-auto max-w-2xl pt-6 md:pt-8">
+    <div className="mx-auto max-w-2xl pt-5 md:pt-8">
+      <h2 className="font-display text-2xl font-bold">Mi negocio</h2>
+      <p className="mb-4 text-sm text-suave">Así te ven los clientes. Toca un apartado para cambiarlo.</p>
       <Suspense fallback={<div className="h-96 animate-pulse rounded-2xl bg-superficie" />}>
         <Datos />
       </Suspense>

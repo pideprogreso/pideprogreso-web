@@ -122,7 +122,7 @@ export function FormularioProducto({
 
       {error && <Aviso>{error}</Aviso>}
 
-      <div className="flex gap-3 pt-2">
+      <div className="sticky bottom-[calc(4rem+env(safe-area-inset-bottom))] -mx-4 flex gap-3 border-t border-borde bg-white/95 px-4 py-3 backdrop-blur md:static md:mx-0 md:border-0 md:bg-transparent md:px-0 md:pt-2">
         {d.id && (
           <button
             type="button"

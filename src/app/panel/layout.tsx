@@ -23,11 +23,11 @@ async function Cabecera() {
   return (
     <header className="pt-4 md:pt-8">
       <div className="flex items-center gap-3 md:gap-4">
-        <span className="relative size-14 shrink-0 overflow-hidden rounded-2xl bg-superficie [container-type:inline-size] md:size-16">
+        <span className="relative size-12 shrink-0 overflow-hidden rounded-2xl bg-superficie [container-type:inline-size] md:size-16">
           <FotoNegocio src={negocio.logoUrl ?? negocio.portadaUrl} nombre={negocio.nombre} sizes="64px" />
         </span>
         <div className="min-w-0 flex-1">
-          <h1 className="truncate font-display text-xl font-extrabold tracking-[-0.01em] md:text-2xl">{negocio.nombre}</h1>
+          <h1 className="truncate font-display text-lg font-extrabold tracking-[-0.01em] md:text-2xl">{negocio.nombre}</h1>
           {negocio.estado === "aprobado" ? (
             <Link
               href={`/negocios/${negocio.slug}`}

@@ -9,7 +9,12 @@ export function InterruptorAbierto({ abierto }: { abierto: boolean }) {
   const [, iniciar] = useTransition();
 
   return (
-    <label className="flex shrink-0 flex-col items-center gap-1">
+    <label
+      className={`flex shrink-0 items-center gap-2 rounded-full py-1.5 pl-3.5 pr-1.5 ${valor ? "bg-[#e6f4ec]" : "bg-superficie"}`}
+    >
+      <span className={`text-sm font-bold ${valor ? "text-abierto" : "text-suave"}`}>
+        {valor ? "Abierto" : "Cerrado"}
+      </span>
       <Interruptor
         activo={valor}
         etiqueta="Recibiendo pedidos"
@@ -21,9 +26,6 @@ export function InterruptorAbierto({ abierto }: { abierto: boolean }) {
           })
         }
       />
-      <span className={`text-xs font-bold ${valor ? "text-abierto" : "text-suave"}`}>
-        {valor ? "Abierto" : "Cerrado"}
-      </span>
     </label>
   );
 }

@@ -57,12 +57,21 @@ export async function obtenerPedidosNegocio(negocioId: string): Promise<Pedido[]
   return data.map(aPedido);
 }
 
+const dia = new Intl.DateTimeFormat("en-CA", { timeZone: "America/Matamoros" });
+
 export function separarPedidos(pedidos: Pedido[]) {
+  const ahora = Date.now(); // para "hace X min"
+  const hoy = dia.format(ahora);
+  const vendidos = pedidos.filter(
+    (p) => dia.format(new Date(p.creadoEn)) === hoy && p.estado !== "cancelado" && p.estado !== "rechazado",
+  );
   return {
     nuevos: pedidos.filter((p) => p.estado === "recibido").reverse(), // el más antiguo primero
-    enCurso: pedidos.filter((p) => p.estado !== "recibido" && !ESTADOS_FINALES.includes(p.estado)).reverse(),
+    enCocina: pedidos.filter((p) => p.estado === "aceptado" || p.estado === "en_preparacion").reverse(),
+    listos: pedidos.filter((p) => p.estado === "listo" || p.estado === "en_camino").reverse(),
     terminados: pedidos.filter((p) => ESTADOS_FINALES.includes(p.estado)),
-    ahora: Date.now(), // para "hace X min"
+    hoy: { pedidos: vendidos.length, total: vendidos.reduce((s, p) => s + p.total, 0) },
+    ahora,
   };
 }
 

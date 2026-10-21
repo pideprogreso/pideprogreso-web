@@ -1,6 +1,6 @@
 "use client";
 
-import { Check } from "lucide-react";
+import { Check, ChevronDown } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { guardarNegocio, registrarNegocio, type DatosNegocio } from "@/app/panel/acciones";
@@ -71,9 +71,20 @@ export function FormularioNegocio({
     });
   }
 
+  // En el panel cada sección se pliega y su resumen deja ver qué falta sin abrirla.
+  const plegable = !registro;
+  const categoria = CATEGORIAS.find((c) => c.slug === d.categoria)?.nombre;
+  const pesos = (n: number) => `$${Number.isNaN(n) ? 0 : n}`;
+  const entregas = [
+    d.aceptaEntrega && (d.costoEnvio > 0 ? `Envío ${pesos(d.costoEnvio)}` : "Envío gratis"),
+    d.aceptaRecoger && "Pasan a recoger",
+    `${d.tiempoMin} a ${d.tiempoMax} min`,
+  ].filter(Boolean);
+
   return (
-    <form onSubmit={enviar} className="space-y-8">
-      <Seccion titulo="Tu negocio">
+    // Editando, la validación la hace el servidor: el navegador no puede señalar un campo dentro de una sección plegada.
+    <form onSubmit={enviar} noValidate={plegable} className={plegable ? "space-y-3" : "space-y-8"}>
+      <Seccion titulo={plegable ? "Perfil y fotos" : "Tu negocio"} plegable={plegable} resumen={[d.nombre, categoria].filter(Boolean).join(" · ")}>
         {!registro && (
           <div className="grid gap-4 sm:grid-cols-[1fr_auto]">
             <SubirFoto negocioId={negocioId} valor={d.portadaUrl} onCambio={(v) => poner("portadaUrl", v)} etiqueta="Foto de portada" />
@@ -106,7 +117,11 @@ export function FormularioNegocio({
         </Campo>
       </Seccion>
 
-      <Seccion titulo="Contacto y ubicación">
+      <Seccion
+        titulo="Contacto y ubicación"
+        plegable={plegable}
+        resumen={[d.telefono, d.direccion].filter(Boolean).join(" · ")}
+      >
         <div className="grid gap-4 sm:grid-cols-2">
           <Campo etiqueta="Teléfono" id="telefono">
             <input id="telefono" type="tel" inputMode="numeric" required maxLength={14} placeholder="899 123 4567" {...textoDe("telefono")} className={estiloCampo} />
@@ -118,12 +133,16 @@ export function FormularioNegocio({
         <Campo etiqueta="Dirección" id="direccion" ayuda="Calle, número y colonia.">
           <input id="direccion" required maxLength={300} {...textoDe("direccion")} className={estiloCampo} />
         </Campo>
-        <Campo etiqueta="Horario" id="horario" ayuda="Por ejemplo: Lunes a sábado, 8:00 a 22:00.">
-          <input id="horario" maxLength={300} {...textoDe("horario")} className={estiloCampo} />
-        </Campo>
+        {!plegable && <CampoHorario {...textoDe("horario")} />}
       </Seccion>
 
-      <Seccion titulo="Entregas">
+      {plegable && (
+        <Seccion titulo="Horario" plegable resumen={d.horario || "Sin horario: escríbelo para que tus clientes sepan cuándo pedir"} falta={!d.horario}>
+          <CampoHorario {...textoDe("horario")} />
+        </Seccion>
+      )}
+
+      <Seccion titulo="Entregas" plegable={plegable} resumen={entregas.join(" · ")}>
         <div className="divide-y divide-borde rounded-2xl border border-borde">
           <Opcion titulo="Entrega a domicilio" detalle="Tú llevas el pedido al cliente." activo={d.aceptaEntrega} onCambio={(v) => poner("aceptaEntrega", v)} />
           <Opcion titulo="Pasan a recoger" detalle="El cliente recoge en tu negocio." activo={d.aceptaRecoger} onCambio={(v) => poner("aceptaRecoger", v)} />
@@ -149,7 +168,12 @@ export function FormularioNegocio({
         </fieldset>
       </Seccion>
 
-      <Seccion titulo="Pago por transferencia">
+      <Seccion
+        titulo="Pago por transferencia"
+        plegable={plegable}
+        resumen={d.datosTransferencia ? "Datos de tu cuenta capturados" : "Sin datos: tus clientes solo podrán pagar en efectivo"}
+        falta={!d.datosTransferencia}
+      >
         <Campo
           etiqueta="Datos para transferencia (opcional)"
           id="datosTransferencia"
@@ -175,12 +199,46 @@ export function FormularioNegocio({
   );
 }
 
-function Seccion({ titulo, children }: { titulo: string; children: React.ReactNode }) {
+function Seccion({
+  titulo,
+  plegable = false,
+  resumen,
+  falta = false,
+  children,
+}: {
+  titulo: string;
+  plegable?: boolean;
+  resumen?: string;
+  falta?: boolean;
+  children: React.ReactNode;
+}) {
+  if (!plegable) {
+    return (
+      <fieldset className="space-y-4">
+        <legend className="mb-3 font-display text-xl font-bold">{titulo}</legend>
+        {children}
+      </fieldset>
+    );
+  }
   return (
-    <fieldset className="space-y-4">
-      <legend className="mb-3 font-display text-xl font-bold">{titulo}</legend>
-      {children}
-    </fieldset>
+    <details className="group rounded-2xl border border-borde open:pb-4">
+      <summary className="flex cursor-pointer list-none items-center gap-3 px-4 py-4 [&::-webkit-details-marker]:hidden">
+        <span className="min-w-0 flex-1">
+          <span className="block font-display text-lg font-bold">{titulo}</span>
+          <span className={`block truncate text-sm ${falta ? "font-semibold text-dorado-800" : "text-suave"}`}>{resumen}</span>
+        </span>
+        <ChevronDown aria-hidden size={20} className="shrink-0 text-suave transition-transform group-open:rotate-180" />
+      </summary>
+      <div className="space-y-4 px-4">{children}</div>
+    </details>
+  );
+}
+
+function CampoHorario(props: React.InputHTMLAttributes<HTMLInputElement>) {
+  return (
+    <Campo etiqueta="Horario" id="horario" ayuda="Por ejemplo: Lunes a sábado, 8:00 a 22:00.">
+      <input id="horario" maxLength={300} {...props} className={estiloCampo} />
+    </Campo>
   );
 }
 

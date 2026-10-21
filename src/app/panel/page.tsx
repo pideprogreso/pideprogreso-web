@@ -6,6 +6,7 @@ import { obtenerPedidosNegocio, requerirNegocio, separarPedidos } from "@/lib/pa
 import { Actualizador } from "../pedidos/[id]/actualizador";
 import { AvisoPedidos } from "./aviso-pedidos";
 import { TarjetaPedido } from "./tarjeta-pedido";
+import { VistasPedidos } from "./vistas-pedidos";
 
 export const metadata: Metadata = { title: "Pedidos" };
 
@@ -19,88 +20,85 @@ export default function PaginaPanel() {
 
 async function Pedidos() {
   const negocio = await requerirNegocio();
-  const { nuevos, enCurso, terminados, ahora } = separarPedidos(await obtenerPedidosNegocio(negocio.id));
+  const { nuevos, enCocina, listos, terminados, hoy, ahora } = separarPedidos(await obtenerPedidosNegocio(negocio.id));
 
   return (
-    <div className="space-y-8 pt-6 md:pt-8">
+    <div className="space-y-5 pt-5 md:pt-8">
       <Actualizador cadaMs={10000} />
       <AvisoPedidos
         nuevos={nuevos.map((p) => ({ id: p.id, folio: p.folio, nombre: p.nombreContacto, total: dinero(p.total) }))}
       />
 
-      {nuevos.length + enCurso.length === 0 && (
-        <div className="rounded-3xl bg-superficie px-6 py-12 text-center">
-          <span className="mx-auto grid size-16 place-items-center rounded-full bg-white">
-            <Inbox aria-hidden size={28} />
-          </span>
-          <p className="mt-4 font-display text-xl font-bold">Sin pedidos por ahora</p>
-          <p className="mx-auto mt-1 max-w-xs text-suave">
-            {negocio.abierto
-              ? "Deja esta pantalla abierta: cuando llegue un pedido sonará y aparecerá aquí."
-              : "Tu negocio está cerrado. Actívalo arriba para recibir pedidos."}
-          </p>
-        </div>
-      )}
+      <dl className="grid grid-cols-3 rounded-2xl bg-superficie py-3 text-center">
+        <Dato valor={String(hoy.pedidos)} texto="Pedidos hoy" />
+        <Dato valor={dinero(hoy.total)} texto="Vendido hoy" />
+        <Dato valor={String(nuevos.length + enCocina.length + listos.length)} texto="En curso" />
+      </dl>
 
-      {nuevos.length > 0 && (
-        <Grupo titulo="Nuevos" cuenta={nuevos.length} resaltado>
-          {nuevos.map((p) => (
-            <TarjetaPedido key={p.id} pedido={p} ahora={ahora} />
-          ))}
-        </Grupo>
-      )}
-      {enCurso.length > 0 && (
-        <Grupo titulo="En curso" cuenta={enCurso.length}>
-          {enCurso.map((p) => (
-            <TarjetaPedido key={p.id} pedido={p} ahora={ahora} />
-          ))}
-        </Grupo>
-      )}
-      {terminados.length > 0 && (
-        <Grupo titulo="Últimas 24 horas" cuenta={terminados.length}>
-          {terminados.map((p) => (
-            <TarjetaPedido key={p.id} pedido={p} ahora={ahora} compacta />
-          ))}
-        </Grupo>
-      )}
+      <VistasPedidos
+        vacio={
+          <div className="rounded-3xl bg-superficie px-6 py-12 text-center">
+            <span className="mx-auto grid size-16 place-items-center rounded-full bg-white">
+              <Inbox aria-hidden size={28} />
+            </span>
+            <p className="mt-4 font-display text-xl font-bold">Nada por aquí</p>
+            <p className="mx-auto mt-1 max-w-xs text-suave">
+              {negocio.abierto
+                ? "Deja esta pantalla abierta: cuando llegue un pedido sonará y aparecerá en Nuevos."
+                : "Tu negocio está cerrado. Actívalo arriba para recibir pedidos."}
+            </p>
+          </div>
+        }
+        vistas={[
+          {
+            clave: "nuevos",
+            texto: "Nuevos",
+            cuenta: nuevos.length,
+            resaltada: true,
+            contenido: nuevos.map((p) => <TarjetaPedido key={p.id} pedido={p} ahora={ahora} modo="nuevo" />),
+          },
+          {
+            clave: "cocina",
+            texto: "En cocina",
+            cuenta: enCocina.length,
+            contenido: enCocina.map((p) => <TarjetaPedido key={p.id} pedido={p} ahora={ahora} modo="fila" />),
+          },
+          {
+            clave: "listos",
+            texto: "Listos",
+            cuenta: listos.length,
+            contenido: listos.map((p) => <TarjetaPedido key={p.id} pedido={p} ahora={ahora} modo="fila" />),
+          },
+          {
+            clave: "historial",
+            texto: "Últimas 24 h",
+            cuenta: terminados.length,
+            contenido: terminados.map((p) => <TarjetaPedido key={p.id} pedido={p} ahora={ahora} modo="historial" />),
+          },
+        ]}
+      />
     </div>
   );
 }
 
-function Grupo({
-  titulo,
-  cuenta,
-  resaltado = false,
-  children,
-}: {
-  titulo: string;
-  cuenta: number;
-  resaltado?: boolean;
-  children: React.ReactNode;
-}) {
+function Dato({ valor, texto }: { valor: string; texto: string }) {
   return (
-    <section>
-      <h2 className="flex items-center gap-2 font-display text-xl font-bold">
-        {titulo}
-        <span
-          className={`rounded-full px-2 py-0.5 text-sm tabular-nums ${
-            resaltado ? "bg-vino-700 text-white" : "bg-superficie text-suave"
-          }`}
-        >
-          {cuenta}
-        </span>
-      </h2>
-      <div className="mt-3 grid gap-4 md:grid-cols-2">{children}</div>
-    </section>
+    <div className="flex flex-col-reverse">
+      <dt className="text-xs text-suave">{texto}</dt>
+      <dd className="font-display text-lg font-bold tabular-nums">{valor}</dd>
+    </div>
   );
 }
 
 function Cargando() {
   return (
-    <div className="mt-6 grid gap-4 md:grid-cols-2" aria-busy="true" aria-label="Cargando pedidos">
-      {Array.from({ length: 4 }, (_, i) => (
-        <div key={i} className="h-56 animate-pulse rounded-2xl bg-superficie" />
-      ))}
+    <div className="mt-5 space-y-4" aria-busy="true" aria-label="Cargando pedidos">
+      <div className="h-20 animate-pulse rounded-2xl bg-superficie" />
+      <div className="grid gap-3 md:grid-cols-2">
+        {Array.from({ length: 4 }, (_, i) => (
+          <div key={i} className="h-56 animate-pulse rounded-2xl bg-superficie" />
+        ))}
+      </div>
     </div>
   );
 }
