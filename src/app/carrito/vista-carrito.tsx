@@ -113,16 +113,18 @@ export function VistaCarrito() {
       )}
 
       <div className="mt-6 space-y-3">
-        <button
-          type="button"
-          disabled
-          className="h-14 w-full rounded-full bg-vino-700 text-base font-semibold text-white disabled:opacity-50"
-        >
-          Continuar con el pedido
-        </button>
-        <p className="text-center text-xs text-suave">
-          Elegir entrega o recoger y confirmar el pedido llega en la siguiente etapa.
-        </p>
+        {faltaMinimo > 0 ? (
+          <span className="flex h-14 w-full items-center justify-center rounded-full bg-vino-700 text-base font-semibold text-white opacity-50">
+            Continuar
+          </span>
+        ) : (
+          <Link
+            href="/carrito/confirmar"
+            className="flex h-14 w-full items-center justify-center rounded-full bg-vino-700 text-base font-semibold text-white hover:bg-vino-800"
+          >
+            Continuar
+          </Link>
+        )}
         <button
           type="button"
           onClick={vaciar}

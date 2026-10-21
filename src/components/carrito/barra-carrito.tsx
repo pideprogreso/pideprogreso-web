@@ -10,7 +10,7 @@ export function BarraCarrito() {
   const { carrito, piezas, subtotal } = useCarrito();
   const ruta = usePathname();
 
-  if (piezas === 0 || ruta === "/carrito") return null;
+  if (piezas === 0 || ruta.startsWith("/carrito")) return null;
 
   return (
     <div className="fixed inset-x-0 bottom-[calc(4rem+env(safe-area-inset-bottom))] z-30 px-3 pb-3 md:hidden">

@@ -7,6 +7,8 @@ export type Negocio = {
   direccion: string | null;
   horario: string | null;
   telefono: string | null;
+  whatsapp: string | null;
+  datosTransferencia: string | null;
   logoUrl: string | null;
   portadaUrl: string | null;
   abierto: boolean;

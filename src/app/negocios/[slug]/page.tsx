@@ -56,6 +56,8 @@ async function Contenido({ params }: { params: Promise<{ slug: string }> }) {
     nombre: negocio.nombre,
     costoEnvio: negocio.costoEnvio,
     pedidoMinimo: negocio.pedidoMinimo,
+    aceptaEntrega: negocio.aceptaEntrega,
+    aceptaRecoger: negocio.aceptaRecoger,
   };
 
   return (

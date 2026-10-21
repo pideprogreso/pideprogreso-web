@@ -19,7 +19,15 @@ export type LineaCarrito = {
 
 // Un carrito pertenece a un solo negocio, como en un pedido real.
 export type Carrito = {
-  negocio: { id: string; slug: string; nombre: string; costoEnvio: number; pedidoMinimo: number } | null;
+  negocio: {
+    id: string;
+    slug: string;
+    nombre: string;
+    costoEnvio: number;
+    pedidoMinimo: number;
+    aceptaEntrega: boolean;
+    aceptaRecoger: boolean;
+  } | null;
   lineas: LineaCarrito[];
 };
 
@@ -40,7 +48,11 @@ const Contexto = createContext<ContextoCarrito | null>(null);
 function leer(): Carrito {
   try {
     const guardado = localStorage.getItem(CLAVE);
-    return guardado ? (JSON.parse(guardado) as Carrito) : VACIO;
+    if (!guardado) return VACIO;
+    const carrito = JSON.parse(guardado) as Carrito;
+    // Carritos guardados con una versión anterior no traen las modalidades de entrega.
+    if (carrito.negocio && carrito.negocio.aceptaEntrega === undefined) return VACIO;
+    return carrito;
   } catch {
     return VACIO;
   }

@@ -8,6 +8,8 @@ const base = {
   direccion: null,
   horario: null,
   telefono: null,
+  whatsapp: null,
+  datosTransferencia: null,
   logoUrl: null,
   portadaUrl: null,
   abierto: true,
