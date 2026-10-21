@@ -137,6 +137,11 @@ export function FormularioAcceso() {
           </button>
         </div>
       </Campo>
+      {!creando && (
+        <Link href="/entrar/recuperar" className="-mt-2 inline-block text-sm font-semibold text-vino-700 underline-offset-2 hover:underline">
+          ¿Olvidaste tu contraseña?
+        </Link>
+      )}
 
       {error && <Aviso>{error}</Aviso>}
 
