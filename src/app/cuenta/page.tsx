@@ -1,8 +1,9 @@
-import { ChevronRight, LogOut, Receipt, Store } from "lucide-react";
+import { ChevronRight, LogOut, Receipt, ShieldCheck, Store } from "lucide-react";
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
+import { esAdmin } from "@/lib/admin";
 import { obtenerMiNegocio } from "@/lib/panel";
 import { obtenerUsuario } from "@/lib/sesion";
 import { salir } from "../entrar/acciones";
@@ -62,7 +63,7 @@ async function Contenido() {
     );
   }
 
-  const negocio = await obtenerMiNegocio();
+  const [negocio, admin] = await Promise.all([obtenerMiNegocio(), esAdmin()]);
 
   return (
     <div className="mt-6 space-y-6">
@@ -77,6 +78,9 @@ async function Contenido() {
       </div>
 
       <div className="divide-y divide-borde rounded-2xl border border-borde">
+        {admin && (
+          <Fila href="/admin" icono={<ShieldCheck aria-hidden size={22} />} titulo="Administración" detalle="Aprobar negocios y ver pedidos" />
+        )}
         {negocio ? (
           <Fila href="/panel" icono={<Store aria-hidden size={22} />} titulo="Mi negocio" detalle={negocio.nombre} />
         ) : (
