@@ -4,6 +4,7 @@ import { ArrowLeft, MailCheck } from "lucide-react";
 import Link from "next/link";
 import { useState, useTransition } from "react";
 import { Aviso, Campo, estiloCampo } from "@/components/campos";
+import { Captcha, captchaActivo } from "@/components/captcha";
 import { enviarRecuperacion } from "../acciones";
 
 export function FormularioRecuperar() {
@@ -11,6 +12,8 @@ export function FormularioRecuperar() {
   const [error, setError] = useState<string | null>(null);
   const [enviado, setEnviado] = useState(false);
   const [enviando, iniciar] = useTransition();
+  const [captcha, setCaptcha] = useState<string | null>(null);
+  const [vuelta, setVuelta] = useState(0);
 
   if (enviado) {
     return (
@@ -33,8 +36,11 @@ export function FormularioRecuperar() {
       onSubmit={(e) => {
         e.preventDefault();
         setError(null);
+        if (captchaActivo && !captcha) return setError("Espera a que termine la verificación de abajo.");
         iniciar(async () => {
-          const r = await enviarRecuperacion(email);
+          const r = await enviarRecuperacion(email, captcha);
+          setCaptcha(null);
+          setVuelta((v) => v + 1);
           if (!r.ok) return setError(r.error);
           setEnviado(true);
         });
@@ -64,6 +70,7 @@ export function FormularioRecuperar() {
           className={estiloCampo}
         />
       </Campo>
+      <Captcha key={vuelta} onToken={setCaptcha} />
       {error && <Aviso>{error}</Aviso>}
       <button
         type="submit"

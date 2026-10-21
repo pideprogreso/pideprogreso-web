@@ -7,6 +7,7 @@ import { useState, useTransition } from "react";
 import { Aviso, Campo, estiloCampo } from "@/components/campos";
 import { AceptacionLegal } from "@/components/aceptacion-legal";
 import { BotonGoogle } from "@/components/boton-google";
+import { Captcha, captchaActivo } from "@/components/captcha";
 import { crearCuenta, entrar } from "./acciones";
 
 type Modo = "entrar" | "crear";
@@ -29,15 +30,21 @@ export function FormularioAcceso() {
   );
   const [confirmar, setConfirmar] = useState<string | null>(null);
   const [enviando, iniciar] = useTransition();
+  const [captcha, setCaptcha] = useState<string | null>(null);
+  const [vuelta, setVuelta] = useState(0);
 
   function enviar(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
+    if (captchaActivo && !captcha) return setError("Espera a que termine la verificación de abajo.");
     iniciar(async () => {
       const r =
         modo === "crear"
-          ? await crearCuenta(nombre, email, password, siguiente)
-          : await entrar(email, password, siguiente);
+          ? await crearCuenta(nombre, email, password, siguiente, captcha)
+          : await entrar(email, password, siguiente, captcha);
+      // El token ya se usó: pide uno nuevo para el siguiente intento.
+      setCaptcha(null);
+      setVuelta((v) => v + 1);
       if (!r.ok) return setError(r.error);
       if ("confirmar" in r) return setConfirmar(r.email);
       router.replace(r.destino);
@@ -154,6 +161,7 @@ export function FormularioAcceso() {
         </Link>
       )}
 
+      <Captcha key={vuelta} onToken={setCaptcha} />
       {error && <Aviso>{error}</Aviso>}
 
       <button

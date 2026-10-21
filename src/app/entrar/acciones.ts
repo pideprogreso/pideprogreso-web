@@ -19,6 +19,7 @@ async function origenActual() {
 }
 
 function traducir(mensaje: string) {
+  if (/captcha/i.test(mensaje)) return "No pudimos verificar que eres una persona. Intenta de nuevo.";
   if (/invalid login credentials/i.test(mensaje)) return "El correo o la contraseña no coinciden.";
   if (/email not confirmed/i.test(mensaje)) return "Primero confirma tu correo con el enlace que te enviamos.";
   if (/already registered|already exists/i.test(mensaje)) return "Ya hay una cuenta con ese correo. Entra con tu contraseña.";
@@ -28,13 +29,22 @@ function traducir(mensaje: string) {
   return "No pudimos completar el acceso. Intenta de nuevo.";
 }
 
-export async function entrar(email: string, password: string, siguiente: string): Promise<ResultadoAcceso> {
+export async function entrar(
+  email: string,
+  password: string,
+  siguiente: string,
+  captcha: string | null,
+): Promise<ResultadoAcceso> {
   if (!supabaseConfigurado) return { ok: false, error: "Conecta Supabase para poder entrar." };
   if (!CORREO.test(email.trim())) return { ok: false, error: "Escribe un correo válido." };
   if (!password) return { ok: false, error: "Escribe tu contraseña." };
 
   const supabase = await crearClienteServidor();
-  const { error } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
+  const { error } = await supabase.auth.signInWithPassword({
+    email: email.trim(),
+    password,
+    options: { captchaToken: captcha ?? undefined },
+  });
   if (error) return { ok: false, error: traducir(error.message) };
   return { ok: true, destino: destinoSeguro(siguiente) };
 }
@@ -44,6 +54,7 @@ export async function crearCuenta(
   email: string,
   password: string,
   siguiente: string,
+  captcha: string | null,
 ): Promise<ResultadoAcceso> {
   if (!supabaseConfigurado) return { ok: false, error: "Conecta Supabase para poder crear cuentas." };
   if (nombre.trim().length < 2) return { ok: false, error: "Escribe tu nombre." };
@@ -59,6 +70,7 @@ export async function crearCuenta(
     password,
     options: {
       data: { nombre: nombre.trim().slice(0, 120) },
+      captchaToken: captcha ?? undefined,
       emailRedirectTo: `${origen}/auth/confirmar?siguiente=${encodeURIComponent(destino)}`,
     },
   });
@@ -81,14 +93,15 @@ export async function salir() {
 
 // Manda el correo para poner una contraseña nueva. Siempre responde igual,
 // para no revelar qué correos tienen cuenta.
-export async function enviarRecuperacion(email: string): Promise<{ ok: true } | { ok: false; error: string }> {
+export async function enviarRecuperacion(email: string, captcha: string | null): Promise<{ ok: true } | { ok: false; error: string }> {
   if (!supabaseConfigurado) return { ok: false, error: "Conecta Supabase para recuperar contraseñas." };
   if (!CORREO.test(email.trim())) return { ok: false, error: "Escribe un correo válido." };
   const supabase = await crearClienteServidor();
   const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
     redirectTo: `${await origenActual()}/auth/confirmar?siguiente=/entrar/nueva`,
+    captchaToken: captcha ?? undefined,
   });
-  if (error && /rate limit|too many/i.test(error.message)) return { ok: false, error: traducir(error.message) };
+  if (error && /rate limit|too many|captcha/i.test(error.message)) return { ok: false, error: traducir(error.message) };
   if (error) console.error("resetPasswordForEmail", error);
   return { ok: true };
 }
