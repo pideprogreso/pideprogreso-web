@@ -33,7 +33,13 @@ async function Contenido({
   if (!pedido) notFound();
 
   const final = ESTADOS_FINALES.includes(pedido.estado);
-  const { titulo, detalle } = textoEstado(pedido.estado, pedido.modalidad);
+  const { titulo, detalle } =
+    pedido.motivoCancelacion === "sin_respuesta"
+      ? {
+          titulo: "El negocio no respondió a tiempo",
+          detalle: "Cancelamos tu pedido porque no lo aceptaron en 10 minutos. Puedes pedir en otro negocio. Si ya transferiste, llámales para que te devuelvan tu dinero.",
+        }
+      : textoEstado(pedido.estado, pedido.modalidad);
   const nuevo = sp.nuevo === "1";
 
   return (

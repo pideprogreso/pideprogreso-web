@@ -44,7 +44,7 @@ export function TarjetaPedido({
               </span>
             </>
           }
-          accion={<span className="shrink-0 rounded-full bg-superficie px-2.5 py-1 text-xs font-bold text-suave">{etiquetaCorta(p.estado)}</span>}
+          accion={<span className="shrink-0 rounded-full bg-superficie px-2.5 py-1 text-xs font-bold text-suave">{p.motivoCancelacion === "sin_respuesta" ? "Sin respuesta" : etiquetaCorta(p.estado)}</span>}
         >
           <Detalle p={p} />
         </Desplegable>

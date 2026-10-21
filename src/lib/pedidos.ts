@@ -29,6 +29,7 @@ export type Pedido = {
   costoEnvio: number;
   total: number;
   creadoEn: string;
+  motivoCancelacion: "sin_respuesta" | null;
   negocio: {
     slug: string;
     nombre: string;
@@ -57,6 +58,7 @@ export type FilaPedido = {
   costo_envio: string | number;
   total: string | number;
   creado_en: string;
+  motivo_cancelacion: "sin_respuesta" | null;
   negocios: {
     id: string;
     slug: string;
@@ -74,7 +76,7 @@ export type FilaPedido = {
 };
 
 export const COLUMNAS_PEDIDO =
-  "id, folio, estado, modalidad, metodo_pago, nombre_contacto, telefono_contacto, direccion_entrega, referencias, lat, lng, notas, subtotal, costo_envio, total, creado_en, negocios(id, slug, nombre, telefono, whatsapp, portada_url), pedido_detalle(nombre_producto, precio_unitario, cantidad, importe)";
+  "id, folio, estado, modalidad, metodo_pago, nombre_contacto, telefono_contacto, direccion_entrega, referencias, lat, lng, notas, subtotal, costo_envio, total, creado_en, motivo_cancelacion, negocios(id, slug, nombre, telefono, whatsapp, portada_url), pedido_detalle(nombre_producto, precio_unitario, cantidad, importe)";
 
 export function aPedido(f: FilaPedido): Pedido {
   return {
@@ -93,6 +95,7 @@ export function aPedido(f: FilaPedido): Pedido {
     costoEnvio: Number(f.costo_envio),
     total: Number(f.total),
     creadoEn: f.creado_en,
+    motivoCancelacion: f.motivo_cancelacion,
     negocio: {
       slug: f.negocios?.slug ?? "",
       nombre: f.negocios?.nombre ?? "Negocio",

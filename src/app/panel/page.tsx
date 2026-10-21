@@ -5,6 +5,7 @@ import { dinero } from "@/lib/formato";
 import { obtenerPedidosNegocio, requerirNegocio, separarPedidos } from "@/lib/panel";
 import { Actualizador } from "../pedidos/[id]/actualizador";
 import { AvisoPedidos } from "./aviso-pedidos";
+import { BotonPausa } from "./boton-pausa";
 import { TarjetaPedido } from "./tarjeta-pedido";
 import { VistasPedidos } from "./vistas-pedidos";
 
@@ -34,6 +35,10 @@ async function Pedidos() {
         <Dato valor={dinero(hoy.total)} texto="Vendido hoy" />
         <Dato valor={String(nuevos.length + enCocina.length + listos.length)} texto="En curso" />
       </dl>
+
+      {negocio.abierto && (
+        <BotonPausa hasta={negocio.pausadoHasta && new Date(negocio.pausadoHasta).getTime() > ahora ? negocio.pausadoHasta : null} />
+      )}
 
       <VistasPedidos
         vacio={

@@ -9,7 +9,7 @@ import { crearClienteServidor } from "./supabase/server";
 import type { Negocio, Producto } from "./tipos";
 
 export type EstadoNegocio = "pendiente" | "aprobado" | "suspendido";
-export type MiNegocio = Negocio & { estado: EstadoNegocio };
+export type MiNegocio = Negocio & { estado: EstadoNegocio; pausadoHasta: string | null };
 export type ProductoPanel = Producto & { disponible: boolean; orden: number };
 
 // El negocio de quien tiene la sesión (uno por cuenta en el MVP).
@@ -19,16 +19,16 @@ export const obtenerMiNegocio = cache(async (): Promise<MiNegocio | null> => {
   const supabase = await crearClienteServidor();
   const { data, error } = await supabase
     .from("negocios")
-    .select(`${COLUMNAS_NEGOCIO}, estado`)
+    .select(`${COLUMNAS_NEGOCIO}, estado, pausado_hasta`)
     .eq("propietario_id", usuario.id)
     .order("creado_en")
     .limit(1)
-    .maybeSingle<FilaNegocio & { estado: EstadoNegocio }>();
+    .maybeSingle<FilaNegocio & { estado: EstadoNegocio; pausado_hasta: string | null }>();
   if (error) throw error;
   if (!data) return null;
   // Si falla, mejor error que un formulario vacío que borre los datos al guardar.
   const datosTransferencia = await obtenerDatosTransferencia(supabase, data.id);
-  return { ...aNegocio(data), datosTransferencia, estado: data.estado };
+  return { ...aNegocio(data), datosTransferencia, estado: data.estado, pausadoHasta: data.pausado_hasta };
 });
 
 // Para las páginas del panel: sin cuenta va a entrar; sin negocio, a registrarlo.

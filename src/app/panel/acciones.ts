@@ -140,6 +140,18 @@ export async function guardarNegocio(d: DatosNegocio): Promise<Resultado> {
   return { ok: true };
 }
 
+// Pausa los pedidos unos minutos sin cerrar el negocio; 0 = reanudar.
+export async function pausarPedidos(minutos: number): Promise<Resultado> {
+  if (![0, 15, 30].includes(minutos)) return { ok: false, error: "Pausa no válida." };
+  const negocio = await obtenerMiNegocio();
+  if (!negocio) return { ok: false, error: "No encontramos tu negocio." };
+  const hasta = minutos ? new Date(Date.now() + minutos * 60000).toISOString() : null;
+  const supabase = await crearClienteServidor();
+  const { error } = await supabase.from("negocios").update({ pausado_hasta: hasta }).eq("id", negocio.id);
+  if (error) return { ok: false, error: FALLA };
+  return { ok: true };
+}
+
 export async function cambiarAbierto(abierto: boolean): Promise<Resultado> {
   const negocio = await obtenerMiNegocio();
   if (!negocio) return { ok: false, error: "No encontramos tu negocio." };
