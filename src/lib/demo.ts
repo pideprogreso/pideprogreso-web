@@ -124,14 +124,14 @@ export const PRODUCTOS_DEMO: Producto[] = [
   p("demo-burger", "Hamburguesas", "Hawaiana", 110, "Con piña asada, jamón y queso manchego."),
   p("demo-burger", "Complementos", "Papas a la francesa", 45, "Porción grande, con sal de grano.", "papas"),
   p("demo-burger", "Complementos", "Aros de cebolla", 55),
-  p("demo-burger", "Bebidas", "Malteada de fresa", 60, "Con helado de vainilla y fresas naturales.", "malteada"),
+  p("demo-burger", "Bebidas", "Malteada de chocolate", 60, "Con helado de vainilla y jarabe de chocolate.", "malteada"),
   p("demo-burger", "Bebidas", "Refresco 600 ml", 25),
 
   p("demo-tacos", "Tacos", "Orden de trompo (5)", 75, "Con cebolla, cilantro y piña.", "tacos-2"),
   p("demo-tacos", "Tacos", "Orden de bistec (5)", 85, "Tortilla de maíz hecha a mano.", "tacos"),
   p("demo-tacos", "Tacos", "Orden de tripa (5)", 95, "Bien doradita."),
   p("demo-tacos", "Especiales", "Gringa de trompo", 70, "Tortilla de harina, queso y trompo."),
-  p("demo-tacos", "Bebidas", "Agua de horchata 1 L", 35, null, "agua-fresca"),
+  p("demo-tacos", "Bebidas", "Agua fresca de sandía 1 L", 35, "Hecha al momento con sandía natural.", "agua-fresca"),
 
   p("demo-pizza", "Pizzas", "Pepperoni grande", 199, "Ocho rebanadas, mozzarella y pepperoni.", "pizza"),
   p("demo-pizza", "Pizzas", "Mexicana grande", 219, "Chorizo, jalapeño, cebolla y frijol."),
@@ -148,6 +148,6 @@ export const PRODUCTOS_DEMO: Producto[] = [
   p("demo-super", "Despensa", "Tortillas de harina (paquete)", 38),
   p("demo-super", "Despensa", "Huevo (docena)", 48),
 
-  p("demo-flores", "Ramos", "Ramo de 12 rosas", 450, "Rosas rojas con follaje y envoltura.", "flores-2"),
+  p("demo-flores", "Ramos", "Ramo de tulipanes", 450, "Doce tulipanes con follaje y envoltura.", "flores-2"),
   p("demo-flores", "Ramos", "Arreglo de girasoles", 380, null, "flores"),
 ];

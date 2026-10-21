@@ -35,13 +35,13 @@ values
   ('00000000-0000-4000-8000-000000000001', 'Hamburguesas', 'Hawaiana', 'Con piña asada, jamón y queso manchego.', 110, null, 2),
   ('00000000-0000-4000-8000-000000000001', 'Complementos', 'Papas a la francesa', 'Porción grande, con sal de grano.', 45, '/demo/papas.jpg', 3),
   ('00000000-0000-4000-8000-000000000001', 'Complementos', 'Aros de cebolla', null, 55, null, 4),
-  ('00000000-0000-4000-8000-000000000001', 'Bebidas', 'Malteada de fresa', 'Con helado de vainilla y fresas naturales.', 60, '/demo/malteada.jpg', 5),
+  ('00000000-0000-4000-8000-000000000001', 'Bebidas', 'Malteada de chocolate', 'Con helado de vainilla y jarabe de chocolate.', 60, '/demo/malteada.jpg', 5),
   ('00000000-0000-4000-8000-000000000001', 'Bebidas', 'Refresco 600 ml', null, 25, null, 6),
   ('00000000-0000-4000-8000-000000000002', 'Tacos', 'Orden de trompo (5)', 'Con cebolla, cilantro y piña.', 75, '/demo/tacos-2.jpg', 7),
   ('00000000-0000-4000-8000-000000000002', 'Tacos', 'Orden de bistec (5)', 'Tortilla de maíz hecha a mano.', 85, '/demo/tacos.jpg', 8),
   ('00000000-0000-4000-8000-000000000002', 'Tacos', 'Orden de tripa (5)', 'Bien doradita.', 95, null, 9),
   ('00000000-0000-4000-8000-000000000002', 'Especiales', 'Gringa de trompo', 'Tortilla de harina, queso y trompo.', 70, null, 10),
-  ('00000000-0000-4000-8000-000000000002', 'Bebidas', 'Agua de horchata 1 L', null, 35, '/demo/agua-fresca.jpg', 11),
+  ('00000000-0000-4000-8000-000000000002', 'Bebidas', 'Agua fresca de sandía 1 L', 'Hecha al momento con sandía natural.', 35, '/demo/agua-fresca.jpg', 11),
   ('00000000-0000-4000-8000-000000000003', 'Pizzas', 'Pepperoni grande', 'Ocho rebanadas, mozzarella y pepperoni.', 199, '/demo/pizza.jpg', 12),
   ('00000000-0000-4000-8000-000000000003', 'Pizzas', 'Mexicana grande', 'Chorizo, jalapeño, cebolla y frijol.', 219, null, 13),
   ('00000000-0000-4000-8000-000000000003', 'Pizzas', 'Cuatro quesos grande', 'Mozzarella, manchego, parmesano y queso azul.', 229, '/demo/pizza-2.jpg', 14),
@@ -54,7 +54,7 @@ values
   ('00000000-0000-4000-8000-000000000005', 'Bebidas', 'Bolsa de hielo 5 kg', null, 35, null, 21),
   ('00000000-0000-4000-8000-000000000005', 'Despensa', 'Tortillas de harina (paquete)', null, 38, null, 22),
   ('00000000-0000-4000-8000-000000000005', 'Despensa', 'Huevo (docena)', null, 48, null, 23),
-  ('00000000-0000-4000-8000-000000000006', 'Ramos', 'Ramo de 12 rosas', 'Rosas rojas con follaje y envoltura.', 450, '/demo/flores-2.jpg', 24),
+  ('00000000-0000-4000-8000-000000000006', 'Ramos', 'Ramo de tulipanes', 'Doce tulipanes con follaje y envoltura.', 450, '/demo/flores-2.jpg', 24),
   ('00000000-0000-4000-8000-000000000006', 'Ramos', 'Arreglo de girasoles', null, 380, '/demo/flores.jpg', 25);
 
 commit;
