@@ -18,11 +18,12 @@ export const obtenerUsuario = cache(async (): Promise<Usuario | null> => {
   const { data } = await supabase.auth.getClaims();
   const c = data?.claims;
   if (!c?.sub) return null;
-  const meta = (c.user_metadata ?? {}) as { nombre?: string };
+  // Con Google el nombre llega como full_name o name.
+  const meta = (c.user_metadata ?? {}) as { nombre?: string; full_name?: string; name?: string };
   return {
     id: c.sub,
     email: c.email ?? null,
-    nombre: meta.nombre ?? "",
+    nombre: meta.nombre || meta.full_name || meta.name || "",
     anonimo: Boolean(c.is_anonymous),
   };
 });

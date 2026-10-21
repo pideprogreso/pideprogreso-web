@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
+import { BotonGoogle } from "@/components/boton-google";
 import { FormularioNegocio, NEGOCIO_VACIO } from "@/components/formulario-negocio";
 import { obtenerMiNegocio } from "@/lib/panel";
 import { obtenerUsuario } from "@/lib/sesion";
@@ -37,18 +38,13 @@ async function Contenido() {
           <Paso icono={<ClipboardList aria-hidden size={22} />} titulo="Sube tu menú" detalle="Productos, precios y fotos. Puedes cambiarlo cuando quieras." />
           <Paso icono={<BellRing aria-hidden size={22} />} titulo="Recibe pedidos" detalle="Te suena el celular, aceptas y le avisas al cliente cuando está listo." />
         </ol>
-        <div className="mt-8 flex flex-wrap gap-3">
+        <div className="mt-8 max-w-sm space-y-3">
+          <BotonGoogle siguiente="/registro-negocio" />
           <Link
             href="/entrar?modo=crear&siguiente=/registro-negocio"
-            className="inline-flex h-14 items-center rounded-full bg-vino-700 px-8 text-base font-semibold text-white hover:bg-vino-800"
+            className="flex h-14 items-center justify-center rounded-full border border-borde font-semibold hover:bg-superficie"
           >
-            Crear cuenta y empezar
-          </Link>
-          <Link
-            href="/entrar?siguiente=/registro-negocio"
-            className="inline-flex h-14 items-center rounded-full border border-borde px-6 font-semibold hover:bg-superficie"
-          >
-            Ya tengo cuenta
+            Usar mi correo
           </Link>
         </div>
       </div>

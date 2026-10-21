@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState, useTransition } from "react";
 import { Aviso, Campo, estiloCampo } from "@/components/campos";
+import { BotonGoogle } from "@/components/boton-google";
 import { crearCuenta, entrar } from "./acciones";
 
 type Modo = "entrar" | "crear";
@@ -19,7 +20,11 @@ export function FormularioAcceso() {
   const [password, setPassword] = useState("");
   const [verPassword, setVerPassword] = useState(false);
   const [error, setError] = useState<string | null>(
-    params.get("error") === "enlace" ? "El enlace ya no es válido. Entra con tu correo y contraseña." : null,
+    params.get("error") === "enlace"
+      ? "No pudimos completar el acceso. Intenta de nuevo."
+      : params.get("error") === "google"
+        ? "No pudimos conectar con Google. Intenta de nuevo."
+        : null,
   );
   const [confirmar, setConfirmar] = useState<string | null>(null);
   const [enviando, iniciar] = useTransition();
@@ -68,6 +73,11 @@ export function FormularioAcceso() {
             ? "Para registrar tu negocio y recibir pedidos."
             : "Para administrar tu negocio en PideProgreso."}
         </p>
+      </div>
+
+      <BotonGoogle siguiente={siguiente} />
+      <div className="flex items-center gap-3 text-sm text-suave">
+        <span className="h-px flex-1 bg-borde" />o con tu correo<span className="h-px flex-1 bg-borde" />
       </div>
 
       <div role="tablist" aria-label="Tipo de acceso" className="grid grid-cols-2 rounded-full bg-superficie p-1">

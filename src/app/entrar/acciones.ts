@@ -104,3 +104,21 @@ export async function cambiarPassword(password: string): Promise<{ ok: true } | 
   if (error) return { ok: false, error: traducir(error.message) };
   return { ok: true };
 }
+
+// Inicia sesión con Google. Vuelve por /auth/confirmar, que cambia el código por la sesión.
+// El carrito vive en el celular, así que no se pierde al cambiar de sesión.
+export async function entrarConGoogle(siguiente: string) {
+  if (!supabaseConfigurado) redirect("/entrar");
+  const supabase = await crearClienteServidor();
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider: "google",
+    options: {
+      redirectTo: `${await origenActual()}/auth/confirmar?siguiente=${encodeURIComponent(destinoSeguro(siguiente))}`,
+    },
+  });
+  if (error || !data.url) {
+    console.error("signInWithOAuth", error);
+    redirect("/entrar?error=google");
+  }
+  redirect(data.url);
+}
