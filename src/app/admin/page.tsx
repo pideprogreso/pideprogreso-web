@@ -8,8 +8,10 @@ import {
   obtenerNegociosAdmin,
   obtenerPedidosAdmin,
   obtenerReportes,
+  obtenerResumenMes,
   requerirAdmin,
   type NegocioAdmin,
+  type ResumenMes,
 } from "@/lib/admin";
 import { buscarCategoria } from "@/lib/categorias";
 import { ESTADOS_FINALES } from "@/lib/estados";
@@ -30,10 +32,11 @@ export default function PaginaAdmin() {
 
 async function Contenido() {
   await requerirAdmin();
-  const [negocios, pedidos, reportes] = await Promise.all([
+  const [negocios, pedidos, reportes, mes] = await Promise.all([
     obtenerNegociosAdmin(),
     obtenerPedidosAdmin(),
     obtenerReportes(),
+    obtenerResumenMes(),
   ]);
   const reportesPendientes = reportes.filter((r) => !r.resuelto).length;
   const hoy = inicioDeHoy();
@@ -63,18 +66,18 @@ async function Contenido() {
 
       <Grupo titulo="Por aprobar" cuenta={pendientes.length} resaltado vacio="No hay solicitudes nuevas.">
         {pendientes.map((n) => (
-          <Tarjeta key={n.id} negocio={n} />
+          <Tarjeta key={n.id} negocio={n} mes={mes.get(n.id)} />
         ))}
       </Grupo>
       <Grupo titulo="Publicados" cuenta={aprobados.length} vacio="Aún no hay negocios publicados.">
         {aprobados.map((n) => (
-          <Tarjeta key={n.id} negocio={n} />
+          <Tarjeta key={n.id} negocio={n} mes={mes.get(n.id)} />
         ))}
       </Grupo>
       {suspendidos.length > 0 && (
         <Grupo titulo="Suspendidos" cuenta={suspendidos.length} vacio="">
           {suspendidos.map((n) => (
-            <Tarjeta key={n.id} negocio={n} />
+            <Tarjeta key={n.id} negocio={n} mes={mes.get(n.id)} />
           ))}
         </Grupo>
       )}
@@ -126,7 +129,7 @@ function Grupo({
   );
 }
 
-function Tarjeta({ negocio: n }: { negocio: NegocioAdmin }) {
+function Tarjeta({ negocio: n, mes }: { negocio: NegocioAdmin; mes?: ResumenMes }) {
   return (
     <article className={`flex flex-col rounded-2xl border-2 p-4 ${n.estado === "pendiente" ? "border-vino-700" : "border-borde"}`}>
       <div className="flex items-start gap-3">
@@ -167,6 +170,13 @@ function Tarjeta({ negocio: n }: { negocio: NegocioAdmin }) {
         )}
       </ul>
       {n.descripcion && <p className="mt-2 text-sm text-suave">{n.descripcion}</p>}
+      {n.estado === "aprobado" && (
+        <p className="mt-3 rounded-xl bg-superficie px-3 py-2 text-sm">
+          <strong>Este mes:</strong> {mes?.pedidos ?? 0} {mes?.pedidos === 1 ? "pedido" : "pedidos"} ·{" "}
+          {dinero(mes?.entregado ?? 0)} entregado
+          {(mes?.perdidos ?? 0) > 0 && <span className="text-suave"> · {mes!.perdidos} cancelados o rechazados</span>}
+        </p>
+      )}
       <div className="mt-auto flex flex-wrap items-center gap-2 pt-4">
         {n.estado === "pendiente" && (
           <>

@@ -92,6 +92,39 @@ export async function obtenerPedidosAdmin(): Promise<PedidoAdmin[]> {
   }));
 }
 
+export type ResumenMes = { pedidos: number; entregado: number; perdidos: number };
+
+// Pedidos del mes por negocio, para mostrarle a cada negocio lo que recibe por su cuota.
+// shortcut: suma en el servidor trayendo los pedidos de 1,000 en 1,000; con decenas de miles al mes, pasar a una vista agregada en Supabase.
+export async function obtenerResumenMes(): Promise<Map<string, ResumenMes>> {
+  const dia = Number(new Intl.DateTimeFormat("en-CA", { timeZone: "America/Matamoros", day: "numeric" }).format(new Date()));
+  const desde = inicioDeHoy(new Date(Date.now() - (dia - 1) * 864e5));
+  const supabase = await crearClienteServidor();
+  const filas: { negocio_id: string; estado: EstadoPedido; total: number | string }[] = [];
+  // Supabase devuelve como máximo 1,000 filas por consulta.
+  for (let desdeFila = 0; ; desdeFila += 1000) {
+    const { data, error } = await supabase
+      .from("pedidos")
+      .select("negocio_id, estado, total")
+      .gte("creado_en", desde)
+      .order("id")
+      .range(desdeFila, desdeFila + 999)
+      .returns<{ negocio_id: string; estado: EstadoPedido; total: number | string }[]>();
+    if (error) throw error;
+    filas.push(...data);
+    if (data.length < 1000) break;
+  }
+  const resumen = new Map<string, ResumenMes>();
+  for (const f of filas) {
+    const r = resumen.get(f.negocio_id) ?? { pedidos: 0, entregado: 0, perdidos: 0 };
+    if (f.estado === "cancelado" || f.estado === "rechazado") r.perdidos++;
+    else r.pedidos++;
+    if (f.estado === "entregado") r.entregado += Number(f.total);
+    resumen.set(f.negocio_id, r);
+  }
+  return resumen;
+}
+
 // Inicio del día en Nuevo Progreso (America/Matamoros), en ISO.
 export function inicioDeHoy(ahora = new Date()) {
   const partes = new Intl.DateTimeFormat("en-CA", {
