@@ -13,7 +13,7 @@ export const modoDemo = !supabaseConfigurado;
 export const TAG_NEGOCIOS = "negocios";
 
 export const COLUMNAS_NEGOCIO =
-  "id, slug, nombre, descripcion, direccion, horario, telefono, whatsapp, logo_url, portada_url, abierto, acepta_entrega, acepta_recoger, costo_envio, pedido_minimo, tiempo_entrega_min, tiempo_entrega_max, categorias(slug)";
+  "id, slug, nombre, descripcion, direccion, horario, telefono, whatsapp, logo_url, portada_url, abierto, acepta_entrega, acepta_recoger, costo_envio, pedido_minimo, tiempo_entrega_min, tiempo_entrega_max, destacado_hasta, categorias(slug)";
 
 export type FilaNegocio = {
   id: string;
@@ -35,6 +35,7 @@ export type FilaNegocio = {
   pedido_minimo: number | string;
   tiempo_entrega_min: number;
   tiempo_entrega_max: number;
+  destacado_hasta: string | null;
   categorias: { slug: string } | null;
 };
 
@@ -69,6 +70,7 @@ export function aNegocio(f: FilaNegocio): Negocio {
     pedidoMinimo: Number(f.pedido_minimo),
     tiempoMin: f.tiempo_entrega_min,
     tiempoMax: f.tiempo_entrega_max,
+    destacadoHasta: f.destacado_hasta,
   };
 }
 
@@ -84,10 +86,17 @@ export function aProducto(f: FilaProducto): Producto {
   };
 }
 
-// Abiertos primero, luego por nombre.
+export const estaDestacado = (n: Negocio, ahora = Date.now()) =>
+  Boolean(n.destacadoHasta && new Date(n.destacadoHasta).getTime() > ahora);
+
+// Abiertos primero (los destacados al frente), luego por nombre.
 function ordenar(negocios: Negocio[]) {
+  const ahora = Date.now();
   return [...negocios].sort(
-    (a, b) => Number(b.abierto) - Number(a.abierto) || a.nombre.localeCompare(b.nombre, "es"),
+    (a, b) =>
+      Number(b.abierto) - Number(a.abierto) ||
+      Number(estaDestacado(b, ahora)) - Number(estaDestacado(a, ahora)) ||
+      a.nombre.localeCompare(b.nombre, "es"),
   );
 }
 

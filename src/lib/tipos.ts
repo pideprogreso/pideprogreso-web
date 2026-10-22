@@ -12,6 +12,7 @@ export type Negocio = {
   logoUrl: string | null;
   portadaUrl: string | null;
   abierto: boolean;
+  destacadoHasta?: string | null; // hasta cuándo sale primero en el inicio (lo pone el admin)
   aceptaEntrega: boolean;
   aceptaRecoger: boolean;
   costoEnvio: number;

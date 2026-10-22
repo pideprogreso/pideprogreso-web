@@ -8,15 +8,22 @@ import {
   obtenerNegociosAdmin,
   obtenerPedidosAdmin,
   obtenerReportes,
+  mesActual,
+  obtenerPagosMes,
   obtenerResumenMes,
   requerirAdmin,
   type NegocioAdmin,
+  type PagoMes,
   type ResumenMes,
 } from "@/lib/admin";
 import { buscarCategoria } from "@/lib/categorias";
 import { ESTADOS_FINALES } from "@/lib/estados";
 import { dinero } from "@/lib/formato";
+import { estaDestacado } from "@/lib/datos";
 import { BotonEstadoNegocio } from "./boton-estado-negocio";
+import { ControlesCobro } from "./controles-cobro";
+
+const nombreMes = new Intl.DateTimeFormat("es-MX", { month: "long" });
 
 export const metadata: Metadata = { title: "Administración" };
 
@@ -32,11 +39,13 @@ export default function PaginaAdmin() {
 
 async function Contenido() {
   await requerirAdmin();
-  const [negocios, pedidos, reportes, mes] = await Promise.all([
+  const mesPago = mesActual();
+  const [negocios, pedidos, reportes, mes, pagos] = await Promise.all([
     obtenerNegociosAdmin(),
     obtenerPedidosAdmin(),
     obtenerReportes(),
     obtenerResumenMes(),
+    obtenerPagosMes(mesPago),
   ]);
   const reportesPendientes = reportes.filter((r) => !r.resuelto).length;
   const hoy = inicioDeHoy();
@@ -66,18 +75,18 @@ async function Contenido() {
 
       <Grupo titulo="Por aprobar" cuenta={pendientes.length} resaltado vacio="No hay solicitudes nuevas.">
         {pendientes.map((n) => (
-          <Tarjeta key={n.id} negocio={n} mes={mes.get(n.id)} />
+          <Tarjeta key={n.id} negocio={n} mes={mes.get(n.id)} cobro={{ mes: mesPago, pago: pagos.get(n.id) }} />
         ))}
       </Grupo>
       <Grupo titulo="Publicados" cuenta={aprobados.length} vacio="Aún no hay negocios publicados.">
         {aprobados.map((n) => (
-          <Tarjeta key={n.id} negocio={n} mes={mes.get(n.id)} />
+          <Tarjeta key={n.id} negocio={n} mes={mes.get(n.id)} cobro={{ mes: mesPago, pago: pagos.get(n.id) }} />
         ))}
       </Grupo>
       {suspendidos.length > 0 && (
         <Grupo titulo="Suspendidos" cuenta={suspendidos.length} vacio="">
           {suspendidos.map((n) => (
-            <Tarjeta key={n.id} negocio={n} mes={mes.get(n.id)} />
+            <Tarjeta key={n.id} negocio={n} mes={mes.get(n.id)} cobro={{ mes: mesPago, pago: pagos.get(n.id) }} />
           ))}
         </Grupo>
       )}
@@ -129,7 +138,15 @@ function Grupo({
   );
 }
 
-function Tarjeta({ negocio: n, mes }: { negocio: NegocioAdmin; mes?: ResumenMes }) {
+function Tarjeta({
+  negocio: n,
+  mes,
+  cobro,
+}: {
+  negocio: NegocioAdmin;
+  mes?: ResumenMes;
+  cobro: { mes: string; pago: PagoMes | undefined };
+}) {
   return (
     <article className={`flex flex-col rounded-2xl border-2 p-4 ${n.estado === "pendiente" ? "border-vino-700" : "border-borde"}`}>
       <div className="flex items-start gap-3">
@@ -176,6 +193,15 @@ function Tarjeta({ negocio: n, mes }: { negocio: NegocioAdmin; mes?: ResumenMes 
           {dinero(mes?.entregado ?? 0)} entregado
           {(mes?.perdidos ?? 0) > 0 && <span className="text-suave"> · {mes!.perdidos} cancelados o rechazados</span>}
         </p>
+      )}
+      {n.estado === "aprobado" && (
+        <ControlesCobro
+          id={n.id}
+          mes={cobro.mes}
+          nombreMes={nombreMes.format(new Date(`${cobro.mes}T12:00:00`))}
+          pago={cobro.pago}
+          destacadoHasta={estaDestacado(n) ? n.destacadoHasta! : null}
+        />
       )}
       <div className="mt-auto flex flex-wrap items-center gap-2 pt-4">
         {n.estado === "pendiente" && (

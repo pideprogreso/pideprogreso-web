@@ -93,6 +93,22 @@ export async function obtenerPedidosAdmin(): Promise<PedidoAdmin[]> {
 }
 
 export type ResumenMes = { pedidos: number; entregado: number; perdidos: number };
+export type PagoMes = { monto: number; metodo: "transferencia" | "mercado_pago" | "efectivo" };
+
+// Primer día del mes en curso en Nuevo Progreso, como "2026-10-01".
+export const mesActual = () =>
+  `${new Intl.DateTimeFormat("en-CA", { timeZone: "America/Matamoros", year: "numeric", month: "2-digit" }).format(new Date())}-01`;
+
+export async function obtenerPagosMes(mes: string): Promise<Map<string, PagoMes>> {
+  const supabase = await crearClienteServidor();
+  const { data, error } = await supabase
+    .from("pagos_negocio")
+    .select("negocio_id, monto, metodo")
+    .eq("mes", mes)
+    .returns<{ negocio_id: string; monto: number | string; metodo: PagoMes["metodo"] }[]>();
+  if (error) throw error;
+  return new Map(data.map((f) => [f.negocio_id, { monto: Number(f.monto), metodo: f.metodo }]));
+}
 
 // Pedidos del mes por negocio, para mostrarle a cada negocio lo que recibe por su cuota.
 // shortcut: suma en el servidor trayendo los pedidos de 1,000 en 1,000; con decenas de miles al mes, pasar a una vista agregada en Supabase.
