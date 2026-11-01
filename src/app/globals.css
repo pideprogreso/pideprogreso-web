@@ -80,3 +80,21 @@ body {
     scroll-behavior: auto !important;
   }
 }
+
+/* Próximamente: los avisos de pedido van cayendo en el celular. */
+@keyframes aviso {
+  0% { opacity: 0; transform: translateY(-14px) scale(0.96); }
+  100% { opacity: 1; transform: none; }
+}
+.aviso {
+  animation: aviso 600ms var(--ease-salida) both;
+}
+@keyframes cinta {
+  to { transform: translateX(-50%); }
+}
+.cinta {
+  animation: cinta 40s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .cinta { animation: none; }
+}

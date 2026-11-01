@@ -21,9 +21,9 @@ export function FormularioInteresado() {
     return (
       <div role="status" className="py-8 text-center">
         <CircleCheck aria-hidden size={48} className="mx-auto text-vino-700" />
-        <h2 className="mt-4 font-display text-2xl font-extrabold tracking-[-0.02em]">¡Listo, {datos.nombre.split(" ")[0]}!</h2>
+        <h2 className="mt-4 font-display text-2xl font-extrabold tracking-[-0.02em]">¡Apartado, {datos.nombre.split(" ")[0]}!</h2>
         <p className="mx-auto mt-2 max-w-xs text-suave">
-          Te escribimos por WhatsApp con el costo de la suscripción y cómo trabajamos.
+          Tu lugar de fundador está apartado. Te escribimos por WhatsApp con el precio y cómo trabajamos.
         </p>
       </div>
     );
@@ -81,7 +81,7 @@ export function FormularioInteresado() {
         disabled={enviando}
         className="flex h-14 w-full items-center justify-center rounded-full bg-vino-700 font-semibold text-white hover:bg-vino-800 disabled:opacity-60"
       >
-        {enviando ? "Enviando…" : "Quiero más información"}
+        {enviando ? "Apartando…" : "Quiero mi precio de fundador"}
       </button>
       <p className="text-center text-xs text-suave">Sin compromiso. Solo usamos tus datos para contactarte.</p>
     </form>
