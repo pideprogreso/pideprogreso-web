@@ -7,12 +7,13 @@ const PESTANAS = [
   { href: "/admin", texto: "Negocios" },
   { href: "/admin/pedidos", texto: "Pedidos" },
   { href: "/admin/reportes", texto: "Reportes" },
+  { href: "/admin/interesados", texto: "Interesados" },
 ] as const;
 
 export function PestanasAdmin() {
   const ruta = usePathname();
   return (
-    <nav aria-label="Administración" className="mt-3 flex gap-2">
+    <nav aria-label="Administración" className="mt-3 flex gap-2 overflow-x-auto">
       {PESTANAS.map(({ href, texto }) => {
         const activa = href === "/admin" ? ruta === "/admin" : ruta.startsWith(href);
         return (
@@ -20,7 +21,7 @@ export function PestanasAdmin() {
             key={href}
             href={href}
             aria-current={activa ? "page" : undefined}
-            className={`inline-flex h-11 items-center rounded-full px-5 font-semibold ${
+            className={`inline-flex h-11 shrink-0 items-center rounded-full px-5 font-semibold ${
               activa ? "bg-foreground text-white" : "bg-superficie hover:bg-superficie-2"
             }`}
           >

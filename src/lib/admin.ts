@@ -200,3 +200,27 @@ export async function obtenerReportes(): Promise<Reporte[]> {
     usuario: f.perfiles?.nombre || null,
   }));
 }
+
+export type Interesado = {
+  id: string;
+  nombre: string;
+  negocio: string;
+  telefono: string;
+  correo: string | null;
+  giro: string;
+  contactado: boolean;
+  creado_en: string;
+};
+
+export async function obtenerInteresados(): Promise<Interesado[]> {
+  const supabase = await crearClienteServidor();
+  const { data, error } = await supabase
+    .from("interesados")
+    .select("id, nombre, negocio, telefono, correo, giro, contactado, creado_en")
+    .order("contactado")
+    .order("creado_en", { ascending: false })
+    .limit(200)
+    .returns<Interesado[]>();
+  if (error) throw error;
+  return data;
+}

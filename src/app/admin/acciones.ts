@@ -68,3 +68,12 @@ export async function registrarPago(negocioId: string, mes: string, monto: numbe
   }
   return { ok: true };
 }
+
+export async function marcarInteresado(id: string, contactado: boolean): Promise<Resultado> {
+  if (!UUID.test(id)) return { ok: false, error: "Registro no válido." };
+  if (!(await esAdmin())) return { ok: false, error: "Solo un administrador puede hacer esto." };
+  const supabase = await crearClienteServidor();
+  const { error } = await supabase.from("interesados").update({ contactado: Boolean(contactado) }).eq("id", id);
+  if (error) return { ok: false, error: "No se pudo guardar. Intenta de nuevo." };
+  return { ok: true };
+}
