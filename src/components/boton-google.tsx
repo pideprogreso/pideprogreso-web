@@ -1,7 +1,7 @@
 "use client";
 
 import { useFormStatus } from "react-dom";
-import { entrarConGoogle } from "@/app/entrar/acciones";
+import { entrarConGoogle } from "@/app/(app)/entrar/acciones";
 
 export function BotonGoogle({ siguiente }: { siguiente: string }) {
   return (

@@ -4,6 +4,13 @@ import { supabaseKey, supabaseUrl } from "@/lib/supabase/config";
 
 // Renueva la sesión de Supabase en cada petición.
 export async function proxy(request: NextRequest) {
+  // En el dominio de lanzamiento (variable DOMINIO_PROXIMAMENTE en Netlify) solo existe la página de próximamente.
+  const dominio = process.env.DOMINIO_PROXIMAMENTE?.replace(/^www\./, "");
+  const host = (request.headers.get("x-forwarded-host") ?? request.headers.get("host") ?? "").split(":")[0];
+  if (dominio && host.replace(/^www\./, "") === dominio) {
+    return NextResponse.rewrite(new URL("/proximamente", request.url));
+  }
+
   let response = NextResponse.next({ request });
 
   // Sin credenciales (desarrollo inicial) la app funciona sin sesión.

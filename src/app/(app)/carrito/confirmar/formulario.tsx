@@ -4,7 +4,7 @@ import { ArrowLeft, Banknote, Bike, CreditCard, Home, MapPin, Store } from "luci
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
-import { confirmarPedido } from "@/app/pedidos/acciones";
+import { confirmarPedido } from "@/app/(app)/pedidos/acciones";
 import { useCarrito } from "@/components/carrito/proveedor";
 import { AceptacionLegal } from "@/components/aceptacion-legal";
 import { Campo, estiloCampo } from "@/components/campos";

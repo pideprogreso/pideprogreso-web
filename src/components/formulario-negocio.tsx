@@ -3,7 +3,7 @@
 import { Check, ChevronDown } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
-import { guardarNegocio, registrarNegocio, type DatosNegocio } from "@/app/panel/acciones";
+import { guardarNegocio, registrarNegocio, type DatosNegocio } from "@/app/(app)/panel/acciones";
 import { CATEGORIAS } from "@/lib/categorias";
 import { AceptacionLegal } from "./aceptacion-legal";
 import { Aviso, Campo, estiloCampo, Interruptor } from "./campos";

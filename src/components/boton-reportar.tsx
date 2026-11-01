@@ -3,7 +3,7 @@
 import { Check, MessageSquareWarning, X } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useRef, useState, useTransition } from "react";
-import { enviarReporte } from "@/app/reportes/acciones";
+import { enviarReporte } from "@/app/(app)/reportes/acciones";
 import { Aviso, estiloCampo } from "./campos";
 
 // Abre un formulario corto para reportar un problema de la página actual.
