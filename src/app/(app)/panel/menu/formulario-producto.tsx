@@ -51,7 +51,7 @@ export function FormularioProducto({
   return (
     <form onSubmit={enviar} className="mx-auto max-w-xl space-y-5 pt-6 md:pt-8">
       <header className="flex items-center gap-3">
-        <Link href="/panel/menu" aria-label="Volver al menú" className="grid size-10 place-items-center rounded-full bg-superficie">
+        <Link href="/panel/menu" aria-label="Volver al menú" className="pulsable grid size-10 place-items-center rounded-full bg-superficie">
           <ArrowLeft aria-hidden size={20} />
         </Link>
         <h2 className="font-display text-2xl font-bold">{d.id ? "Editar producto" : "Nuevo producto"}</h2>

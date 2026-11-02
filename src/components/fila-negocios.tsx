@@ -30,13 +30,13 @@ export function FilaNegocios({
         {verTodos && (
           <Link
             href={verTodos}
-            className="shrink-0 rounded-full bg-superficie px-4 py-2 text-sm font-semibold hover:bg-superficie-2"
+            className="pulsable shrink-0 rounded-full bg-superficie px-4 py-2 text-sm font-semibold hover:bg-superficie-2"
           >
             Ver todos
           </Link>
         )}
       </div>
-      <ul className="carrusel -mx-4 mt-4 flex gap-4 overflow-x-auto px-4 md:mx-0 md:px-0 md:[--margen:0px]">
+      <ul className="carrusel escalonado -mx-4 mt-4 flex gap-4 overflow-x-auto px-4 md:mx-0 md:px-0 md:[--margen:0px]">
         {negocios.map((n, i) => (
           <li key={n.id} className="w-[78vw] max-w-[320px] shrink-0 md:w-[300px]">
             <TarjetaNegocio negocio={n} prioridad={prioridad && i < 2} sizes="320px" />

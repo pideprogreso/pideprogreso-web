@@ -32,7 +32,7 @@ export default async function Inicio() {
           </p>
           <Link
             href="/negocios"
-            className="mt-5 hidden h-12 w-fit items-center rounded-full bg-white px-6 font-semibold text-foreground hover:bg-dorado-300 md:inline-flex"
+            className="pulsable mt-5 hidden h-12 w-fit items-center rounded-full bg-white px-6 font-semibold text-foreground hover:bg-dorado-300 md:inline-flex"
           >
             Ver todos los negocios
           </Link>
@@ -65,7 +65,7 @@ export default async function Inicio() {
             <h2 className="font-display text-[22px] font-bold leading-tight tracking-tight md:text-[28px]">
               Todos los negocios
             </h2>
-            <ul className="mt-4 grid gap-x-5 gap-y-7 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            <ul className="escalonado mt-4 grid gap-x-5 gap-y-7 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {negocios.map((n) => (
                 <li key={n.id}>
                   <TarjetaNegocio negocio={n} />
@@ -93,7 +93,7 @@ function SinNegocios() {
       </p>
       <Link
         href="/registro-negocio"
-        className="mt-6 inline-flex h-12 items-center rounded-full bg-vino-700 px-6 font-semibold text-white hover:bg-vino-800"
+        className="pulsable mt-6 inline-flex h-12 items-center rounded-full bg-vino-700 px-6 font-semibold text-white hover:bg-vino-800"
       >
         Registrar mi negocio
       </Link>
@@ -114,7 +114,7 @@ function InvitacionNegocios() {
         </p>
         <Link
           href="/registro-negocio"
-          className="mt-6 inline-flex h-12 items-center rounded-full bg-dorado-400 px-6 font-semibold text-foreground hover:bg-dorado-300"
+          className="pulsable mt-6 inline-flex h-12 items-center rounded-full bg-dorado-400 px-6 font-semibold text-foreground hover:bg-dorado-300"
         >
           Registrar mi negocio
         </Link>

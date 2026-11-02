@@ -99,7 +99,7 @@ export function FormularioAcceso() {
               setModo(m);
               setError(null);
             }}
-            className={`h-10 rounded-full text-sm font-semibold transition-colors ${
+            className={`h-10 rounded-full text-sm font-semibold ${
               modo === m ? "bg-white shadow-sm" : "text-suave"
             }`}
           >

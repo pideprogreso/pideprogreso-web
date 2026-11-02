@@ -212,7 +212,7 @@ function Tarjeta({
         )}
         {n.estado === "aprobado" && (
           <>
-            <Link href={`/negocios/${n.slug}`} className="inline-flex h-11 items-center rounded-full px-4 text-sm font-semibold hover:bg-superficie">
+            <Link href={`/negocios/${n.slug}`} className="pulsable inline-flex h-11 items-center rounded-full px-4 text-sm font-semibold hover:bg-superficie">
               Ver página
             </Link>
             <BotonEstadoNegocio id={n.id} estado="suspendido" texto="Suspender" nombre={n.nombre} />

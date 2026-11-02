@@ -37,7 +37,7 @@ async function Contenido() {
         <BotonGoogle siguiente="/carrito/confirmar" />
         <Link
           href="/entrar?siguiente=/carrito/confirmar"
-          className="flex h-14 items-center justify-center rounded-full border border-borde font-semibold hover:bg-superficie"
+          className="pulsable flex h-14 items-center justify-center rounded-full border border-borde font-semibold hover:bg-superficie"
         >
           Usar mi correo
         </Link>

@@ -35,7 +35,7 @@ async function Menu() {
         {/* En celular el botón flota sobre la barra inferior, al alcance del pulgar. */}
         <Link
           href="/panel/menu/nuevo"
-          className="fixed bottom-[calc(5rem+env(safe-area-inset-bottom))] right-4 z-20 inline-flex h-14 items-center gap-2 rounded-full bg-vino-700 px-5 font-semibold text-white shadow-lg shadow-vino-900/30 hover:bg-vino-800 md:static md:h-12 md:shadow-none"
+          className="pulsable fixed bottom-[calc(5rem+env(safe-area-inset-bottom))] right-4 z-20 inline-flex h-14 items-center gap-2 rounded-full bg-vino-700 px-5 font-semibold text-white shadow-lg shadow-vino-900/30 hover:bg-vino-800 md:static md:h-12 md:shadow-none"
         >
           <Plus aria-hidden size={20} />
           Producto

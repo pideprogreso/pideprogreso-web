@@ -43,7 +43,7 @@ async function Contenido() {
           <BotonGoogle siguiente="/registro-negocio" />
           <Link
             href="/entrar?modo=crear&siguiente=/registro-negocio"
-            className="flex h-14 items-center justify-center rounded-full border border-borde font-semibold hover:bg-superficie"
+            className="pulsable flex h-14 items-center justify-center rounded-full border border-borde font-semibold hover:bg-superficie"
           >
             Usar mi correo
           </Link>

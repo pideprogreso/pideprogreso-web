@@ -19,7 +19,7 @@ export function VistaCarrito() {
         <p className="mt-2 text-suave">Elige un negocio y agrega lo que se te antoje.</p>
         <Link
           href="/negocios"
-          className="mt-6 inline-flex h-12 items-center rounded-full bg-foreground px-6 font-semibold text-white hover:bg-vino-700"
+          className="pulsable mt-6 inline-flex h-12 items-center rounded-full bg-foreground px-6 font-semibold text-white hover:bg-vino-700"
         >
           Ver negocios
         </Link>
@@ -35,7 +35,7 @@ export function VistaCarrito() {
         <Link
           href={`/negocios/${negocio.slug}`}
           aria-label={`Volver a ${negocio.nombre}`}
-          className="grid size-10 place-items-center rounded-full bg-superficie"
+          className="pulsable grid size-10 place-items-center rounded-full bg-superficie"
         >
           <ArrowLeft aria-hidden size={20} />
         </Link>
@@ -120,7 +120,7 @@ export function VistaCarrito() {
         ) : (
           <Link
             href="/carrito/confirmar"
-            className="flex h-14 w-full items-center justify-center rounded-full bg-vino-700 text-base font-semibold text-white hover:bg-vino-800"
+            className="pulsable flex h-14 w-full items-center justify-center rounded-full bg-vino-700 text-base font-semibold text-white hover:bg-vino-800"
           >
             Continuar
           </Link>

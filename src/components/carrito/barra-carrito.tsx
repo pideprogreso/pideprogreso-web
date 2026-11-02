@@ -13,10 +13,10 @@ export function BarraCarrito() {
   if (piezas === 0 || ruta.startsWith("/carrito")) return null;
 
   return (
-    <div className="fixed inset-x-0 bottom-[calc(4rem+env(safe-area-inset-bottom))] z-30 px-3 pb-3 md:hidden">
+    <div className="sube fixed inset-x-0 bottom-[calc(4rem+env(safe-area-inset-bottom))] z-30 px-3 pb-3 md:hidden">
       <Link
         href="/carrito"
-        className="flex h-14 items-center gap-3 rounded-full bg-foreground pl-2 pr-5 text-white shadow-flotante"
+        className="pulsable flex h-14 items-center gap-3 rounded-full bg-foreground pl-2 pr-5 text-white shadow-flotante"
       >
         <span
           key={piezas}

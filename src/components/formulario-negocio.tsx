@@ -227,7 +227,7 @@ function Seccion({
           <span className="block font-display text-lg font-bold">{titulo}</span>
           <span className={`block truncate text-sm ${falta ? "font-semibold text-dorado-800" : "text-suave"}`}>{resumen}</span>
         </span>
-        <ChevronDown aria-hidden size={20} className="shrink-0 text-suave transition-transform group-open:rotate-180" />
+        <ChevronDown aria-hidden size={20} className="shrink-0 text-suave transition-transform group-open:rotate-180 motion-reduce:transition-none" />
       </summary>
       <div className="space-y-4 px-4">{children}</div>
     </details>

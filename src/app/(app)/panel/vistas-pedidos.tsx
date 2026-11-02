@@ -74,7 +74,7 @@ export function Desplegable({
           className="flex min-w-0 flex-1 items-center gap-2 text-left"
         >
           <span className="min-w-0 flex-1">{resumen}</span>
-          <ChevronDown aria-hidden size={18} className={`shrink-0 text-suave transition-transform ${abierto ? "rotate-180" : ""}`} />
+          <ChevronDown aria-hidden size={18} className={`shrink-0 text-suave transition-transform motion-reduce:transition-none ${abierto ? "rotate-180" : ""}`} />
         </button>
         {accion}
       </div>

@@ -49,7 +49,7 @@ function Barra({ ruta }: { ruta: string | null }) {
               <Link
                 href={href}
                 aria-current={activo ? "page" : undefined}
-                className={`flex h-full flex-col items-center justify-center gap-1 text-[11px] font-semibold ${
+                className={`pulsable flex h-full flex-col items-center justify-center gap-1 text-[11px] font-semibold ${
                   activo ? "text-foreground" : "text-suave"
                 }`}
               >

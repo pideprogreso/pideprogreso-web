@@ -52,7 +52,7 @@ export function ResumenLateral({ negocioId }: { negocioId: string }) {
       </div>
       <Link
         href="/carrito"
-        className="mt-4 flex h-12 items-center justify-center rounded-full bg-vino-700 font-semibold text-white hover:bg-vino-800"
+        className="pulsable mt-4 flex h-12 items-center justify-center rounded-full bg-vino-700 font-semibold text-white hover:bg-vino-800"
       >
         Ir a mi pedido
       </Link>
