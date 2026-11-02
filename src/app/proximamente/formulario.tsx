@@ -59,7 +59,7 @@ export function FormularioInteresado() {
           <option>Otro</option>
         </select>
       </Campo>
-      <Campo etiqueta="Teléfono o WhatsApp" id="telefono" ayuda="A este número te mandamos la información.">
+      <Campo etiqueta="Teléfono o WhatsApp (ahí te mandamos todo)" id="telefono">
         <input
           id="telefono"
           type="tel"
@@ -83,7 +83,7 @@ export function FormularioInteresado() {
       >
         {enviando ? "Apartando…" : "Quiero mi precio de fundador"}
       </button>
-      <p className="text-center text-xs text-suave">Sin compromiso. Solo usamos tus datos para contactarte.</p>
+      <p className="text-center text-sm text-suave">Sin compromiso. Solo usamos tus datos para contactarte.</p>
     </form>
   );
 }

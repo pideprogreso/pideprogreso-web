@@ -119,3 +119,18 @@ body {
   .paso:not(:first-child) { opacity: 0; }
   .barra { width: 60%; }
 }
+
+/* Entrada al hacer scroll; sin soporte, el contenido se ve igual. */
+@keyframes entra {
+  from { transform: translateY(32px); }
+}
+@supports (animation-timeline: view()) {
+  .entra {
+    animation: entra linear both;
+    animation-timeline: view();
+    animation-range: entry 0% entry 60%;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .entra { animation: none; }
+}
