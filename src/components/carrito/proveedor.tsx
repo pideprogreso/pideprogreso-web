@@ -1,14 +1,6 @@
 "use client";
 
-import {
-  createContext,
-  use,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-  type ReactNode,
-} from "react";
+import { useCallback, useMemo, useSyncExternalStore } from "react";
 
 export type LineaCarrito = {
   productoId: string;
@@ -43,7 +35,6 @@ type ContextoCarrito = {
 
 const CLAVE = "pideprogreso:carrito";
 const VACIO: Carrito = { negocio: null, lineas: [] };
-const Contexto = createContext<ContextoCarrito | null>(null);
 
 function leer(): Carrito {
   try {
@@ -58,25 +49,32 @@ function leer(): Carrito {
   }
 }
 
-export function ProveedorCarrito({ children }: { children: ReactNode }) {
-  const [carrito, setCarrito] = useState<Carrito>(VACIO);
-  const [cargado, setCargado] = useState(false);
+// El carrito vive en localStorage y se comparte entre componentes con useSyncExternalStore.
+let enMemoria: Carrito | null = null;
+const oyentes = new Set<() => void>();
 
-  useEffect(() => {
-    // Se lee después de montar para no romper la hidratación.
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setCarrito(leer());
-    setCargado(true);
-  }, []);
+function actual() {
+  return (enMemoria ??= leer());
+}
 
-  useEffect(() => {
-    if (!cargado) return;
-    try {
-      localStorage.setItem(CLAVE, JSON.stringify(carrito));
-    } catch {
-      // Sin almacenamiento (modo privado): el carrito vive solo en esta pestaña.
-    }
-  }, [carrito, cargado]);
+function suscribir(oyente: () => void) {
+  oyentes.add(oyente);
+  return () => oyentes.delete(oyente);
+}
+
+function setCarrito(cambio: (actual: Carrito) => Carrito) {
+  enMemoria = cambio(actual());
+  try {
+    localStorage.setItem(CLAVE, JSON.stringify(enMemoria));
+  } catch {
+    // Sin almacenamiento (modo privado): el carrito vive solo en esta pestaña.
+  }
+  oyentes.forEach((o) => o());
+}
+
+// Cada componente se suscribe por su cuenta: así cada uno se hidrata contra el carrito vacío del servidor.
+export function useCarrito(): ContextoCarrito {
+  const carrito = useSyncExternalStore(suscribir, actual, () => VACIO);
 
   const agregar = useCallback<ContextoCarrito["agregar"]>(
     (negocio, producto) => {
@@ -132,15 +130,9 @@ export function ProveedorCarrito({ children }: { children: ReactNode }) {
       cantidadDe: (id) => carrito.lineas.find((l) => l.productoId === id)?.cantidad ?? 0,
       agregar,
       cambiar,
-      vaciar: () => setCarrito(VACIO),
+      vaciar: () => setCarrito(() => VACIO),
     };
   }, [carrito, agregar, cambiar]);
 
-  return <Contexto value={valor}>{children}</Contexto>;
-}
-
-export function useCarrito() {
-  const valor = use(Contexto);
-  if (!valor) throw new Error("useCarrito debe usarse dentro de ProveedorCarrito");
   return valor;
 }
