@@ -84,10 +84,29 @@ body {
 /* Próximamente: los avisos de pedido van cayendo en el celular. */
 @keyframes aviso {
   0% { opacity: 0; transform: translateY(-14px) scale(0.96); }
-  100% { opacity: 1; transform: none; }
+  7%, 80% { opacity: 1; transform: none; }
+  88%, 100% { opacity: 0; transform: translateY(-6px); }
 }
 .aviso {
-  animation: aviso 600ms var(--ease-salida) both;
+  animation: aviso 8s var(--ease-salida) infinite both;
+}
+/* Lado del cliente: el estado del pedido va cambiando solo. */
+@keyframes paso {
+  0% { opacity: 0; transform: translateY(6px); }
+  4%, 30% { opacity: 1; transform: none; }
+  34%, 100% { opacity: 0; transform: translateY(-6px); }
+}
+.paso {
+  animation: paso 9s var(--ease-salida) infinite both;
+}
+@keyframes barra {
+  0%, 30% { width: 22%; }
+  36%, 63% { width: 60%; }
+  69%, 97% { width: 100%; }
+  100% { width: 22%; }
+}
+.barra {
+  animation: barra 9s var(--ease-salida) infinite;
 }
 @keyframes cinta {
   to { transform: translateX(-50%); }
@@ -96,5 +115,7 @@ body {
   animation: cinta 40s linear infinite;
 }
 @media (prefers-reduced-motion: reduce) {
-  .cinta { animation: none; }
+  .cinta, .aviso, .paso, .barra { animation: none; }
+  .paso:not(:first-child) { opacity: 0; }
+  .barra { width: 60%; }
 }

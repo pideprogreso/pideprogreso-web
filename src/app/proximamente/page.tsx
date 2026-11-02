@@ -113,7 +113,29 @@ export default function PaginaProximamente() {
         </div>
       </section>
 
-      <section id="registro" className="scroll-mt-4 bg-white text-foreground">
+      <section className="relative overflow-hidden bg-dorado-300 text-vino-900">
+        <div className="mx-auto grid max-w-6xl items-center gap-12 px-4 py-20 md:grid-cols-[360px_1fr] md:gap-20 md:px-8 md:py-28">
+          <div className="md:order-2">
+            <p className="text-sm font-bold uppercase tracking-wider text-vino-700">Del otro lado del celular</p>
+            <h2 className="mt-3 font-display text-[34px] font-extrabold leading-[1] tracking-[-0.03em] md:text-[52px]">
+              Alguien en Progreso tiene antojo. <span className="text-vino-700">Y no quiere salir.</span>
+            </h2>
+            <p className="mt-5 max-w-md text-lg text-vino-900/80">
+              Así lo van a vivir tus clientes: abren PideProgreso, ven tu menú con fotos y piden en tres toques. Sin
+              llamadas, sin “¿me repites?”, sin pedidos perdidos.
+            </p>
+            <ul className="mt-8 grid gap-3 sm:grid-cols-2">
+              <Ventaja titulo="Ven todo antes de pedir">Fotos, precios y cuánto tarda.</Ventaja>
+              <Ventaja titulo="Pagan como prefieren">Efectivo o transferencia.</Ventaja>
+              <Ventaja titulo="Saben en qué va">Recibido, preparando, en camino.</Ventaja>
+              <Ventaja titulo="Vuelven a pedir">Tu negocio queda a un toque.</Ventaja>
+            </ul>
+          </div>
+          <CelularCliente />
+        </div>
+      </section>
+
+      <section id="registro"className="scroll-mt-4 bg-white text-foreground">
         <div className="mx-auto grid max-w-6xl gap-10 px-4 py-16 md:grid-cols-[1fr_440px] md:gap-16 md:px-8 md:py-24">
           <div className="md:pt-6">
             <p className="inline-flex rounded-full bg-dorado-100 px-3 py-1 text-sm font-bold text-dorado-800">Solo para los primeros</p>
@@ -197,6 +219,72 @@ function Celular() {
         </div>
       </div>
     </div>
+  );
+}
+
+function CelularCliente() {
+  return (
+    <div aria-hidden className="relative mx-auto w-full max-w-[330px] md:order-1">
+      <div className="absolute -inset-8 rounded-full bg-white/40 blur-3xl" />
+      <div className="relative rounded-[44px] bg-black p-2.5 shadow-2xl">
+        <div className="relative h-[560px] overflow-hidden rounded-[36px] bg-white text-foreground">
+          <div className="absolute top-2.5 left-1/2 z-10 h-6 w-24 -translate-x-1/2 rounded-full bg-black" />
+          <div className="relative h-44">
+            <Image src="/demo/tacos.jpg" alt="" fill sizes="330px" className="object-cover" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
+            <div className="absolute bottom-3 left-4 text-white">
+              <p className="font-display text-xl font-extrabold">Taquería de la esquina</p>
+              <p className="text-xs text-white/85">Abierto · 20–30 min · Envío gratis</p>
+            </div>
+          </div>
+          <div className="space-y-2 p-3">
+            {[
+              { nombre: "Tacos de pastor (4)", precio: "$60", foto: "/demo/tacos-2.jpg", cuantos: 1 },
+              { nombre: "Agua de jamaica", precio: "$28", foto: "/demo/agua-fresca.jpg", cuantos: 2 },
+            ].map((p) => (
+              <div key={p.nombre} className="flex items-center gap-3 rounded-2xl p-1.5 ring-1 ring-borde">
+                <span className="relative size-14 shrink-0 overflow-hidden rounded-xl">
+                  <Image src={p.foto} alt="" fill sizes="56px" className="object-cover" />
+                </span>
+                <span className="flex-1">
+                  <span className="block text-sm font-semibold">{p.nombre}</span>
+                  <span className="block text-sm text-suave">{p.precio}</span>
+                </span>
+                <span className="mr-1 grid size-7 place-items-center rounded-full bg-vino-700 text-xs font-bold text-white">
+                  {p.cuantos}
+                </span>
+              </div>
+            ))}
+          </div>
+          <div className="absolute inset-x-3 bottom-3 rounded-3xl bg-white p-4 shadow-[0_-8px_40px_-12px_rgb(0_0_0/0.35)] ring-1 ring-borde">
+            <p className="text-xs font-semibold uppercase tracking-wide text-suave">Tu pedido</p>
+            <div className="relative mt-1 h-7">
+              {["Recibido por el negocio", "Preparando tu pedido", "¡Va en camino!"].map((e, i) => (
+                <p key={e} className="paso absolute inset-0 font-display text-lg font-extrabold" style={{ animationDelay: `${i * 3}s` }}>
+                  {e}
+                </p>
+              ))}
+            </div>
+            <div className="mt-3 h-2 overflow-hidden rounded-full bg-superficie">
+              <div className="barra h-full rounded-full bg-vino-700" />
+            </div>
+            <div className="mt-4 flex h-12 items-center justify-between rounded-full bg-vino-700 px-5 text-sm font-semibold text-white">
+              <span>3 productos</span>
+              <span>$116</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function Ventaja({ titulo, children }: { titulo: string; children: React.ReactNode }) {
+  return (
+    <li className="rounded-2xl bg-white/50 p-4 ring-1 ring-vino-900/10">
+      <p className="font-semibold">{titulo}</p>
+      <p className="text-sm text-vino-900/70">{children}</p>
+    </li>
   );
 }
 
