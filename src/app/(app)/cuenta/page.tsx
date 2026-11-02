@@ -37,7 +37,7 @@ async function Contenido() {
           <BotonGoogle siguiente="/cuenta" />
           <Link
             href="/entrar?siguiente=/cuenta"
-            className="flex h-14 items-center justify-center rounded-full border border-borde font-semibold hover:bg-superficie"
+            className="pulsable flex h-14 items-center justify-center rounded-full border border-borde font-semibold hover:bg-superficie"
           >
             Usar mi correo
           </Link>
@@ -56,13 +56,13 @@ async function Contenido() {
             <div className="mt-5 flex flex-wrap gap-3">
               <Link
                 href="/registro-negocio"
-                className="inline-flex h-12 items-center rounded-full bg-white px-6 font-semibold text-foreground"
+                className="pulsable inline-flex h-12 items-center rounded-full bg-white px-6 font-semibold text-foreground"
               >
                 Registrar mi negocio
               </Link>
               <Link
                 href="/entrar?siguiente=/panel"
-                className="inline-flex h-12 items-center rounded-full border border-white/40 px-6 font-semibold"
+                className="pulsable inline-flex h-12 items-center rounded-full border border-white/40 px-6 font-semibold"
               >
                 Ya tengo cuenta
               </Link>

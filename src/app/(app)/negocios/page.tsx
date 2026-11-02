@@ -91,13 +91,13 @@ async function Resultados({ searchParams }: { searchParams: Promise<Filtros> }) 
           </p>
           <Link
             href="/negocios"
-            className="mt-6 inline-flex h-11 items-center rounded-full bg-foreground px-5 font-semibold text-white"
+            className="pulsable mt-6 inline-flex h-11 items-center rounded-full bg-foreground px-5 font-semibold text-white"
           >
             Ver todos los negocios
           </Link>
         </div>
       ) : (
-        <ul className="mt-6 grid gap-x-5 gap-y-7 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <ul className="escalonado mt-6 grid gap-x-5 gap-y-7 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {resultados.map(({ negocio, coincidencias }, i) => (
             <li key={negocio.id}>
               <TarjetaNegocio negocio={negocio} prioridad={i < 2}>
@@ -134,7 +134,7 @@ function Filtro({
       href={href}
       aria-pressed={activo}
       scroll={false}
-      className={`inline-flex h-10 items-center rounded-full px-4 text-sm font-semibold transition-colors ${
+      className={`inline-flex h-10 items-center rounded-full px-4 text-sm font-semibold pulsable ${
         activo ? "bg-foreground text-white" : "bg-superficie hover:bg-superficie-2"
       }`}
     >

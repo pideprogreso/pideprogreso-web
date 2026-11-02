@@ -213,7 +213,7 @@ function Contactar({ pedido }: { pedido: Pedido }) {
           href={`https://wa.me/52${wa.slice(-10)}?text=${encodeURIComponent(`Hola, es sobre mi pedido #${pedido.folio} de PideProgreso.`)}`}
           target="_blank"
           rel="noopener"
-          className="inline-flex h-11 items-center gap-2 rounded-full bg-[#1f8f4e] px-5 text-sm font-semibold text-white hover:bg-[#187540]"
+          className="pulsable inline-flex h-11 items-center gap-2 rounded-full bg-[#1f8f4e] px-5 text-sm font-semibold text-white hover:bg-[#187540]"
         >
           <MessageCircle aria-hidden size={18} /> Escribir por WhatsApp
         </a>
@@ -221,7 +221,7 @@ function Contactar({ pedido }: { pedido: Pedido }) {
       {telefono && (
         <a
           href={`tel:${telefono.replace(/[^\d+]/g, "")}`}
-          className="inline-flex h-11 items-center gap-2 rounded-full bg-superficie px-5 text-sm font-semibold hover:bg-superficie-2"
+          className="pulsable inline-flex h-11 items-center gap-2 rounded-full bg-superficie px-5 text-sm font-semibold hover:bg-superficie-2"
         >
           <Phone aria-hidden size={18} /> Llamar al negocio
         </a>

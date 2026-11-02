@@ -73,7 +73,7 @@ async function Contenido({ params }: { params: Promise<{ slug: string }> }) {
         <Link
           href="/negocios"
           aria-label="Volver a los negocios"
-          className="absolute left-4 top-4 grid size-10 place-items-center rounded-full bg-white shadow-md hover:bg-superficie"
+          className="pulsable absolute left-4 top-4 grid size-10 place-items-center rounded-full bg-white shadow-md hover:bg-superficie"
         >
           <ArrowLeft aria-hidden size={20} />
         </Link>
@@ -163,7 +163,7 @@ async function Contenido({ params }: { params: Promise<{ slug: string }> }) {
           {secciones.map(([seccion, lista]) => (
             <section key={seccion} id={anclaDe(seccion)} className="scroll-mt-16 pt-8 md:scroll-mt-36">
               <h2 className="font-display text-[22px] font-bold tracking-tight">{seccion}</h2>
-              <ul className="mt-3 grid gap-x-6 md:grid-cols-2 md:gap-y-4">
+              <ul className="escalonado mt-3 grid gap-x-6 md:grid-cols-2 md:gap-y-4">
                 {lista.map((p) => (
                   <ProductoFila
                     key={p.id}

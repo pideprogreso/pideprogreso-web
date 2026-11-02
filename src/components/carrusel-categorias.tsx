@@ -13,10 +13,10 @@ export function CarruselCategorias({ activa }: { activa?: string }) {
             <Link
               href={esActiva ? "/negocios" : `/negocios?categoria=${c.slug}`}
               aria-current={esActiva ? "true" : undefined}
-              className="group flex w-[76px] flex-col items-center gap-2 md:w-full"
+              className="pulsable group flex w-[76px] flex-col items-center gap-2 md:w-full"
             >
               <span
-                className={`relative grid aspect-square w-full place-items-center overflow-hidden rounded-2xl bg-superficie transition ${
+                className={`relative grid aspect-square w-full place-items-center overflow-hidden rounded-2xl bg-superficie transition-shadow ${
                   esActiva
                     ? "ring-[2.5px] ring-foreground ring-offset-2"
                     : "group-hover:ring-1 group-hover:ring-borde"
@@ -28,7 +28,7 @@ export function CarruselCategorias({ activa }: { activa?: string }) {
                     alt=""
                     fill
                     sizes="(min-width: 768px) 140px, 76px"
-                    className="object-cover transition-transform duration-500 group-hover:scale-105"
+                    className="object-cover transition-transform duration-300 ease-out mueve:group-hover:scale-105"
                   />
                 ) : (
                   <Store aria-hidden size={28} className="text-vino-700" />

@@ -55,7 +55,7 @@ export default function PaginaProximamente() {
         <div className="relative mx-auto max-w-6xl px-4 md:px-8">
           <header className="flex h-16 items-center justify-between md:h-20">
             <Logo />
-            <a href="#registro" className="inline-flex h-10 items-center rounded-full bg-white/10 px-4 text-sm font-semibold hover:bg-white/20">
+            <a href="#registro" className="pulsable inline-flex h-10 items-center rounded-full bg-white/10 px-4 text-sm font-semibold hover:bg-white/20">
               Apartar mi lugar
             </a>
           </header>
@@ -73,7 +73,7 @@ export default function PaginaProximamente() {
               <div className="entra mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
                 <a
                   href="#registro"
-                  className="inline-flex h-14 items-center justify-center rounded-full bg-dorado-300 px-7 text-lg font-bold text-vino-900 transition-transform hover:bg-dorado-400 active:scale-[0.98]"
+                  className="pulsable inline-flex h-14 items-center justify-center rounded-full bg-dorado-300 px-7 text-lg font-bold text-vino-900 hover:bg-dorado-400"
                 >
                   Quiero estar desde el inicio
                 </a>
@@ -181,7 +181,7 @@ export default function PaginaProximamente() {
               <details key={p} className="group rounded-2xl bg-superficie px-5 py-4 open:bg-superficie-2">
                 <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-lg font-semibold">
                   {p}
-                  <ChevronDown aria-hidden size={20} className="shrink-0 transition-transform group-open:rotate-180" />
+                  <ChevronDown aria-hidden size={20} className="shrink-0 transition-transform group-open:rotate-180 motion-reduce:transition-none" />
                 </summary>
                 <p className="mt-3">{r}</p>
               </details>
@@ -281,7 +281,7 @@ function CelularCliente() {
               ))}
             </div>
             <div className="mt-3 h-2 overflow-hidden rounded-full bg-white">
-              <div className="barra h-full rounded-full bg-vino-700" />
+              <div className="barra h-full origin-left rounded-full bg-vino-700" />
             </div>
             <div className="mt-4 flex h-12 items-center justify-between rounded-full bg-vino-700 px-5 text-sm font-semibold text-white">
               <span>3 productos</span>

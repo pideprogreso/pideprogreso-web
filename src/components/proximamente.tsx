@@ -7,7 +7,7 @@ export function Proximamente({ titulo, mensaje }: { titulo: string; mensaje: str
       <p className="mx-auto mt-2 max-w-xs text-suave">{mensaje}</p>
       <Link
         href="/"
-        className="mt-6 inline-flex h-12 items-center rounded-full bg-vino-700 px-6 font-semibold text-white hover:bg-vino-800"
+        className="pulsable mt-6 inline-flex h-12 items-center rounded-full bg-vino-700 px-6 font-semibold text-white hover:bg-vino-800"
       >
         Ir al inicio
       </Link>

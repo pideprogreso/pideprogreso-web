@@ -22,7 +22,7 @@ export function BotonAgregar({
         disabled={deshabilitado}
         onClick={() => agregar(negocio, producto)}
         aria-label={`Agregar ${producto.nombre}`}
-        className="grid size-9 place-items-center rounded-full bg-white text-foreground shadow-[0_2px_8px_rgb(0_0_0/0.18)] transition-transform hover:scale-105 active:scale-95 disabled:pointer-events-none disabled:opacity-40"
+        className="grid size-9 place-items-center rounded-full bg-white text-foreground shadow-[0_2px_8px_rgb(0_0_0/0.18)] disabled:pointer-events-none disabled:opacity-40"
       >
         <Plus aria-hidden size={20} strokeWidth={2.6} />
       </button>

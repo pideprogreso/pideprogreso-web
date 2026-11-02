@@ -10,7 +10,7 @@ export function BotonPedido() {
   return (
     <Link
       href="/carrito"
-      className="inline-flex h-11 items-center gap-2 rounded-full bg-foreground px-4 text-[15px] font-semibold text-white hover:bg-vino-700"
+      className="pulsable inline-flex h-11 items-center gap-2 rounded-full bg-foreground px-4 text-[15px] font-semibold text-white hover:bg-vino-700"
     >
       <ShoppingBag aria-hidden size={18} />
       <span>Mi pedido</span>

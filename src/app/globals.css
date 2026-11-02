@@ -35,8 +35,14 @@
   --font-display: var(--font-titulos);
 
   --shadow-flotante: 0 12px 32px -10px rgb(20 18 18 / 0.35);
-  --ease-salida: cubic-bezier(0.2, 0.8, 0.2, 1);
+  /* Curvas: salida fuerte para la UI, ida y vuelta para lo que se mueve en pantalla, cajón tipo iOS. */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
 }
+
+/* Movimiento al pasar el puntero: solo con mouse y sin preferencia de menos movimiento. */
+@custom-variant mueve (@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference));
 
 body {
   background: var(--color-background);
@@ -63,21 +69,101 @@ body {
   outline-offset: 2px;
 }
 
+/* Todo lo que se pulsa se hunde un poco: confirma que la app escuchó el toque. */
+@layer base {
+  button,
+  .pulsable {
+    transition-property: color, background-color, border-color, box-shadow, opacity, scale;
+    transition-duration: 160ms;
+    transition-timing-function: var(--ease-out);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    button:not(:disabled):active,
+    .pulsable:active {
+      scale: 0.97;
+    }
+  }
+
+  /* Modales: entran desde 0.95 y salen más rápido de lo que entran. */
+  dialog,
+  dialog::backdrop {
+    opacity: 0;
+    transition:
+      opacity 150ms var(--ease-out),
+      scale 150ms var(--ease-out),
+      overlay 150ms allow-discrete,
+      display 150ms allow-discrete;
+  }
+  dialog {
+    scale: 0.95;
+  }
+  dialog[open],
+  dialog[open]::backdrop {
+    opacity: 1;
+    scale: 1;
+    transition-duration: 220ms;
+  }
+  @starting-style {
+    dialog[open],
+    dialog[open]::backdrop {
+      opacity: 0;
+    }
+    dialog[open] {
+      scale: 0.95;
+    }
+  }
+}
+
 /* Al agregar al pedido, el contador da un pequeño salto. */
 @keyframes salto {
   0% { transform: scale(1); }
-  40% { transform: scale(1.25); }
+  40% { transform: scale(1.2); }
   100% { transform: scale(1); }
 }
 .salto {
-  animation: salto 320ms var(--ease-salida);
+  animation: salto 240ms var(--ease-out);
 }
 
+/* La barra del pedido sube desde abajo al aparecer; es transición, así que se puede interrumpir. */
+.sube {
+  transition:
+    translate 300ms var(--ease-drawer),
+    opacity 300ms var(--ease-drawer);
+  @starting-style {
+    translate: 0 100%;
+    opacity: 0;
+  }
+}
+
+/* Listas que llegan juntas: escalón corto, sin bloquear toques. */
+@keyframes aparece {
+  from { opacity: 0; translate: 0 8px; }
+}
+.escalonado > * {
+  animation: aparece 300ms var(--ease-out) both;
+}
+.escalonado > :nth-child(2) { animation-delay: 40ms; }
+.escalonado > :nth-child(3) { animation-delay: 80ms; }
+.escalonado > :nth-child(4) { animation-delay: 120ms; }
+.escalonado > :nth-child(5) { animation-delay: 160ms; }
+.escalonado > :nth-child(6) { animation-delay: 200ms; }
+.escalonado > :nth-child(n + 7) { animation-delay: 240ms; }
+
+/* Menos movimiento: sin desplazamientos ni escalas; se conservan opacidad y color. */
+@keyframes aparece-suave {
+  from { opacity: 0; }
+}
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: 0.01ms !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
+  .salto { animation: none; }
+  .escalonado > * { animation-name: aparece-suave; }
+  dialog, dialog[open] { scale: none; }
+  @starting-style {
+    dialog[open] { scale: none; }
+  }
+  .sube {
+    @starting-style {
+      translate: none;
+    }
   }
 }
 
@@ -88,7 +174,7 @@ body {
   88%, 100% { opacity: 0; transform: translateY(-6px); }
 }
 .aviso {
-  animation: aviso 8s var(--ease-salida) infinite both;
+  animation: aviso 8s var(--ease-out) infinite both;
 }
 /* Lado del cliente: el estado del pedido va cambiando solo. */
 @keyframes paso {
@@ -97,16 +183,16 @@ body {
   34%, 100% { opacity: 0; transform: translateY(-6px); }
 }
 .paso {
-  animation: paso 9s var(--ease-salida) infinite both;
+  animation: paso 9s var(--ease-out) infinite both;
 }
 @keyframes barra {
-  0%, 30% { width: 22%; }
-  36%, 63% { width: 60%; }
-  69%, 97% { width: 100%; }
-  100% { width: 22%; }
+  0%, 30% { transform: scaleX(0.22); }
+  36%, 63% { transform: scaleX(0.6); }
+  69%, 97% { transform: none; }
+  100% { transform: scaleX(0.22); }
 }
 .barra {
-  animation: barra 9s var(--ease-salida) infinite;
+  animation: barra 9s var(--ease-in-out) infinite;
 }
 @keyframes cinta {
   to { transform: translateX(-50%); }
@@ -117,7 +203,7 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .cinta, .aviso, .paso, .barra { animation: none; }
   .paso:not(:first-child) { opacity: 0; }
-  .barra { width: 60%; }
+  .barra { transform: scaleX(0.6); }
 }
 
 /* Entrada al hacer scroll; sin soporte, el contenido se ve igual. */

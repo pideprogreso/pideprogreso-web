@@ -48,7 +48,7 @@ export function FormularioConfirmar({ cliente }: { cliente: DatosCliente }) {
         <p className="mt-2 text-suave">Tu pedido está vacío.</p>
         <Link
           href="/negocios"
-          className="mt-6 inline-flex h-12 items-center rounded-full bg-foreground px-6 font-semibold text-white"
+          className="pulsable mt-6 inline-flex h-12 items-center rounded-full bg-foreground px-6 font-semibold text-white"
         >
           Ver negocios
         </Link>
@@ -109,7 +109,7 @@ export function FormularioConfirmar({ cliente }: { cliente: DatosCliente }) {
         <Link
           href="/carrito"
           aria-label="Volver a mi pedido"
-          className="grid size-10 place-items-center rounded-full bg-superficie"
+          className="pulsable grid size-10 place-items-center rounded-full bg-superficie"
         >
           <ArrowLeft aria-hidden size={20} />
         </Link>

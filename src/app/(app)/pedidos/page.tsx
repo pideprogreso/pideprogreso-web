@@ -45,7 +45,7 @@ async function Lista() {
         </p>
         <Link
           href="/negocios"
-          className="mt-6 inline-flex h-12 items-center rounded-full bg-foreground px-6 font-semibold text-white"
+          className="pulsable mt-6 inline-flex h-12 items-center rounded-full bg-foreground px-6 font-semibold text-white"
         >
           Ver negocios
         </Link>
@@ -59,7 +59,7 @@ async function Lista() {
         const activo = !ESTADOS_FINALES.includes(p.estado);
         return (
           <li key={p.id}>
-            <Link href={`/pedidos/${p.id}`} className="flex items-center gap-4 py-4">
+            <Link href={`/pedidos/${p.id}`} className="pulsable flex items-center gap-4 py-4">
               <span className="relative size-16 shrink-0 overflow-hidden rounded-xl bg-superficie [container-type:inline-size]">
                 <FotoNegocio src={p.negocio.portadaUrl} nombre={p.negocio.nombre} sizes="64px" />
               </span>

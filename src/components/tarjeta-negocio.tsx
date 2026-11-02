@@ -17,14 +17,14 @@ export function TarjetaNegocio({
   const gratis = negocio.aceptaEntrega && negocio.costoEnvio === 0;
 
   return (
-    <Link href={`/negocios/${negocio.slug}`} className="group block">
+    <Link href={`/negocios/${negocio.slug}`} className="pulsable group block">
       <div className="relative aspect-[16/10] overflow-hidden rounded-xl bg-superficie [container-type:inline-size]">
         <FotoNegocio
           src={negocio.portadaUrl}
           nombre={negocio.nombre}
           sizes={sizes}
           prioridad={prioridad}
-          className="transition-transform duration-500 ease-[var(--ease-salida)] group-hover:scale-[1.03]"
+          className="transition-transform duration-300 ease-out mueve:group-hover:scale-[1.03]"
         />
         {!negocio.abierto && (
           <div className="absolute inset-0 grid place-items-center bg-black/55">

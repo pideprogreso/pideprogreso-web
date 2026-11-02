@@ -44,12 +44,12 @@ export function Interruptor({
       aria-label={etiqueta}
       disabled={deshabilitado}
       onClick={() => onCambio(!activo)}
-      className={`relative inline-flex h-7 w-12 shrink-0 items-center rounded-full transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-vino-700 disabled:opacity-50 ${
+      className={`relative inline-flex h-7 w-12 shrink-0 items-center rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-vino-700 disabled:opacity-50 ${
         activo ? "bg-abierto" : "bg-superficie-2"
       }`}
     >
       <span
-        className={`inline-block size-5 rounded-full bg-white shadow transition-transform duration-200 ease-salida ${
+        className={`inline-block size-5 rounded-full bg-white shadow transition-transform duration-200 ease-out motion-reduce:transition-none ${
           activo ? "translate-x-6" : "translate-x-1"
         }`}
       />

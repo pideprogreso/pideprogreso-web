@@ -48,7 +48,7 @@ export function FormularioRecuperar() {
       className="space-y-5"
     >
       <header className="flex items-start gap-3">
-        <Link href="/entrar" aria-label="Volver" className="grid size-10 shrink-0 place-items-center rounded-full bg-superficie">
+        <Link href="/entrar" aria-label="Volver" className="pulsable grid size-10 shrink-0 place-items-center rounded-full bg-superficie">
           <ArrowLeft aria-hidden size={20} />
         </Link>
         <div>

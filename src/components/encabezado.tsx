@@ -22,7 +22,7 @@ export function Encabezado() {
           <BotonPedido />
           <Link
             href="/cuenta"
-            className="inline-flex h-11 items-center rounded-full px-4 text-[15px] font-semibold hover:bg-superficie"
+            className="pulsable inline-flex h-11 items-center rounded-full px-4 text-[15px] font-semibold hover:bg-superficie"
           >
             Cuenta
           </Link>

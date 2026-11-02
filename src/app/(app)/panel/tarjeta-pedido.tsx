@@ -129,7 +129,7 @@ function Detalle({ p }: { p: Pedido }) {
               href={`https://www.google.com/maps?q=${p.ubicacion.lat},${p.ubicacion.lng}`}
               target="_blank"
               rel="noreferrer"
-              className="mt-2 inline-flex h-10 items-center gap-1.5 rounded-full bg-superficie px-4 text-sm font-semibold hover:bg-superficie-2"
+              className="pulsable mt-2 inline-flex h-10 items-center gap-1.5 rounded-full bg-superficie px-4 text-sm font-semibold hover:bg-superficie-2"
             >
               <MapPin aria-hidden size={16} className="text-vino-700" />
               Ver en Google Maps
@@ -167,7 +167,7 @@ function Contacto({ p }: { p: Pedido }) {
       <a
         href={`tel:${p.telefonoContacto}`}
         aria-label={`Llamar a ${p.nombreContacto}`}
-        className="grid size-12 shrink-0 place-items-center rounded-full border border-borde hover:bg-superficie"
+        className="pulsable grid size-12 shrink-0 place-items-center rounded-full border border-borde hover:bg-superficie"
       >
         <Phone aria-hidden size={20} />
       </a>
@@ -176,7 +176,7 @@ function Contacto({ p }: { p: Pedido }) {
         target="_blank"
         rel="noreferrer"
         aria-label={`WhatsApp a ${p.nombreContacto}`}
-        className="grid size-12 shrink-0 place-items-center rounded-full border border-borde hover:bg-superficie"
+        className="pulsable grid size-12 shrink-0 place-items-center rounded-full border border-borde hover:bg-superficie"
       >
         <MessageCircle aria-hidden size={20} />
       </a>
