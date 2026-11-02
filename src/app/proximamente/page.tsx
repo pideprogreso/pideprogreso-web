@@ -202,10 +202,10 @@ export default function PaginaProximamente() {
 
 function Celular() {
   return (
-    <div data-ui aria-hidden className="relative mx-auto w-full max-w-[320px]">
+    <div data-ui aria-hidden className="relative mx-auto w-full max-w-[270px]">
       <div className="relative rounded-[44px] bg-black p-2.5">
-        <div className="relative h-[500px] overflow-hidden rounded-[36px]">
-          <Image src="/demo/pizza.jpg" alt="" fill sizes="320px" className="object-cover blur-[2px] brightness-50" />
+        <div className="relative h-[540px] overflow-hidden rounded-[36px]">
+          <Image src="/demo/pizza.jpg" alt="" fill sizes="270px" className="object-cover blur-[2px] brightness-50" />
           <div className="absolute top-2.5 left-1/2 h-6 w-24 -translate-x-1/2 rounded-full bg-black" />
           <div className="relative px-4 pt-14 text-center font-display font-bold">
             <span className="block text-sm text-white/80">viernes</span>
@@ -240,12 +240,12 @@ function Celular() {
 
 function CelularCliente() {
   return (
-    <div data-ui aria-hidden className="relative mx-auto w-full max-w-[320px] lg:order-1">
+    <div data-ui aria-hidden className="relative mx-auto w-full max-w-[270px] lg:order-1">
       <div className="relative rounded-[44px] bg-black p-2.5">
-        <div className="relative h-[560px] overflow-hidden rounded-[36px] bg-white text-foreground">
+        <div className="relative h-[570px] overflow-hidden rounded-[36px] bg-white text-foreground">
           <div className="absolute top-2.5 left-1/2 z-10 h-6 w-24 -translate-x-1/2 rounded-full bg-black" />
           <div className="relative h-44">
-            <Image src="/demo/tacos.jpg" alt="" fill sizes="320px" className="object-cover" />
+            <Image src="/demo/tacos.jpg" alt="" fill sizes="270px" className="object-cover" />
             <div className="absolute inset-0 bg-black/45" />
             <div className="absolute bottom-3 left-4 text-white">
               <span className="block font-display text-xl font-extrabold">Taquería de la esquina</span>
