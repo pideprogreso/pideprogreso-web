@@ -43,13 +43,13 @@ export function FormularioInteresado() {
       }}
     >
       <Campo etiqueta="Tu nombre" id="nombre">
-        <input id="nombre" required autoComplete="name" value={datos.nombre} onChange={cambiar("nombre")} className={estiloCampo} />
+        <input id="nombre" required autoComplete="name" value={datos.nombre} onChange={cambiar("nombre")} className={`${estiloCampo} caret-vino-700`} />
       </Campo>
       <Campo etiqueta="Nombre del negocio" id="negocio">
-        <input id="negocio" required autoComplete="organization" value={datos.negocio} onChange={cambiar("negocio")} className={estiloCampo} />
+        <input id="negocio" required autoComplete="organization" value={datos.negocio} onChange={cambiar("negocio")} className={`${estiloCampo} caret-vino-700`} />
       </Campo>
       <Campo etiqueta="Giro" id="giro">
-        <select id="giro" required value={datos.giro} onChange={cambiar("giro")} className={estiloCampo}>
+        <select id="giro" required value={datos.giro} onChange={cambiar("giro")} className={`${estiloCampo} caret-vino-700`}>
           <option value="" disabled>
             Elige uno
           </option>
@@ -69,11 +69,11 @@ export function FormularioInteresado() {
           placeholder="899 123 4567"
           value={datos.telefono}
           onChange={cambiar("telefono")}
-          className={estiloCampo}
+          className={`${estiloCampo} caret-vino-700`}
         />
       </Campo>
       <Campo etiqueta="Correo (opcional)" id="correo">
-        <input id="correo" type="email" autoComplete="email" value={datos.correo} onChange={cambiar("correo")} className={estiloCampo} />
+        <input id="correo" type="email" autoComplete="email" value={datos.correo} onChange={cambiar("correo")} className={`${estiloCampo} caret-vino-700`} />
       </Campo>
       {error && <Aviso>{error}</Aviso>}
       <button
