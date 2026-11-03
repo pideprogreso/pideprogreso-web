@@ -1,6 +1,7 @@
 import { Check as IconoCheck, ChevronDown } from "lucide-react";
 import type { Metadata } from "next";
 import Image from "next/image";
+import { Sarten, Ticket } from "@/components/escenas-pedido";
 import { RepartidorMoto } from "@/components/repartidor-moto";
 import { FormularioInteresado } from "./formulario";
 
@@ -281,7 +282,13 @@ function CelularCliente() {
                 </span>
               ))}
             </div>
-            <div className="mt-1 h-9 overflow-hidden">
+            <div className="relative mt-1 h-9 overflow-hidden">
+              <div className="ventana-1 absolute inset-0">
+                <Ticket ancho={60} />
+              </div>
+              <div className="ventana-2 absolute inset-0">
+                <Sarten ancho={60} />
+              </div>
               <RepartidorMoto ancho={60} ciclo />
             </div>
             <div className="mt-1 h-2 overflow-hidden rounded-full bg-white">

@@ -1,8 +1,8 @@
 // Repartidor en moto con la caja de PideProgreso. Sale con un jalón y cruza su contenedor.
-// `ciclo` la sincroniza con el estado "¡Va en camino!" del celular de muestra en Próximamente.
-export function RepartidorMoto({ ancho = 128, ciclo = false }: { ancho?: number; ciclo?: boolean }) {
+// `ciclo` la sincroniza con el estado "¡Va en camino!" del celular de muestra en Próximamente; `quieta` la deja estacionada.
+export function RepartidorMoto({ ancho = 128, ciclo = false, quieta = false }: { ancho?: number; ciclo?: boolean; quieta?: boolean }) {
   return (
-    <div aria-hidden className={`w-full ${ciclo ? "moto-ciclo" : "moto-viaje"}`} style={{ "--moto": `${ancho}px` } as React.CSSProperties}>
+    <div aria-hidden className={quieta ? "moto-quieta" : `w-full ${ciclo ? "moto-ciclo" : "moto-viaje"}`} style={{ "--moto": `${ancho}px` } as React.CSSProperties}>
       <svg width={ancho} viewBox="0 0 140 80" className="block overflow-visible">
         <g className="moto-viento" stroke="#a8a29e" strokeWidth="2.5" strokeLinecap="round">
           <line x1="2" y1="30" x2="14" y2="30" />

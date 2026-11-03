@@ -324,3 +324,106 @@ body {
   .moto-viento, .moto-humo { display: none; }
   .moto-ciclo { animation: none; opacity: 0; }
 }
+
+/* Escenas del pedido. La parte principal corre una vez al entrar al estado; después solo loops calmados. */
+.moto-quieta .moto-viento,
+.moto-quieta .moto-humo { display: none; }
+.moto-quieta * { animation: none; }
+
+.asienta {
+  animation: asienta 400ms var(--ease-out) both;
+}
+@keyframes asienta {
+  from { transform: translateY(8px); opacity: 0; }
+}
+.sube-ticket {
+  animation: sube-ticket 700ms var(--ease-out) both;
+}
+@keyframes sube-ticket {
+  from { transform: translateY(40px); }
+}
+.aparece-check {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: aparece-check 350ms var(--ease-out) 600ms both;
+}
+@keyframes aparece-check {
+  0% { transform: scale(0.6); opacity: 0; }
+  70% { transform: scale(1.06); opacity: 1; }
+  100% { transform: none; }
+}
+.dibuja {
+  stroke-dasharray: 1;
+  animation: dibuja 300ms var(--ease-out) 850ms both;
+}
+@keyframes dibuja {
+  from { stroke-dashoffset: 1; }
+  to { stroke-dashoffset: 0; }
+}
+.vapor {
+  opacity: 0;
+  animation: vapor 2.4s var(--ease-in-out) infinite;
+}
+@keyframes vapor {
+  0% { transform: translateY(4px); opacity: 0; }
+  40% { opacity: 0.6; }
+  100% { transform: translateY(-10px); opacity: 0; }
+}
+.flama {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: flama 1.3s var(--ease-in-out) infinite alternate;
+}
+@keyframes flama {
+  to { transform: scaleY(0.86); }
+}
+.cierra {
+  transform-box: view-box;
+  transform-origin: 49px 32px;
+  animation: cierra 400ms var(--ease-out) 150ms both;
+}
+@keyframes cierra {
+  from { transform: rotate(-24deg) translateY(-3px); }
+}
+.sello {
+  animation: sello 550ms var(--ease-out) 450ms both;
+}
+@keyframes sello {
+  0% { transform: translateY(-24px); opacity: 0; }
+  60% { transform: translateY(2px); opacity: 1; }
+  80% { transform: translateY(-1px); }
+  100% { transform: none; }
+}
+.confeti {
+  transform-box: fill-box;
+  transform-origin: center;
+  opacity: 0;
+  animation: confeti 1.1s var(--ease-out) 250ms forwards;
+}
+@keyframes confeti {
+  0% { transform: scale(0.6); opacity: 1; }
+  55% { transform: translate(var(--x), var(--y)) rotate(var(--giro)); opacity: 1; }
+  100% { transform: translate(var(--x), calc(var(--y) + 16px)) rotate(var(--giro)); opacity: 0; }
+}
+
+/* Celular de muestra: cada ilustración se ve durante su paso del ciclo de 9s. */
+.ventana-1 { animation: ventana-1 9s linear infinite; }
+.ventana-2 { animation: ventana-2 9s linear infinite; }
+@keyframes ventana-1 {
+  0%, 2% { opacity: 0; }
+  5%, 29% { opacity: 1; }
+  32%, 100% { opacity: 0; }
+}
+@keyframes ventana-2 {
+  0%, 35% { opacity: 0; }
+  38%, 62% { opacity: 1; }
+  65%, 100% { opacity: 0; }
+}
+
+/* Menos movimiento: escenas quietas que solo aparecen con un fundido. */
+@media (prefers-reduced-motion: reduce) {
+  .escena { animation: aparece-suave 300ms var(--ease-out) both; }
+  .escena *, .ventana-1 *, .ventana-2 * { animation: none !important; }
+  .ventana-1 { animation: none; opacity: 1; }
+  .ventana-2 { animation: none; opacity: 0; }
+}
