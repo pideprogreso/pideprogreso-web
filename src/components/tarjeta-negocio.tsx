@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ViewTransition } from "react";
 import { dinero } from "@/lib/formato";
 import type { Negocio } from "@/lib/tipos";
 import { FotoNegocio } from "./foto";
@@ -7,36 +8,41 @@ export function TarjetaNegocio({
   negocio,
   prioridad = false,
   sizes = "(min-width: 1280px) 300px, (min-width: 768px) 33vw, 90vw",
+  morph = false,
   children,
 }: {
   negocio: Negocio;
   prioridad?: boolean;
   sizes?: string;
+  // Solo en listas donde el negocio aparece una vez: el nombre de la transición debe ser único en la página.
+  morph?: boolean;
   children?: React.ReactNode;
 }) {
   const gratis = negocio.aceptaEntrega && negocio.costoEnvio === 0;
 
   return (
     <Link href={`/negocios/${negocio.slug}`} className="pulsable group block">
-      <div className="relative aspect-[16/10] overflow-hidden rounded-xl bg-superficie [container-type:inline-size]">
-        <FotoNegocio
-          src={negocio.portadaUrl}
-          nombre={negocio.nombre}
-          sizes={sizes}
-          prioridad={prioridad}
-          className="transition-transform duration-300 ease-out mueve:group-hover:scale-[1.03]"
-        />
-        {!negocio.abierto && (
-          <div className="absolute inset-0 grid place-items-center bg-black/55">
-            <span className="font-display text-lg font-bold text-white">Cerrado por ahora</span>
-          </div>
-        )}
-        {negocio.abierto && gratis && (
-          <span className="absolute left-2.5 top-2.5 rounded-full bg-dorado-400 px-2.5 py-1 text-xs font-bold text-foreground">
-            Envío gratis
-          </span>
-        )}
-      </div>
+      <ViewTransition name={morph ? `portada-${negocio.slug}` : undefined} share={morph ? "morph" : undefined} default="none">
+        <div className="relative aspect-[16/10] overflow-hidden rounded-xl bg-superficie [container-type:inline-size]">
+          <FotoNegocio
+            src={negocio.portadaUrl}
+            nombre={negocio.nombre}
+            sizes={sizes}
+            prioridad={prioridad}
+            className="transition-transform duration-300 ease-out mueve:group-hover:scale-[1.03]"
+          />
+          {!negocio.abierto && (
+            <div className="absolute inset-0 grid place-items-center bg-black/55">
+              <span className="font-display text-lg font-bold text-white">Cerrado por ahora</span>
+            </div>
+          )}
+          {negocio.abierto && gratis && (
+            <span className="absolute left-2.5 top-2.5 rounded-full bg-dorado-400 px-2.5 py-1 text-xs font-bold text-foreground">
+              Envío gratis
+            </span>
+          )}
+        </div>
+      </ViewTransition>
 
       <div className="mt-2.5 flex items-start justify-between gap-3">
         <div className="min-w-0">

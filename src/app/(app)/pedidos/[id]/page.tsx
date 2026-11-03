@@ -2,22 +2,22 @@ import { Check, MessageCircle, Phone } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Suspense } from "react";
 import { EscenaPedido } from "@/components/escenas-pedido";
 import { ESTADOS_FINALES, pasosDe, textoEstado } from "@/lib/estados";
 import { dinero } from "@/lib/formato";
 import { obtenerPedido, type Pedido } from "@/lib/pedidos";
 import { Actualizador } from "./actualizador";
 import { BotonCancelar } from "./boton-cancelar";
+import { SuspenseRevela } from "@/components/revela";
 
 export const metadata: Metadata = { title: "Mi pedido" };
 
 export default function PaginaPedido({ params, searchParams }: PageProps<"/pedidos/[id]">) {
   return (
     <div className="mx-auto max-w-2xl px-4 md:px-8">
-      <Suspense fallback={<Cargando />}>
+      <SuspenseRevela fallback={<Cargando />}>
         <Contenido params={params} searchParams={searchParams} />
-      </Suspense>
+      </SuspenseRevela>
     </div>
   );
 }
@@ -49,7 +49,7 @@ async function Contenido({
 
       <section className="pt-6 md:pt-10">
         {nuevo && (
-          <p className="mb-4 inline-flex items-center gap-2 rounded-full bg-abierto/10 px-3 py-1.5 text-sm font-semibold text-abierto">
+          <p className="cambia mb-4 inline-flex items-center gap-2 rounded-full bg-abierto/10 px-3 py-1.5 text-sm font-semibold text-abierto">
             <Check aria-hidden size={16} strokeWidth={3} /> Enviamos tu pedido a {pedido.negocio.nombre}
           </p>
         )}

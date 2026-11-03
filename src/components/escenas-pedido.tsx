@@ -181,7 +181,7 @@ function BolsaDibujo({ x = 0, escala = 1, conSello = true }: { x?: number; escal
 }
 
 // Listo: la bolsa se cierra y baja el sello dorado con un pequeño rebote.
-function Bolsa() {
+export function Bolsa() {
   return (
     <svg width={128} viewBox="0 0 140 80" className="block overflow-visible">
       <Sombra rx={30} />

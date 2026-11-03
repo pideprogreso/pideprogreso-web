@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Suspense } from "react";
 import { CarruselCategorias } from "@/components/carrusel-categorias";
 import { TarjetaNegocio } from "@/components/tarjeta-negocio";
 import { buscarCategoria } from "@/lib/categorias";
 import { buscar } from "@/lib/datos";
 import { dinero } from "@/lib/formato";
+import { SuspenseRevela } from "@/components/revela";
 
 export const metadata: Metadata = { title: "Negocios" };
 
@@ -14,9 +14,9 @@ type Filtros = Record<string, string | string[] | undefined>;
 export default function PaginaNegocios({ searchParams }: PageProps<"/negocios">) {
   return (
     <div className="mx-auto max-w-7xl px-4 md:px-8">
-      <Suspense fallback={<Cargando />}>
+      <SuspenseRevela fallback={<Cargando />}>
         <Resultados searchParams={searchParams} />
-      </Suspense>
+      </SuspenseRevela>
     </div>
   );
 }
@@ -100,7 +100,7 @@ async function Resultados({ searchParams }: { searchParams: Promise<Filtros> }) 
         <ul className="escalonado mt-6 grid gap-x-5 gap-y-7 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {resultados.map(({ negocio, coincidencias }, i) => (
             <li key={negocio.id}>
-              <TarjetaNegocio negocio={negocio} prioridad={i < 2}>
+              <TarjetaNegocio negocio={negocio} prioridad={i < 2} morph>
                 {coincidencias.length > 0 && (
                   <ul className="mt-2 space-y-1 border-l-2 border-dorado-400 pl-3 text-sm">
                     {coincidencias.map((p) => (

@@ -3,13 +3,14 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Suspense } from "react";
 import { BotonAgregar } from "@/components/carrito/boton-agregar";
 import { ResumenLateral } from "@/components/carrito/resumen-lateral";
 import { FotoNegocio, iniciales } from "@/components/foto";
 import { obtenerNegocio } from "@/lib/datos";
 import { dinero } from "@/lib/formato";
 import type { Negocio, Producto } from "@/lib/tipos";
+import { SuspenseRevela } from "@/components/revela";
+import { ViewTransition } from "react";
 
 export async function generateMetadata({
   params,
@@ -21,9 +22,9 @@ export async function generateMetadata({
 
 export default function PaginaNegocio({ params }: PageProps<"/negocios/[slug]">) {
   return (
-    <Suspense fallback={<Cargando />}>
+    <SuspenseRevela fallback={<Cargando />}>
       <Contenido params={params} />
-    </Suspense>
+    </SuspenseRevela>
   );
 }
 
@@ -63,12 +64,16 @@ async function Contenido({ params }: { params: Promise<{ slug: string }> }) {
   return (
     <article className="mx-auto max-w-7xl md:px-8">
       <div className="relative h-56 overflow-hidden bg-superficie [container-type:inline-size] md:mt-6 md:h-[320px] md:rounded-3xl">
-        <FotoNegocio
-          src={negocio.portadaUrl}
-          nombre={negocio.nombre}
-          sizes="(min-width: 1280px) 1216px, 100vw"
-          prioridad
-        />
+        <ViewTransition name={`portada-${negocio.slug}`} share="morph" default="none">
+          <div className="absolute inset-0">
+            <FotoNegocio
+              src={negocio.portadaUrl}
+              nombre={negocio.nombre}
+              sizes="(min-width: 1280px) 1216px, 100vw"
+              prioridad
+            />
+          </div>
+        </ViewTransition>
         <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
         <Link
           href="/negocios"

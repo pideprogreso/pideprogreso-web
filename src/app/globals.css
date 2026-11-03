@@ -427,3 +427,58 @@ body {
   .ventana-1 { animation: none; opacity: 1; }
   .ventana-2 { animation: none; opacity: 0; }
 }
+
+/* Transiciones de vista: la portada del negocio viaja de la tarjeta al encabezado,
+   y al navegar el esqueleto de carga cede su lugar al contenido. */
+::view-transition-group(.morph) {
+  animation-duration: 300ms;
+  animation-timing-function: var(--ease-out);
+}
+::view-transition-image-pair(.morph) {
+  animation-name: vt-blur;
+}
+@keyframes vt-blur {
+  30% { filter: blur(2px); }
+}
+::view-transition-old(.sale-carga) {
+  animation: vt-sale 150ms var(--ease-out) both;
+}
+::view-transition-new(.entra-contenido) {
+  animation: vt-entra 220ms var(--ease-out) 60ms both;
+}
+@keyframes vt-sale {
+  to { opacity: 0; }
+}
+@keyframes vt-entra {
+  from { opacity: 0; transform: translateY(8px); }
+}
+
+/* Panel: el pedido que acaba de llegar entra desde arriba y lo rodea un anillo dorado que se apaga. */
+.llega {
+  position: relative;
+  border-radius: 1rem;
+  animation: llega 400ms var(--ease-out) both;
+}
+.llega::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: 0 0 0 3px #f2b632;
+  opacity: 0;
+  pointer-events: none;
+  animation: resalta 1.8s var(--ease-out) 300ms;
+}
+@keyframes llega {
+  from { opacity: 0; transform: translateY(-8px) scale(0.98); }
+}
+@keyframes resalta {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*) { animation: none !important; }
+  ::view-transition-new(.entra-contenido) { animation-name: aparece-suave; }
+  .llega { animation-name: aparece-suave; }
+}
