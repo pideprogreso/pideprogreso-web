@@ -1,8 +1,9 @@
-import { Check, MessageCircle, Phone } from "lucide-react";
+import { Check, House, MessageCircle, Phone, Store } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
+import { RepartidorMoto } from "@/components/repartidor-moto";
 import { ESTADOS_FINALES, pasosDe, textoEstado } from "@/lib/estados";
 import { dinero } from "@/lib/formato";
 import { obtenerPedido, type Pedido } from "@/lib/pedidos";
@@ -67,6 +68,16 @@ async function Contenido({
           {titulo}
         </h1>
         <p className="mt-2 text-suave">{detalle}</p>
+        {pedido.estado === "en_camino" && (
+          <div aria-hidden className="relative mt-6 h-28 overflow-hidden rounded-2xl bg-superficie">
+            <Store size={22} className="absolute bottom-4 left-4 text-suave" />
+            <House size={22} className="absolute bottom-4 right-4 text-suave" />
+            <div className="absolute inset-x-4 bottom-[18px] border-t-2 border-dashed border-borde" />
+            <div className="absolute inset-x-10 bottom-3">
+              <RepartidorMoto />
+            </div>
+          </div>
+        )}
       </section>
 
       {pedido.estado !== "cancelado" && pedido.estado !== "rechazado" && <Linea pedido={pedido} />}
