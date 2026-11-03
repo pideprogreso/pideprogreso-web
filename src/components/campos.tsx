@@ -59,7 +59,7 @@ export function Interruptor({
 
 export function Aviso({ children }: { children: React.ReactNode }) {
   return (
-    <p role="alert" className="rounded-xl bg-vino-50 px-3 py-2 text-sm font-medium text-vino-700">
+    <p role="alert" className="cambia rounded-xl bg-vino-50 px-3 py-2 text-sm font-medium text-vino-700">
       {children}
     </p>
   );
