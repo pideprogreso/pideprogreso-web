@@ -228,3 +228,99 @@ body {
     filter: blur(2px);
   }
 }
+
+/* Repartidor en moto (pedido en camino): jalón hacia atrás, arranque y cruce en 1.4s; luego solo ruedas y suspensión. */
+.moto-viaje {
+  animation: moto-viaje 1.4s var(--ease-in-out) both;
+}
+@keyframes moto-viaje {
+  0% { translate: 0 0; }
+  14% { translate: -4px 0; }
+  100% { translate: calc(100% - var(--moto)) 0; }
+}
+.moto-jalon {
+  transform-box: view-box;
+  transform-origin: 46px 64px;
+  animation: jalon 1.4s var(--ease-out) both;
+}
+@keyframes jalon {
+  0%, 8% { transform: none; }
+  20% { transform: rotate(-8deg); }
+  42% { transform: rotate(2deg); }
+  58%, 100% { transform: none; }
+}
+.moto-rueda {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: rueda 400ms linear infinite;
+}
+@keyframes rueda {
+  to { transform: rotate(360deg); }
+}
+.moto-cuerpo {
+  animation: suspension 450ms var(--ease-in-out) infinite alternate;
+}
+@keyframes suspension {
+  to { transform: translateY(1px); }
+}
+.moto-viento {
+  animation: viento 450ms linear 3 both;
+}
+@keyframes viento {
+  0% { transform: translateX(6px); opacity: 0; }
+  30% { opacity: 0.8; }
+  100% { transform: translateX(-12px); opacity: 0; }
+}
+.moto-humo {
+  transform-box: fill-box;
+  transform-origin: center;
+  opacity: 0;
+  animation: humo 700ms var(--ease-out) 150ms;
+}
+@keyframes humo {
+  from { transform: scale(0.4); opacity: 0.7; }
+  to { transform: translate(-14px, -4px) scale(1.6); opacity: 0; }
+}
+
+/* En el celular de muestra la moto sale cuando el estado cambia a "¡Va en camino!" (6s del ciclo de 9s). */
+.moto-ciclo {
+  animation: moto-ciclo 9s var(--ease-in-out) infinite;
+}
+@keyframes moto-ciclo {
+  0%, 66% { translate: 0 0; opacity: 0; }
+  67.5% { translate: 0 0; opacity: 1; }
+  69% { translate: -3px 0; }
+  85%, 93% { translate: calc(100% - var(--moto)) 0; opacity: 1; }
+  97%, 100% { translate: calc(100% - var(--moto)) 0; opacity: 0; }
+}
+.moto-ciclo .moto-jalon {
+  animation: jalon-ciclo 9s var(--ease-out) infinite;
+}
+@keyframes jalon-ciclo {
+  0%, 68% { transform: none; }
+  70% { transform: rotate(-8deg); }
+  73% { transform: rotate(2deg); }
+  75%, 100% { transform: none; }
+}
+.moto-ciclo .moto-viento {
+  animation-iteration-count: infinite;
+}
+.moto-ciclo .moto-humo {
+  animation: humo-ciclo 9s var(--ease-out) infinite;
+}
+@keyframes humo-ciclo {
+  0%, 68% { transform: scale(0.4); opacity: 0; }
+  68.5% { transform: scale(0.4); opacity: 0.7; }
+  76%, 100% { transform: translate(-14px, -4px) scale(1.6); opacity: 0; }
+}
+
+/* Menos movimiento: la moto aparece quieta con un fundido; en el celular de muestra no se muestra. */
+@media (prefers-reduced-motion: reduce) {
+  .moto-viaje {
+    translate: calc(100% - var(--moto)) 0;
+    animation: aparece-suave 300ms var(--ease-out) both;
+  }
+  .moto-viaje *, .moto-ciclo * { animation: none !important; }
+  .moto-viento, .moto-humo { display: none; }
+  .moto-ciclo { animation: none; opacity: 0; }
+}

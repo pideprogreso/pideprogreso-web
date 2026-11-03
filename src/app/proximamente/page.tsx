@@ -1,6 +1,7 @@
 import { Check as IconoCheck, ChevronDown } from "lucide-react";
 import type { Metadata } from "next";
 import Image from "next/image";
+import { RepartidorMoto } from "@/components/repartidor-moto";
 import { FormularioInteresado } from "./formulario";
 
 export const metadata: Metadata = {
@@ -280,7 +281,10 @@ function CelularCliente() {
                 </span>
               ))}
             </div>
-            <div className="mt-3 h-2 overflow-hidden rounded-full bg-white">
+            <div className="mt-1 h-9 overflow-hidden">
+              <RepartidorMoto ancho={60} ciclo />
+            </div>
+            <div className="mt-1 h-2 overflow-hidden rounded-full bg-white">
               <div className="barra h-full origin-left rounded-full bg-vino-700" />
             </div>
             <div className="mt-4 flex h-12 items-center justify-between rounded-full bg-vino-700 px-5 text-sm font-semibold text-white">
