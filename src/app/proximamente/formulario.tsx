@@ -19,7 +19,7 @@ export function FormularioInteresado() {
 
   if (enviado) {
     return (
-      <div role="status" className="py-8 text-center">
+      <div role="status" className="cambia py-8 text-center">
         <CircleCheck aria-hidden size={48} className="mx-auto text-vino-700" />
         <h2 className="mt-4 font-display text-2xl font-extrabold tracking-[-0.02em]">¡Apartado, {datos.nombre.split(" ")[0]}!</h2>
         <p className="mx-auto mt-2 max-w-xs text-suave">
@@ -49,7 +49,7 @@ export function FormularioInteresado() {
         <input id="negocio" required autoComplete="organization" value={datos.negocio} onChange={cambiar("negocio")} className={`${estiloCampo} caret-vino-700`} />
       </Campo>
       <Campo etiqueta="Giro" id="giro">
-        <select id="giro" required value={datos.giro} onChange={cambiar("giro")} className={`${estiloCampo} caret-vino-700`}>
+        <select id="giro" required value={datos.giro} onChange={cambiar("giro")} className={`pulsable ${estiloCampo} caret-vino-700`}>
           <option value="" disabled>
             Elige uno
           </option>
@@ -81,7 +81,9 @@ export function FormularioInteresado() {
         disabled={enviando}
         className="flex h-14 w-full items-center justify-center rounded-full bg-vino-700 font-semibold text-white hover:bg-vino-800 disabled:opacity-60"
       >
-        {enviando ? "Apartando…" : "Quiero mi precio de fundador"}
+        <span key={String(enviando)} className="cambia">
+          {enviando ? "Apartando…" : "Quiero mi precio de fundador"}
+        </span>
       </button>
       <p className="text-center text-sm text-suave">Sin compromiso. Solo usamos tus datos para contactarte.</p>
     </form>

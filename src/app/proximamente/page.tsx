@@ -61,16 +61,16 @@ export default function PaginaProximamente() {
           </header>
 
           <div className="grid items-center gap-12 pt-8 pb-16 lg:grid-cols-[1fr_340px] lg:gap-16 lg:pt-14 lg:pb-24">
-            <div>
-              <h1 className="entra font-display text-[40px] font-extrabold leading-[0.95] tracking-[-0.035em] md:text-[72px]">
+            <div className="escalonado">
+              <h1 className="font-display text-[40px] font-extrabold leading-[0.95] tracking-[-0.035em] md:text-[72px]">
                 <span className="block">Suena tu celular.</span>
                 <span className="block">Es otro pedido.</span>
               </h1>
-              <p className="entra mt-8 max-w-xl text-lg leading-relaxed text-white/85 md:text-xl">
+              <p className="mt-8 max-w-xl text-lg leading-relaxed text-white/85 md:text-xl">
                 Imagínalo: muy pronto la gente de Nuevo Progreso va a pedir desde su celular a los negocios de aquí.
                 La pregunta es si el tuyo va a estar ahí cuando lo busquen.
               </p>
-              <div className="entra mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
+              <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
                 <a
                   href="#registro"
                   className="pulsable inline-flex h-14 items-center justify-center rounded-full bg-dorado-300 px-7 text-lg font-bold text-vino-900 hover:bg-dorado-400"
@@ -178,10 +178,10 @@ export default function PaginaProximamente() {
           </h2>
           <div className="mt-8 space-y-2">
             {PREGUNTAS.map(({ p, r }) => (
-              <details key={p} className="group rounded-2xl bg-superficie px-5 py-4 open:bg-superficie-2">
-                <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-lg font-semibold">
+              <details key={p} className="group rounded-2xl bg-superficie px-5 py-4 transition-colors duration-200 open:bg-superficie-2">
+                <summary className="pulsable flex cursor-pointer list-none items-center justify-between gap-4 text-lg font-semibold">
                   {p}
-                  <ChevronDown aria-hidden size={20} className="shrink-0 transition-transform group-open:rotate-180 motion-reduce:transition-none" />
+                  <ChevronDown aria-hidden size={20} className="shrink-0 transition-transform duration-200 ease-out group-open:rotate-180 motion-reduce:transition-none" />
                 </summary>
                 <p className="mt-3">{r}</p>
               </details>
