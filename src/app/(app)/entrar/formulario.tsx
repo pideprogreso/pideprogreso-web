@@ -88,7 +88,13 @@ export function FormularioAcceso() {
         <span className="h-px flex-1 bg-borde" />o con tu correo<span className="h-px flex-1 bg-borde" />
       </div>
 
-      <div role="tablist" aria-label="Tipo de acceso" className="grid grid-cols-2 rounded-full bg-superficie p-1">
+      <div role="tablist" aria-label="Tipo de acceso" className="relative grid grid-cols-2 rounded-full bg-superficie p-1">
+        <span
+          aria-hidden
+          className={`absolute inset-y-1 left-1 w-[calc(50%-4px)] rounded-full bg-white shadow-sm transition-transform duration-200 ease-out motion-reduce:transition-none ${
+            modo === "crear" ? "translate-x-full" : ""
+          }`}
+        />
         {(["entrar", "crear"] as const).map((m) => (
           <button
             key={m}
@@ -99,9 +105,7 @@ export function FormularioAcceso() {
               setModo(m);
               setError(null);
             }}
-            className={`h-10 rounded-full text-sm font-semibold ${
-              modo === m ? "bg-white shadow-sm" : "text-suave"
-            }`}
+            className={`relative h-10 rounded-full text-sm font-semibold ${modo === m ? "text-foreground" : "text-suave"}`}
           >
             {m === "entrar" ? "Ya tengo cuenta" : "Soy nuevo"}
           </button>

@@ -1,8 +1,9 @@
 "use client";
 
-import { ArrowLeft, Minus, Plus, ShoppingBag, Trash2 } from "lucide-react";
+import { ArrowLeft, Minus, Plus, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { useCarrito } from "@/components/carrito/proveedor";
+import { Bolsa } from "@/components/escenas-pedido";
 import { dinero } from "@/lib/formato";
 
 export function VistaCarrito() {
@@ -12,9 +13,9 @@ export function VistaCarrito() {
   if (!negocio || carrito.lineas.length === 0) {
     return (
       <div className="px-6 pt-20 text-center">
-        <span className="mx-auto grid size-20 place-items-center rounded-full bg-superficie">
-          <ShoppingBag aria-hidden size={34} />
-        </span>
+        <div aria-hidden className="flex justify-center">
+          <Bolsa />
+        </div>
         <h1 className="mt-4 font-display text-2xl font-bold">Tu pedido está vacío</h1>
         <p className="mt-2 text-suave">Elige un negocio y agrega lo que se te antoje.</p>
         <Link

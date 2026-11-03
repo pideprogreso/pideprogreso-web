@@ -68,7 +68,7 @@ export default async function Inicio() {
             <ul className="escalonado mt-4 grid gap-x-5 gap-y-7 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {negocios.map((n) => (
                 <li key={n.id}>
-                  <TarjetaNegocio negocio={n} />
+                  <TarjetaNegocio negocio={n} morph />
                 </li>
               ))}
             </ul>

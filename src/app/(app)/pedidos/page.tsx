@@ -1,11 +1,12 @@
-import { ChevronRight, Receipt } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Suspense } from "react";
+import { Ticket } from "@/components/escenas-pedido";
 import { FotoNegocio } from "@/components/foto";
 import { ESTADOS_FINALES, etiquetaCorta } from "@/lib/estados";
 import { dinero } from "@/lib/formato";
 import { obtenerMisPedidos } from "@/lib/pedidos";
+import { SuspenseRevela } from "@/components/revela";
 
 export const metadata: Metadata = { title: "Mis pedidos" };
 
@@ -23,9 +24,9 @@ export default function PaginaPedidos() {
       <h1 className="pt-6 font-display text-[28px] font-extrabold tracking-[-0.02em] md:pt-10 md:text-[36px]">
         Mis pedidos
       </h1>
-      <Suspense fallback={<Cargando />}>
+      <SuspenseRevela fallback={<Cargando />}>
         <Lista />
-      </Suspense>
+      </SuspenseRevela>
     </div>
   );
 }
@@ -36,9 +37,9 @@ async function Lista() {
   if (pedidos.length === 0) {
     return (
       <div className="mt-8 rounded-3xl bg-superficie px-6 py-14 text-center">
-        <span className="mx-auto grid size-16 place-items-center rounded-full bg-white">
-          <Receipt aria-hidden size={28} />
-        </span>
+        <div aria-hidden className="flex justify-center">
+          <Ticket apagado />
+        </div>
         <p className="mt-4 font-display text-xl font-bold">Aún no haces pedidos</p>
         <p className="mx-auto mt-1 max-w-xs text-suave">
           Aquí verás tus pedidos de este celular y en qué va cada uno.

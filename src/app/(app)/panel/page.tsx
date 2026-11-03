@@ -1,21 +1,22 @@
 import { Inbox } from "lucide-react";
 import type { Metadata } from "next";
-import { Suspense } from "react";
 import { dinero } from "@/lib/formato";
 import { obtenerPedidosNegocio, requerirNegocio, separarPedidos } from "@/lib/panel";
 import { Actualizador } from "../pedidos/[id]/actualizador";
 import { AvisoPedidos } from "./aviso-pedidos";
 import { BotonPausa } from "./boton-pausa";
+import { LlegaPedido } from "./llega-pedido";
 import { TarjetaPedido } from "./tarjeta-pedido";
 import { VistasPedidos } from "./vistas-pedidos";
+import { SuspenseRevela } from "@/components/revela";
 
 export const metadata: Metadata = { title: "Pedidos" };
 
 export default function PaginaPanel() {
   return (
-    <Suspense fallback={<Cargando />}>
+    <SuspenseRevela fallback={<Cargando />}>
       <Pedidos />
-    </Suspense>
+    </SuspenseRevela>
   );
 }
 
@@ -60,7 +61,11 @@ async function Pedidos() {
             texto: "Nuevos",
             cuenta: nuevos.length,
             resaltada: true,
-            contenido: nuevos.map((p) => <TarjetaPedido key={p.id} pedido={p} ahora={ahora} modo="nuevo" />),
+            contenido: nuevos.map((p) => (
+              <LlegaPedido key={p.id} id={p.id}>
+                <TarjetaPedido pedido={p} ahora={ahora} modo="nuevo" />
+              </LlegaPedido>
+            )),
           },
           {
             clave: "cocina",
