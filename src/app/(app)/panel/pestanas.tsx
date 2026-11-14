@@ -6,6 +6,7 @@ import { Suspense } from "react";
 
 export const PESTANAS = [
   { href: "/panel", texto: "Pedidos" },
+  { href: "/panel/estadisticas", texto: "Estadísticas" },
   { href: "/panel/menu", texto: "Menú" },
   { href: "/panel/negocio", texto: "Mi negocio" },
 ] as const;

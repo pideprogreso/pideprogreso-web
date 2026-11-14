@@ -1,6 +1,6 @@
 "use client";
 
-import { ClipboardList, House, Receipt, Search, Store, User } from "lucide-react";
+import { ChartLine, ClipboardList, House, Receipt, Search, Store, User } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Suspense } from "react";
@@ -15,6 +15,7 @@ const ENLACES = [
 // Dentro del panel, la barra cambia a las secciones del negocio.
 const ENLACES_PANEL = [
   { href: "/panel", texto: "Pedidos", Icono: Receipt },
+  { href: "/panel/estadisticas", texto: "Números", Icono: ChartLine },
   { href: "/panel/menu", texto: "Menú", Icono: ClipboardList },
   { href: "/panel/negocio", texto: "Mi negocio", Icono: Store },
   { href: "/", texto: "Salir", Icono: House },
@@ -39,7 +40,7 @@ function Barra({ ruta }: { ruta: string | null }) {
       aria-label="Principal"
       className="fixed inset-x-0 bottom-0 z-30 border-t border-borde bg-white/95 pb-[env(safe-area-inset-bottom)] backdrop-blur md:hidden"
     >
-      <ul className="mx-auto grid h-16 max-w-xl grid-cols-4">
+      <ul className={`mx-auto grid h-16 max-w-xl ${enPanel ? "grid-cols-5" : "grid-cols-4"}`}>
         {(enPanel ? ENLACES_PANEL : ENLACES).map(({ href, texto, Icono }) => {
           const activo =
             ruta !== null &&

@@ -2,7 +2,7 @@ import "server-only";
 import { redirect } from "next/navigation";
 import { cache } from "react";
 import { aNegocio, aProducto, COLUMNAS_NEGOCIO, type FilaNegocio, type FilaProducto } from "./datos";
-import { ESTADOS_FINALES } from "./estados";
+import { ESTADOS_FINALES, type EstadoPedido } from "./estados";
 import { aPedido, COLUMNAS_PEDIDO, obtenerDatosTransferencia, type FilaPedido, type Pedido } from "./pedidos";
 import { obtenerUsuario } from "./sesion";
 import { crearClienteServidor } from "./supabase/server";
@@ -103,4 +103,47 @@ export async function obtenerProductoPanel(negocioId: string, id: string): Promi
     .maybeSingle<FilaProductoPanel>();
   if (error) throw error;
   return data ? { ...aProducto(data), disponible: data.disponible, orden: data.orden } : null;
+}
+
+export type PedidoEstadistica = {
+  estado: EstadoPedido;
+  modalidad: "entrega" | "recoger";
+  total: number;
+  creadoEn: string;
+  productos: { nombre: string; cantidad: number; importe: number }[];
+};
+
+// Pedidos desde el día 1 del mes pasado, para comparar este mes contra el anterior.
+// shortcut: trae hasta 2,000 pedidos; un negocio con más en dos meses necesita una vista agregada en Supabase.
+export async function obtenerEstadisticasNegocio(negocioId: string): Promise<PedidoEstadistica[]> {
+  const [anio, mes] = new Intl.DateTimeFormat("en-CA", { timeZone: "America/Matamoros", year: "numeric", month: "2-digit" })
+    .format(new Date())
+    .split("-")
+    .map(Number);
+  const desde = new Date(Date.UTC(mes === 1 ? anio - 1 : anio, (mes + 10) % 12, 1, 5)).toISOString(); // un poco antes de las 00:00 en Matamoros; la página agrupa por día local
+  const supabase = await crearClienteServidor();
+  const { data, error } = await supabase
+    .from("pedidos")
+    .select("estado, modalidad, total, creado_en, pedido_detalle(nombre_producto, cantidad, importe)")
+    .eq("negocio_id", negocioId)
+    .gte("creado_en", desde)
+    .order("creado_en", { ascending: false })
+    .limit(2000)
+    .returns<
+      {
+        estado: EstadoPedido;
+        modalidad: "entrega" | "recoger";
+        total: number | string;
+        creado_en: string;
+        pedido_detalle: { nombre_producto: string; cantidad: number; importe: number | string }[];
+      }[]
+    >();
+  if (error) throw error;
+  return data.map((f) => ({
+    estado: f.estado,
+    modalidad: f.modalidad,
+    total: Number(f.total),
+    creadoEn: f.creado_en,
+    productos: f.pedido_detalle.map((d) => ({ nombre: d.nombre_producto, cantidad: d.cantidad, importe: Number(d.importe) })),
+  }));
 }

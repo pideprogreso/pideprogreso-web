@@ -1,8 +1,9 @@
-import { ChartLine, ChartPie, CircleDollarSign, Clock, MapPin, Phone, Receipt, ShoppingBag, Store, User } from "lucide-react";
+import { ChartLine, ChartPie, Trophy, CircleDollarSign, Clock, MapPin, Phone, Receipt, ShoppingBag, Store, User } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
 import { FotoNegocio } from "@/components/foto";
+import { COLORES_DONA, Dato, Dona, Grafica, Panel, ultimosDias } from "@/components/tablero";
 import {
   inicioDeHoy,
   obtenerNegociosAdmin,
@@ -14,7 +15,6 @@ import {
   requerirAdmin,
   type NegocioAdmin,
   type PagoMes,
-  type PedidoAdmin,
   type ResumenMes,
 } from "@/lib/admin";
 import { buscarCategoria } from "@/lib/categorias";
@@ -32,8 +32,6 @@ const zona = "America/Matamoros";
 const fecha = new Intl.DateTimeFormat("es-MX", { day: "numeric", month: "short", timeZone: zona });
 const diaLargo = new Intl.DateTimeFormat("es-MX", { weekday: "long", day: "numeric", month: "long", timeZone: zona });
 const hora = new Intl.DateTimeFormat("es-MX", { day: "numeric", month: "short", hour: "numeric", minute: "2-digit", timeZone: zona });
-const claveDia = new Intl.DateTimeFormat("en-CA", { timeZone: zona });
-const diaMes = new Intl.DateTimeFormat("es-MX", { day: "numeric", month: "short", timeZone: zona });
 
 export default function PaginaAdmin() {
   return (
@@ -58,13 +56,17 @@ async function Contenido() {
   const ayer = new Date(new Date(hoy).getTime() - 86_400_000).toISOString();
   const deHoy = pedidos.filter((p) => p.creadoEn >= hoy);
   const deAyer = pedidos.filter((p) => p.creadoEn >= ayer && p.creadoEn < hoy);
-  const vendido = (lista: PedidoAdmin[]) => lista.filter((p) => p.estado === "entregado").reduce((s, p) => s + p.total, 0);
+  const vendido = (lista: typeof pedidos) => lista.filter((p) => p.estado === "entregado").reduce((s, p) => s + p.total, 0);
   const dias = ultimosDias(pedidos);
 
   const pendientes = negocios.filter((n) => n.estado === "pendiente");
   const aprobados = negocios.filter((n) => n.estado === "aprobado");
   const suspendidos = negocios.filter((n) => n.estado === "suspendido");
   const categorias = porCategoria(aprobados, mes);
+  const ranking = aprobados
+    .map((n) => ({ n, r: mes.get(n.id) ?? { pedidos: 0, entregado: 0, perdidos: 0 } }))
+    .sort((a, b) => b.r.entregado - a.r.entregado || b.r.pedidos - a.r.pedidos);
+  const ventasMes = ranking.reduce((s, { r }) => s + r.entregado, 0);
 
   return (
     <div className="space-y-8 pt-6 md:pt-0">
@@ -155,6 +157,66 @@ async function Contenido() {
         )}
       </Panel>
 
+      <Panel titulo={`Negocios en ${nombreMes.format(new Date(`${mesPago}T12:00:00`))}`} Icono={Trophy}>
+        <p className="-mt-2 mb-3 text-sm text-suave">
+          {dinero(ventasMes)} entregado entre todos · {ranking.reduce((s, { r }) => s + r.pedidos, 0)} pedidos
+        </p>
+        {ranking.length === 0 ? (
+          <p className="text-suave">Aún no hay negocios publicados.</p>
+        ) : (
+          <div className="-mx-5 overflow-x-auto">
+            <table className="w-full min-w-[40rem] text-left text-sm">
+              <thead className="bg-superficie text-suave">
+                <tr>
+                  <th className="px-5 py-2.5 font-semibold">Negocio</th>
+                  <th className="px-2 py-2.5 text-right font-semibold">Pedidos</th>
+                  <th className="px-2 py-2.5 text-right font-semibold">Cancelados</th>
+                  <th className="px-2 py-2.5 font-semibold">Entregado</th>
+                  <th className="px-5 py-2.5 font-semibold">Cuota</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-borde">
+                {ranking.map(({ n, r }) => (
+                  <tr key={n.id}>
+                    <td className="max-w-56 px-5 py-3">
+                      <span className="flex items-center gap-2">
+                        <span
+                          aria-label={n.abierto ? "Abierto" : "Cerrado"}
+                          className={`size-2 shrink-0 rounded-full ${n.abierto ? "bg-abierto" : "bg-borde"}`}
+                        />
+                        <span className="truncate font-semibold">{n.nombre}</span>
+                      </span>
+                    </td>
+                    <td className="px-2 py-3 text-right tabular-nums">{r.pedidos}</td>
+                    <td className={`px-2 py-3 text-right tabular-nums ${r.perdidos > 0 ? "text-vino-600" : "text-suave"}`}>{r.perdidos}</td>
+                    <td className="w-56 px-2 py-3">
+                      <span className="flex items-center gap-2">
+                        <span className="h-2 flex-1 overflow-hidden rounded-full bg-superficie">
+                          <span
+                            className="block h-full rounded-full bg-vino-700"
+                            style={{ width: `${ventasMes ? (r.entregado / ventasMes) * 100 : 0}%` }}
+                          />
+                        </span>
+                        <span className="w-20 text-right font-semibold tabular-nums">{dinero(r.entregado)}</span>
+                      </span>
+                    </td>
+                    <td className="px-5 py-3">
+                      <span
+                        className={`whitespace-nowrap rounded-full px-2 py-0.5 text-xs font-bold ${
+                          pagos.has(n.id) ? "bg-abierto/10 text-abierto" : "bg-dorado-100 text-dorado-800"
+                        }`}
+                      >
+                        {pagos.has(n.id) ? "Pagada" : "Pendiente"}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </Panel>
+
       <Grupo titulo="Por aprobar" cuenta={pendientes.length} resaltado vacio="No hay solicitudes nuevas.">
         {pendientes.map((n) => (
           <Tarjeta key={n.id} negocio={n} mes={mes.get(n.id)} cobro={{ mes: mesPago, pago: pagos.get(n.id) }} />
@@ -176,25 +238,6 @@ async function Contenido() {
   );
 }
 
-type Dia = { clave: string; etiqueta: string; pedidos: number; vendido: number };
-
-// shortcut: cuenta sobre los últimos 200 pedidos que ya trae obtenerPedidosAdmin; si 2 semanas pasan de 200, contar en SQL.
-function ultimosDias(pedidos: PedidoAdmin[], cuantos = 14): Dia[] {
-  const dias = Array.from({ length: cuantos }, (_, i) => {
-    const d = new Date(Date.now() - (cuantos - 1 - i) * 86_400_000);
-    return { clave: claveDia.format(d), etiqueta: diaMes.format(d), pedidos: 0, vendido: 0 };
-  });
-  for (const p of pedidos) {
-    const dia = dias.find((d) => d.clave === claveDia.format(new Date(p.creadoEn)));
-    if (!dia) continue;
-    dia.pedidos++;
-    if (p.estado === "entregado") dia.vendido += p.total;
-  }
-  return dias;
-}
-
-const COLORES_DONA = ["#3a0617", "#85173c", "#f2b632", "#d98aa3", "#f8cd57", "#ecebe8"];
-
 function porCategoria(negocios: NegocioAdmin[], mes: Map<string, ResumenMes>) {
   const cuentas = new Map<string, number>();
   for (const n of negocios) {
@@ -207,136 +250,6 @@ function porCategoria(negocios: NegocioAdmin[], mes: Map<string, ResumenMes>) {
   const resto = orden.slice(5).reduce((s, [, v]) => s + v, 0);
   if (resto > 0) visibles.push(["Otras", resto]);
   return visibles.map(([nombre, pedidos], i) => ({ nombre, pedidos, color: COLORES_DONA[i] }));
-}
-
-function Panel({
-  titulo,
-  Icono,
-  accion,
-  children,
-}: {
-  titulo: string;
-  Icono: typeof Store;
-  accion?: React.ReactNode;
-  children: React.ReactNode;
-}) {
-  return (
-    <section className="rounded-3xl border border-borde bg-white p-5">
-      <div className="mb-4 flex items-center gap-2.5">
-        <Icono aria-hidden size={20} className="shrink-0 text-vino-700" />
-        <h2 className="flex-1 font-display text-lg font-bold">{titulo}</h2>
-        {accion}
-      </div>
-      {children}
-    </section>
-  );
-}
-
-function Grafica({ dias }: { dias: Dia[] }) {
-  const [ancho, alto, izq, abajo] = [640, 220, 32, 26];
-  const tope = Math.max(4, Math.ceil(Math.max(...dias.map((d) => d.pedidos)) / 4) * 4);
-  const x = (i: number) => izq + (i * (ancho - izq - 8)) / (dias.length - 1);
-  const y = (v: number) => 8 + (1 - v / tope) * (alto - abajo - 8);
-  const linea = dias.map((d, i) => `${i ? "L" : "M"}${x(i)},${y(d.pedidos)}`).join("");
-  const marcas = [0, 1, 2, 3, 4].map((k) => (tope * k) / 4);
-  return (
-    <svg viewBox={`0 0 ${ancho} ${alto}`} className="mt-4 w-full" role="img" aria-label={`Pedidos por día: ${dias.map((d) => `${d.etiqueta} ${d.pedidos}`).join(", ")}`}>
-      <defs>
-        <linearGradient id="relleno-pedidos" x1="0" x2="0" y1="0" y2="1">
-          <stop offset="0" stopColor="#85173c" stopOpacity="0.22" />
-          <stop offset="1" stopColor="#85173c" stopOpacity="0" />
-        </linearGradient>
-      </defs>
-      {marcas.map((m) => (
-        <g key={m}>
-          <line x1={izq} x2={ancho - 8} y1={y(m)} y2={y(m)} stroke="#e6e3df" />
-          <text x={izq - 8} y={y(m) + 4} textAnchor="end" fontSize="12" fill="#66605c">
-            {m}
-          </text>
-        </g>
-      ))}
-      <path d={`${linea}L${x(dias.length - 1)},${y(0)}L${x(0)},${y(0)}Z`} fill="url(#relleno-pedidos)" />
-      <path d={linea} fill="none" stroke="#6e0f2e" strokeWidth="2.5" strokeLinejoin="round" />
-      {dias.map((d, i) => (
-        <g key={d.clave}>
-          <circle cx={x(i)} cy={y(d.pedidos)} r={i === dias.length - 1 ? 5 : 3.5} fill={i === dias.length - 1 ? "#f2b632" : "#6e0f2e"} stroke="#fff" strokeWidth="1.5">
-            <title>{`${d.etiqueta}: ${d.pedidos} pedidos · ${dinero(d.vendido)} entregado`}</title>
-          </circle>
-          {i % 2 === dias.length % 2 && (
-            <text x={x(i)} y={alto - 6} textAnchor="middle" fontSize="12" fill="#66605c">
-              {d.etiqueta}
-            </text>
-          )}
-        </g>
-      ))}
-    </svg>
-  );
-}
-
-function Dona({ categorias }: { categorias: { nombre: string; pedidos: number; color: string }[] }) {
-  const total = categorias.reduce((s, c) => s + c.pedidos, 0);
-  if (total === 0) return <p className="text-suave">Aún no hay pedidos este mes.</p>;
-  const partes = categorias.map((c, i) => {
-    const antes = categorias.slice(0, i).reduce((s, o) => s + o.pedidos, 0);
-    return `${c.color} ${(antes / total) * 360}deg ${((antes + c.pedidos) / total) * 360}deg`;
-  });
-  return (
-    <div className="flex flex-wrap items-center justify-center gap-6">
-      <div className="relative size-40 shrink-0 rounded-full" style={{ background: `conic-gradient(${partes.join(",")})` }}>
-        <div className="absolute inset-7 grid place-items-center rounded-full bg-white text-center">
-          <p>
-            <span className="block font-display text-2xl font-extrabold tabular-nums">{total}</span>
-            <span className="text-xs text-suave">pedidos</span>
-          </p>
-        </div>
-      </div>
-      <ul className="min-w-36 flex-1 space-y-2 text-sm">
-        {categorias.map((c) => (
-          <li key={c.nombre} className="flex items-center gap-2">
-            <span aria-hidden className="size-3 shrink-0 rounded-full ring-1 ring-black/10" style={{ background: c.color }} />
-            <span className="flex-1 truncate">{c.nombre}</span>
-            <span className="font-semibold tabular-nums">{Math.round((c.pedidos / total) * 100)}%</span>
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-}
-
-function Dato({
-  titulo,
-  valor,
-  Icono,
-  hoy,
-  ayer,
-  nota,
-}: {
-  titulo: string;
-  valor: string;
-  Icono: typeof Store;
-  hoy?: number;
-  ayer?: number;
-  nota?: string;
-}) {
-  const cambio = hoy !== undefined && ayer ? Math.round(((hoy - ayer) / ayer) * 100) : null;
-  return (
-    <div className="flex flex-col gap-3 rounded-3xl border border-borde bg-white p-4 sm:flex-row sm:items-start md:p-5">
-      <span className="grid size-11 shrink-0 place-items-center rounded-full bg-vino-900 text-dorado-300 md:size-12">
-        <Icono aria-hidden size={20} />
-      </span>
-      <div className="min-w-0">
-        <p className="text-sm text-suave">{titulo}</p>
-        <p className="font-display text-2xl font-extrabold tabular-nums md:text-3xl">{valor}</p>
-        {cambio !== null ? (
-          <p className={`text-xs font-semibold ${cambio >= 0 ? "text-abierto" : "text-vino-600"}`}>
-            {cambio >= 0 ? "▲" : "▼"} {Math.abs(cambio)}% <span className="font-normal text-suave">vs ayer</span>
-          </p>
-        ) : (
-          <p className="text-xs text-suave">{nota ?? (hoy !== undefined ? "Ayer sin movimiento" : "")}</p>
-        )}
-      </div>
-    </div>
-  );
 }
 
 function Grupo({
