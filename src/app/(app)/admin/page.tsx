@@ -1,4 +1,4 @@
-import { ChartLine, ChartPie, Trophy, CircleDollarSign, Clock, MapPin, Phone, Receipt, ShoppingBag, Store, User } from "lucide-react";
+import { ChartLine, ChartPie, Trophy, TriangleAlert, Users, CircleDollarSign, Clock, MapPin, Phone, Receipt, ShoppingBag, Store, User } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
@@ -12,6 +12,7 @@ import {
   mesActual,
   obtenerPagosMes,
   obtenerResumenMes,
+  obtenerClientesMes,
   requerirAdmin,
   type NegocioAdmin,
   type PagoMes,
@@ -44,12 +45,13 @@ export default function PaginaAdmin() {
 async function Contenido() {
   await requerirAdmin();
   const mesPago = mesActual();
-  const [negocios, pedidos, reportes, mes, pagos] = await Promise.all([
+  const [negocios, pedidos, reportes, mes, pagos, clientes] = await Promise.all([
     obtenerNegociosAdmin(),
     obtenerPedidosAdmin(),
     obtenerReportes(),
     obtenerResumenMes(),
     obtenerPagosMes(mesPago),
+    obtenerClientesMes(),
   ]);
   const reportesPendientes = reportes.filter((r) => !r.resuelto).length;
   const hoy = inicioDeHoy();
@@ -64,8 +66,20 @@ async function Contenido() {
   const suspendidos = negocios.filter((n) => n.estado === "suspendido");
   const categorias = porCategoria(aprobados, mes);
   const ranking = aprobados
-    .map((n) => ({ n, r: mes.get(n.id) ?? { pedidos: 0, entregado: 0, perdidos: 0 } }))
+    .map((n) => ({ n, r: mes.get(n.id) ?? { pedidos: 0, entregado: 0, perdidos: 0, sinRespuesta: 0, sinCerrar: 0, respuestaMin: null } }))
     .sort((a, b) => b.r.entregado - a.r.entregado || b.r.pedidos - a.r.pedidos);
+  // Señales de mal servicio o de estadísticas que no reflejan la realidad.
+  const alertas = ranking.flatMap(({ n, r }) => [
+    ...(r.sinCerrar > 0
+      ? [{ id: `${n.id}-c`, texto: `${n.nombre} tiene ${r.sinCerrar} ${r.sinCerrar === 1 ? "pedido abierto" : "pedidos abiertos"} desde hace más de 6 horas. Sus ventas no cuentan hasta que los cierre.` }]
+      : []),
+    ...(r.sinRespuesta > 0
+      ? [{ id: `${n.id}-r`, texto: `${n.nombre} dejó ${r.sinRespuesta} ${r.sinRespuesta === 1 ? "pedido" : "pedidos"} sin contestar este mes; se cancelaron solos.` }]
+      : []),
+    ...((r.respuestaMin ?? 0) > 5
+      ? [{ id: `${n.id}-t`, texto: `${n.nombre} tarda ${Math.round(r.respuestaMin!)} min en aceptar un pedido.` }]
+      : []),
+  ]);
   const ventasMes = ranking.reduce((s, { r }) => s + r.entregado, 0);
 
   return (
@@ -103,6 +117,38 @@ async function Contenido() {
         </Panel>
         <Panel titulo="Pedidos del mes por categoría" Icono={ChartPie}>
           <Dona categorias={categorias} />
+        </Panel>
+      </div>
+
+      <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.6fr)]">
+        <Panel titulo="Clientes del mes" Icono={Users}>
+          <Dona
+            categorias={[
+              { nombre: "Repiten", pedidos: clientes.repiten, color: COLORES_DONA[0] },
+              { nombre: "Nuevos", pedidos: clientes.nuevos, color: COLORES_DONA[2] },
+            ]}
+            unidad="clientes"
+            vacio="Aún no hay clientes este mes."
+          />
+          {clientes.total > 0 && (
+            <p className="mt-4 rounded-xl bg-superficie px-3 py-2 text-sm">
+              {Math.round((clientes.pedidosDeQuienRepite / Math.max(1, [...mes.values()].reduce((s, r) => s + r.pedidos + r.perdidos, 0))) * 100)}% de
+              los pedidos vienen de clientes que repiten.
+            </p>
+          )}
+        </Panel>
+        <Panel titulo="Para revisar" Icono={TriangleAlert}>
+          {alertas.length === 0 ? (
+            <p className="text-suave">Todo en orden: los negocios contestan rápido y cierran sus pedidos.</p>
+          ) : (
+            <ul className="space-y-2 text-sm">
+              {alertas.map((a) => (
+                <li key={a.id} className="rounded-xl bg-dorado-100 px-3 py-2 text-dorado-800">
+                  {a.texto}
+                </li>
+              ))}
+            </ul>
+          )}
         </Panel>
       </div>
 
@@ -165,12 +211,13 @@ async function Contenido() {
           <p className="text-suave">Aún no hay negocios publicados.</p>
         ) : (
           <div className="-mx-5 overflow-x-auto">
-            <table className="w-full min-w-[40rem] text-left text-sm">
+            <table className="w-full min-w-[44rem] text-left text-sm">
               <thead className="bg-superficie text-suave">
                 <tr>
                   <th className="px-5 py-2.5 font-semibold">Negocio</th>
                   <th className="px-2 py-2.5 text-right font-semibold">Pedidos</th>
                   <th className="px-2 py-2.5 text-right font-semibold">Cancelados</th>
+                  <th className="px-2 py-2.5 text-right font-semibold">Acepta en</th>
                   <th className="px-2 py-2.5 font-semibold">Entregado</th>
                   <th className="px-5 py-2.5 font-semibold">Cuota</th>
                 </tr>
@@ -189,6 +236,9 @@ async function Contenido() {
                     </td>
                     <td className="px-2 py-3 text-right tabular-nums">{r.pedidos}</td>
                     <td className={`px-2 py-3 text-right tabular-nums ${r.perdidos > 0 ? "text-vino-600" : "text-suave"}`}>{r.perdidos}</td>
+                    <td className={`px-2 py-3 text-right tabular-nums ${(r.respuestaMin ?? 0) > 5 ? "font-semibold text-vino-600" : "text-suave"}`}>
+                      {r.respuestaMin === null ? "—" : `${Math.max(1, Math.round(r.respuestaMin))} min`}
+                    </td>
                     <td className="w-56 px-2 py-3">
                       <span className="flex items-center gap-2">
                         <span className="h-2 flex-1 overflow-hidden rounded-full bg-superficie">

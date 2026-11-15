@@ -1,8 +1,9 @@
-import { Ban, Bike, ChartLine, CircleDollarSign, Clock, ReceiptText, ShoppingBag, Utensils } from "lucide-react";
+import { Ban, Bike, ChartLine, Clock, ReceiptText, ShoppingBag, Utensils } from "lucide-react";
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { COLORES_DONA, Dato, Dona, Grafica, Panel, ultimosDias } from "@/components/tablero";
 import { dinero } from "@/lib/formato";
+import { BotonCompartir } from "./boton-compartir";
 import { obtenerEstadisticasNegocio, requerirNegocio, type PedidoEstadistica } from "@/lib/panel";
 
 export const metadata: Metadata = { title: "Estadísticas" };
@@ -11,6 +12,7 @@ const zona = "America/Matamoros";
 const claveDia = new Intl.DateTimeFormat("en-CA", { timeZone: zona });
 const horaLocal = new Intl.DateTimeFormat("en-US", { timeZone: zona, hour: "numeric", hourCycle: "h23" });
 const nombreMes = new Intl.DateTimeFormat("es-MX", { month: "long", timeZone: zona });
+const CUOTA = 149; // cuota mensual vigente
 const perdido = (p: PedidoEstadistica) => p.estado === "cancelado" || p.estado === "rechazado";
 
 export default function PaginaEstadisticas() {
@@ -75,18 +77,26 @@ async function Contenido() {
 
   return (
     <div className="space-y-6 pt-5 md:pt-8">
-      <header>
-        <h2 className="font-display text-2xl font-extrabold tracking-tight">
-          Así va {nombreMes.format(new Date(`${mesActual}-15T12:00:00Z`))}
-        </h2>
-        <p className="text-sm text-suave">Del día 1 a hoy. Las flechas comparan con el mismo tramo del mes pasado.</p>
-      </header>
+      <section className="relative overflow-hidden rounded-3xl bg-vino-900 p-6 text-white md:p-8">
+        <p className="text-sm font-bold uppercase tracking-wider text-dorado-300">
+          En {nombreMes.format(new Date(`${mesActual}-15T12:00:00Z`))}, PideProgreso te trajo
+        </p>
+        <p className="mt-1 font-display text-5xl font-extrabold tabular-nums text-dorado-400 md:text-6xl">{dinero(actual.vendido)}</p>
+        <p className="mt-2 text-white/80">
+          en {actual.pedidos} {actual.pedidos === 1 ? "pedido" : "pedidos"}
+          {actual.vendido >= CUOTA * 2 && `: ${Math.floor(actual.vendido / CUOTA)} veces lo que pagas de cuota`}
+          {actual.pedidos === 0 && ". Comparte tu página para recibir tus primeros pedidos."}
+        </p>
+        <div className="mt-5">
+          <BotonCompartir />
+        </div>
+      </section>
 
-      <section aria-label="Este mes" className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+      <section aria-label="Este mes" className="grid grid-cols-2 gap-3 lg:grid-cols-3">
         <Dato titulo="Pedidos" valor={String(actual.pedidos)} Icono={ShoppingBag} hoy={actual.pedidos} ayer={antes.pedidos} contra={contra} />
-        <Dato titulo="Vendido" valor={dinero(actual.vendido)} Icono={CircleDollarSign} hoy={actual.vendido} ayer={antes.vendido} contra={contra} />
         <Dato titulo="Ticket promedio" valor={dinero(actual.ticket)} Icono={ReceiptText} hoy={actual.ticket} ayer={antes.ticket} contra={contra} />
         <Dato
+          className="col-span-2 lg:col-span-1"
           titulo="Cancelados"
           valor={String(actual.perdidos)}
           Icono={Ban}

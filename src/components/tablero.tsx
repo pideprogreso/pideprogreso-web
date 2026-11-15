@@ -135,6 +135,7 @@ export function Dato({
   ayer,
   nota,
   contra = "vs ayer",
+  className = "",
 }: {
   titulo: string;
   valor: string;
@@ -143,10 +144,11 @@ export function Dato({
   ayer?: number;
   nota?: string;
   contra?: string;
+  className?: string;
 }) {
   const cambio = hoy !== undefined && ayer ? Math.round(((hoy - ayer) / ayer) * 100) : null;
   return (
-    <div className="flex flex-col gap-3 rounded-3xl border border-borde bg-white p-4 sm:flex-row sm:items-start md:p-5">
+    <div className={`flex flex-col gap-3 rounded-3xl border border-borde bg-white p-4 sm:flex-row sm:items-start md:p-5 ${className}`}>
       <span className="grid size-11 shrink-0 place-items-center rounded-full bg-vino-900 text-dorado-300 md:size-12">
         <Icono aria-hidden size={20} />
       </span>
