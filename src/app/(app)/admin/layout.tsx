@@ -1,6 +1,16 @@
 import { Suspense } from "react";
 import { esAdmin, obtenerInteresados, obtenerReportes } from "@/lib/admin";
 import { PestanasAdmin } from "./pestanas";
+import { ActivarAvisos } from "@/components/activar-avisos";
+
+async function AvisosAdmin() {
+  if (!(await esAdmin())) return null;
+  return (
+    <div className="mt-4 md:mb-4 md:mt-0">
+      <ActivarAvisos texto="Recibe una alerta cuando un pedido lleve 5 minutos sin que el negocio lo acepte" />
+    </div>
+  );
+}
 
 const hora = new Intl.DateTimeFormat("es-MX", { hour: "numeric", minute: "2-digit", timeZone: "America/Matamoros" });
 
@@ -13,7 +23,12 @@ export default function LayoutAdmin({ children }: LayoutProps<"/admin">) {
           <Navegacion />
         </Suspense>
       </div>
-      <div className="min-w-0">{children}</div>
+      <div className="min-w-0">
+        <Suspense>
+          <AvisosAdmin />
+        </Suspense>
+        {children}
+      </div>
     </div>
   );
 }

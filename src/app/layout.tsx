@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Figtree, Gabarito } from "next/font/google";
 import "./globals.css";
+import { RegistrarSW } from "@/components/registrar-sw";
 
 const texto = Figtree({
   variable: "--font-texto",
@@ -20,6 +21,8 @@ export const metadata: Metadata = {
   },
   description:
     "Comida, pan, súper y flores de los negocios de Nuevo Progreso, Tamps., directo a tu puerta o para recoger.",
+  appleWebApp: { title: "PideProgreso", statusBarStyle: "default" },
+  icons: { apple: "/apple-touch-icon.png" },
 };
 
 export const viewport: Viewport = {
@@ -34,6 +37,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html lang="es-MX" className={`${texto.variable} ${titulos.variable} antialiased`}>
       <body className="min-h-dvh font-sans text-[15px] leading-normal">
         {children}
+        <RegistrarSW />
       </body>
     </html>
   );

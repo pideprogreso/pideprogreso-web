@@ -9,6 +9,7 @@ import { obtenerPedido, type Pedido } from "@/lib/pedidos";
 import { Actualizador } from "./actualizador";
 import { BotonCancelar } from "./boton-cancelar";
 import { SuspenseRevela } from "@/components/revela";
+import { ActivarAvisos } from "@/components/activar-avisos";
 
 export const metadata: Metadata = { title: "Mi pedido" };
 
@@ -69,6 +70,11 @@ async function Contenido({
         </h1>
         <p className="mt-2 text-suave">{detalle}</p>
         <EscenaPedido key={pedido.estado} estado={pedido.estado} modalidad={pedido.modalidad} />
+        {!final && (
+          <div className="mt-4">
+            <ActivarAvisos texto="Avísame en mi celular cuando cambie mi pedido" />
+          </div>
+        )}
       </section>
 
       {pedido.estado !== "cancelado" && pedido.estado !== "rechazado" && <Linea pedido={pedido} />}

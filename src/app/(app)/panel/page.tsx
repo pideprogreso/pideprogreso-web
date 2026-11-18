@@ -9,6 +9,7 @@ import { LlegaPedido } from "./llega-pedido";
 import { TarjetaPedido } from "./tarjeta-pedido";
 import { VistasPedidos } from "./vistas-pedidos";
 import { SuspenseRevela } from "@/components/revela";
+import { ActivarAvisos } from "@/components/activar-avisos";
 
 export const metadata: Metadata = { title: "Pedidos" };
 
@@ -27,6 +28,7 @@ async function Pedidos() {
   return (
     <div className="space-y-5 pt-5 md:pt-8">
       <Actualizador cadaMs={10000} />
+      <ActivarAvisos texto="Recibe un aviso en tu celular cada vez que llegue un pedido, aunque la app esté cerrada" />
       <AvisoPedidos
         nuevos={nuevos.map((p) => ({ id: p.id, folio: p.folio, nombre: p.nombreContacto, total: dinero(p.total) }))}
       />

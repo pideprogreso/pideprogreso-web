@@ -23,8 +23,6 @@ export function AvisoPedidos({ nuevos }: { nuevos: PedidoNuevo[] }) {
       setListo(true);
     };
     window.addEventListener("pointerdown", activar, { once: true });
-    // En Android las notificaciones necesitan un service worker.
-    navigator.serviceWorker?.register("/sw.js").catch(() => {});
     return () => window.removeEventListener("pointerdown", activar);
   }, []);
 
@@ -85,7 +83,7 @@ function sonar(ctx: AudioContext | null) {
 async function notificar(p: PedidoNuevo) {
   if (!("Notification" in window) || Notification.permission !== "granted") return;
   const titulo = `Pedido nuevo #${p.folio}`;
-  const opciones: NotificationOptions = { body: `${p.nombre} · ${p.total}`, tag: p.id, icon: "/favicon.ico" };
+  const opciones: NotificationOptions = { body: `${p.nombre} · ${p.total}`, tag: p.id, icon: "/icono-192.png" };
   try {
     const registro = await navigator.serviceWorker?.getRegistration();
     if (registro) await registro.showNotification(titulo, opciones);
