@@ -6,6 +6,7 @@ export const metadata: Metadata = { title: "Términos y condiciones" };
 
 export default function PaginaTerminos() {
   return (
+    // Al cambiar la fecha, actualiza también version_legal('terminos') en Supabase.
     <DocumentoLegal titulo="Términos y condiciones" actualizado="21 de octubre de 2026">
       <p>
         Al usar PideProgreso aceptas estos términos. Si no estás de acuerdo, por favor no uses la plataforma.

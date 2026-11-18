@@ -85,7 +85,13 @@ export function FormularioInteresado() {
           {enviando ? "Apartando…" : "Quiero mi precio de fundador"}
         </span>
       </button>
-      <p className="text-center text-sm text-suave">Sin compromiso. Solo usamos tus datos para contactarte.</p>
+      <p className="text-center text-sm text-suave">
+        Sin compromiso. Solo usamos tus datos para contactarte, como explica nuestro{" "}
+        <a href="/privacidad" target="_blank" className="underline underline-offset-2">
+          aviso de privacidad
+        </a>
+        .
+      </p>
     </form>
   );
 }

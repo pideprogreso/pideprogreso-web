@@ -7,7 +7,9 @@ export async function proxy(request: NextRequest) {
   // En el dominio de lanzamiento (variable DOMINIO_PROXIMAMENTE en Netlify) solo existe la página de próximamente.
   const dominio = process.env.DOMINIO_PROXIMAMENTE?.replace(/^www\./, "");
   const host = (request.headers.get("x-forwarded-host") ?? request.headers.get("host") ?? "").split(":")[0];
-  if (dominio && host.replace(/^www\./, "") === dominio) {
+  // Los documentos legales sí se ven: el formulario de próximamente enlaza al aviso de privacidad.
+  const legal = ["/privacidad", "/terminos"].includes(request.nextUrl.pathname);
+  if (dominio && !legal && host.replace(/^www\./, "") === dominio) {
     return NextResponse.rewrite(new URL("/proximamente", request.url));
   }
 

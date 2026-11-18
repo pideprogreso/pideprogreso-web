@@ -40,6 +40,7 @@ export function FormularioNegocio({
   const [d, setD] = useState(inicial);
   const [error, setError] = useState<string | null>(null);
   const [guardado, setGuardado] = useState(false);
+  const [aceptaAcuerdo, setAceptaAcuerdo] = useState(false);
   const [enviando, iniciar] = useTransition();
   const registro = negocioId === null;
 
@@ -60,7 +61,7 @@ export function FormularioNegocio({
     e.preventDefault();
     setError(null);
     iniciar(async () => {
-      const r = registro ? await registrarNegocio(d) : await guardarNegocio(d);
+      const r = registro ? await registrarNegocio(d, aceptaAcuerdo) : await guardarNegocio(d);
       if (!r.ok) return setError(r.error);
       if (registro) {
         router.replace("/panel");
@@ -184,6 +185,24 @@ export function FormularioNegocio({
       </Seccion>
 
       <div className="sticky bottom-[calc(4rem+env(safe-area-inset-bottom))] -mx-4 space-y-3 border-t border-borde bg-white/95 px-4 py-4 backdrop-blur md:static md:mx-0 md:border-0 md:bg-transparent md:px-0">
+        {registro && (
+          <label className="flex items-start gap-3 text-sm">
+            <input
+              type="checkbox"
+              required
+              checked={aceptaAcuerdo}
+              onChange={(e) => setAceptaAcuerdo(e.target.checked)}
+              className="mt-0.5 size-5 shrink-0 accent-vino-700"
+            />
+            <span>
+              Acepto el{" "}
+              <a href="/acuerdo-negocios" target="_blank" className="font-semibold underline underline-offset-2">
+                acuerdo para negocios
+              </a>
+              : mi negocio es el único responsable de recibir, preparar, cobrar y entregar sus pedidos.
+            </span>
+          </label>
+        )}
         {error && <Aviso>{error}</Aviso>}
         <button
           type="submit"

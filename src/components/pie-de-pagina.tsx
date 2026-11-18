@@ -30,6 +30,7 @@ export function PieDePagina() {
             <li className="font-semibold">Legal</li>
             <li><Link href="/privacidad" className={enlace}>Aviso de privacidad</Link></li>
             <li><Link href="/terminos" className={enlace}>Términos y condiciones</Link></li>
+            <li><Link href="/acuerdo-negocios" className={enlace}>Acuerdo para negocios</Link></li>
           </ul>
         </nav>
       </div>

@@ -102,7 +102,9 @@ function slugDe(nombre: string) {
   );
 }
 
-export async function registrarNegocio(d: DatosNegocio): Promise<Resultado> {
+export async function registrarNegocio(d: DatosNegocio, aceptaAcuerdo: boolean): Promise<Resultado> {
+  // Al insertar el negocio, la base registra la aceptación del acuerdo (aceptaciones_legales).
+  if (aceptaAcuerdo !== true) return { ok: false, error: "Para registrar tu negocio acepta el acuerdo para negocios." };
   const usuario = await obtenerUsuario();
   if (!usuario || usuario.anonimo) return { ok: false, error: "Entra a tu cuenta para registrar tu negocio." };
   if (await obtenerMiNegocio()) return { ok: false, error: "Ya tienes un negocio registrado." };

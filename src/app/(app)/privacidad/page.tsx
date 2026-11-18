@@ -8,7 +8,8 @@ const correo = <a href={`mailto:${CORREO_CONTACTO}`} className="font-semibold un
 
 export default function PaginaPrivacidad() {
   return (
-    <DocumentoLegal titulo="Aviso de privacidad" actualizado="21 de octubre de 2026">
+    // Al cambiar la fecha, actualiza también version_legal('terminos') en Supabase.
+    <DocumentoLegal titulo="Aviso de privacidad" actualizado="18 de noviembre de 2026">
       <p>
         Este aviso explica qué datos personales recaba PideProgreso, para qué los usa y cómo puedes ejercer tus
         derechos, conforme a la Ley Federal de Protección de Datos Personales en Posesión de los Particulares.
@@ -28,6 +29,11 @@ export default function PaginaPrivacidad() {
         <li>
           Si registras un negocio: nombre comercial, teléfono, WhatsApp, dirección, horario, datos para recibir
           transferencias, fotos y menú.
+        </li>
+        <li>
+          Si dejas tus datos para conocer PideProgreso antes del lanzamiento: tu nombre, el de tu negocio, giro,
+          teléfono y, si lo das, tu correo. Los usamos solo para contactarte por WhatsApp o correo con el precio y la
+          forma de trabajo.
         </li>
         <li>
           Técnicos: datos de sesión guardados en cookies, tipo de navegador y la información que nos mandes al
@@ -60,8 +66,9 @@ export default function PaginaPrivacidad() {
         </li>
         <li>
           Con proveedores que nos ayudan a operar la plataforma y tratan los datos por nuestra cuenta: Supabase
-          (base de datos y cuentas), Netlify (hospedaje del sitio), Google (si entras con tu cuenta de Google) y
-          OpenStreetMap (mapas; recibe tu dirección IP al cargar el mapa).
+          (base de datos y cuentas), Netlify (hospedaje del sitio), Cloudflare (verificación contra robots al
+          crear cuenta o entrar; recibe tu dirección IP y datos técnicos del navegador), Google (si entras con tu
+          cuenta de Google) y OpenStreetMap (mapas; recibe tu dirección IP al cargar el mapa).
         </li>
         <li>Con autoridades, cuando una ley o una orden lo exija.</li>
       </ul>
